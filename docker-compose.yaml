@@ -16,6 +16,8 @@ services:
         target: /app
     ports:
       - 3000:3000
+    depends_on:
+      - postgres
 
   postgres:
     image: postgres:15-bullseye
@@ -26,6 +28,25 @@ services:
       POSTGRES_DB: clicketing
     volumes:
       - database:/var/lib/postgresql/data
+
+  prisma:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.dev
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgres://clicketing:123456@postgres/clicketing
+    volumes:
+      # Bind-mount the app project folder into the container
+      - type: bind
+        source: .
+        target: /app
+    ports:
+      - 5555:5555
+    command: npm run start-prisma
+    depends_on:
+      - postgres
+
 
 volumes:
   database:
