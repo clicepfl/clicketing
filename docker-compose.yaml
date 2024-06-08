@@ -1,0 +1,31 @@
+# Developpment compose configuration
+# DO NOT USE IN PRODUCTION
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.dev
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgres://clicketing:123456@postgres/clicketing
+    volumes:
+      # Bind-mount the app project folder into the container
+      - type: bind
+        source: .
+        target: /app
+    ports:
+      - 3000:3000
+
+  postgres:
+    image: postgres:15-bullseye
+    hostname: postgres
+    environment:
+      POSTGRES_USER: clicketing
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: clicketing
+    volumes:
+      - database:/var/lib/postgresql/data
+
+volumes:
+  database:
