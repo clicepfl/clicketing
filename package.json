@@ -6,8 +6,7 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "start-prisma": "npx prisma db push && npx prisma studio",
-    "prepare": "husky"
+    "start-prisma": "npx prisma db push && npx prisma studio"
   },
   "keywords": [],
   "author": "",

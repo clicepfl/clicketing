@@ -13,7 +13,7 @@ Install the git hooks to enforce code formatting and commit names:
 
 ```sh
 npm i -D
-npm run prepare
+npx husky
 ```
 
 ### Run the stack locally
