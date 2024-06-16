@@ -1,13 +1,48 @@
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
+}
+
+enum EventType {
+  ICBD
+  FACULTY_DINNER
+  HELLO_WORLD
+  OTHER
 }
 
 datasource db {
-    provider  = "postgresql"
-    url       = env("DATABASE_URL") // uses connection pooling
+  provider = "postgresql"
+  url      = env("DATABASE_URL") // uses connection pooling
 }
 
-model events {
-    id   String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-    name String
+model Event {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name         String
+  type         EventType @default(OTHER)
+  mailTemplate String
+  directusId   String
+  data         Json
+
+  eventStartTime DateTime
+  eventEndTime   DateTime
+
+  staffingStartTime    DateTime[]
+  staffingEndTime      DateTime[]
+  staffingTimeSlotSize Int
+  staffingType         String[]
+
+  registrations Registration[]
+}
+
+model Registration {
+  id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  isStaff   Boolean
+  checkedIn Boolean
+  data      Json
+
+  event   Event  @relation(fields: [eventId], references: [id])
+  eventId String @db.Uuid
+
+  name    String
+  surname String
+  email   String
 }
