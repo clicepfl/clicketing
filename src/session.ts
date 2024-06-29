@@ -1,5 +1,6 @@
 import { sign, verify } from 'jsonwebtoken';
-import { cookies } from 'next/headers';
+import { getURL } from 'next/dist/shared/lib/utils';
+import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -44,7 +45,13 @@ function getAdminSession(): AdminSession | null {
 export function verifyAdminSession(): AdminSession {
   const session = getAdminSession();
   if (session === null) {
-    redirect('/login?type=admin');
+    const currentUrl = headers().get('next-url');
+
+    const loginUrl = new URL('/login', currentUrl);
+    loginUrl.searchParams.append('type', 'admin');
+    loginUrl.searchParams.append('returnUrl', currentUrl);
+
+    redirect(loginUrl.toString());
   }
 
   return session;
