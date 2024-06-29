@@ -3,6 +3,7 @@
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
+import { buildURL, getUrl } from '../../url';
 
 async function adminLogin(
   token: string,
@@ -11,9 +12,7 @@ async function adminLogin(
   onError: () => void
 ) {
   // Construct the login url to call the API
-  const url = new URL('/api/login', window.location.href);
-  url.searchParams.append('type', 'admin');
-  url.searchParams.append('token', token);
+  const url = buildURL('/api/login', { type: 'admin', token });
 
   const res = await fetch(url, {
     method: 'POST',
