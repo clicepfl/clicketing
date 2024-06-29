@@ -78,3 +78,8 @@ export function createAdminSession(token: string): Response {
     });
   }
 }
+
+export function deleteAdminSession() {
+  cookies().delete(ADMIN_SESSION_COOKIE);
+  return new Response('');
+}
