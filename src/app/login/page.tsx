@@ -54,4 +54,6 @@ export default function Login() {
       </>
     );
   }
+
+  throw new Error('Invalid login type');
 }
