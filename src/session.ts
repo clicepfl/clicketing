@@ -1,19 +1,13 @@
 import { sign, verify } from 'jsonwebtoken';
-import { getURL } from 'next/dist/shared/lib/utils';
 import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { NextRequest, NextResponse } from 'next/server';
+import { JWT_SECRET, ADMIN_TOKEN, SESSION_LIFE } from './config';
 
 export interface AdminSession {
   type: 'admin';
 }
 
-const JWT_SECRET = 'TODO - better secret';
-
-const ADMIN_SESSION_COOKIE = 'session-admin';
-const ADMIN_TOKEN = '1234';
-
-const SESSION_LIFE = 60 * 60 * 24; // One day
+const ADMIN_SESSION_COOKIE = 'admin-session';
 
 /**
  * Validate and return a session from the cookies.
