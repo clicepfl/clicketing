@@ -7,6 +7,7 @@ import { useState } from 'react';
 async function adminLogin(
   token: string,
   router: AppRouterInstance,
+  returnUrl: string | null,
   onError: () => void
 ) {
   // Construct the login url to call the API
@@ -20,7 +21,11 @@ async function adminLogin(
   });
 
   if (res.ok) {
-    router.push('/admin');
+    if (returnUrl) {
+      router.push(returnUrl);
+    } else {
+      router.push('/admin');
+    }
   } else {
     onError();
   }
@@ -29,6 +34,7 @@ async function adminLogin(
 export default function Login() {
   const params = useSearchParams();
   const router = useRouter();
+  const returnUrl = params.get('returnUrl');
 
   if (params.get('type') === 'admin') {
     const [token, setToken] = useState('');
@@ -39,7 +45,7 @@ export default function Login() {
         <input value={token} onChange={(e) => setToken(e.target.value)} />
         <button
           onClick={() =>
-            adminLogin(token, router, () => setError('Login failed'))
+            adminLogin(token, router, returnUrl, () => setError('Login failed'))
           }
         >
           Login
