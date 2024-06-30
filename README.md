@@ -22,3 +22,13 @@ To boot up the full service stack locally, you can use the `docker compose up` c
 
 - The webapp on [localhost:3000](http://localhost:3000)
 - The database view on [localhost:5555](http://localhost:5555)
+
+The admin password is `1234`.
+
+### Configuration
+
+The configuration is done through environment variables:
+
+- `JWT_SECRET`: private key used to sign sessions. Required.
+- `ADMIN_TOKEN`: Admin panel password. Required.
+- `SESSION_LIFE`: The duration of a session, in milliseconds. Defaults to 1 day.
