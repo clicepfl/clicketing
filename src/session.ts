@@ -2,7 +2,7 @@ import { sign, verify } from 'jsonwebtoken';
 import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { JWT_SECRET, ADMIN_TOKEN, SESSION_LIFE } from './config';
-import { buildURL } from './url';
+import { buildUrl } from './url';
 
 export interface AdminSession {
   type: 'admin';
@@ -43,7 +43,7 @@ export function verifyAdminSession(): AdminSession {
     const currentUrl = headers().get('next-url');
 
     redirect(
-      buildURL('/login', {
+      buildUrl('/login', {
         type: 'admin',
         returnUrl: currentUrl,
       }).toString()
