@@ -1,8 +1,11 @@
+'use server';
+
 import { sign, verify } from 'jsonwebtoken';
 import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { JWT_SECRET, ADMIN_TOKEN, SESSION_LIFE } from './config';
 import { buildUrl } from './url';
+import { revalidatePath } from 'next/cache';
 
 export interface AdminSession {
   type: 'admin';
@@ -15,7 +18,7 @@ const ADMIN_SESSION_COOKIE = 'admin-session';
  * @param cookieName (string) the name of the cookie containing the session
  * @returns the session, or null if there is none.
  */
-function getSession(cookieName: string) {
+async function getVerifiedSession(cookieName: string) {
   try {
     const payload = verify(cookies().get(cookieName).value, JWT_SECRET);
 
@@ -29,16 +32,16 @@ function getSession(cookieName: string) {
  * Validates and returns an `AdminSession` contained in the cookies. If there is none (or it is invalid/expired), automatically redirects to the login page.
  * @returns the current `AdminSession`, if there is none.
  */
-function getAdminSession(): AdminSession | null {
-  return getSession(ADMIN_SESSION_COOKIE);
+export async function getVerifiedAdminSession(): Promise<AdminSession | null> {
+  return await getVerifiedSession(ADMIN_SESSION_COOKIE);
 }
 
 /**
  * Validates and returns an `AdminSession`. If there is none (or it is invalid/expired), automatically redirects to the login page.
  * @returns the current `AdminSession`.
  */
-export function verifyAdminSession(): AdminSession {
-  const session = getAdminSession();
+export async function verifyAdminSession(): Promise<AdminSession> {
+  const session = getVerifiedAdminSession();
   if (session === null) {
     const currentUrl = headers().get('next-url');
 
@@ -54,11 +57,11 @@ export function verifyAdminSession(): AdminSession {
 }
 
 /**
- * Validates a token for the admin session, and returns an HTTP response.
+ * Validates a token for the admin session.
  * @param token (string) the token provided by the user
- * @returns An HTTP response containing either an error or an appropriate Set-Cookie header.
+ * @returns Whether the authentication was sucessful.
  */
-export function createAdminSession(token: string): Response {
+export async function createAdminSession(token: string): Promise<boolean> {
   if (token === ADMIN_TOKEN) {
     const jwt = sign(JSON.stringify({ type: 'admin' }), JWT_SECRET);
 
@@ -67,15 +70,18 @@ export function createAdminSession(token: string): Response {
       maxAge: SESSION_LIFE,
     });
 
-    return new Response('');
+    revalidatePath('/admin', 'layout');
+    return true;
   } else {
-    return new Response('Invalid token', {
-      status: 400,
-    });
+    cookies().delete(ADMIN_SESSION_COOKIE);
+    return false;
   }
 }
 
-export function deleteAdminSession() {
+/**
+ * Deletes the admin session, if any.
+ */
+export async function deleteAdminSession() {
   cookies().delete(ADMIN_SESSION_COOKIE);
-  return new Response('');
+  revalidatePath('/admin', 'layout');
 }
