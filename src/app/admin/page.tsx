@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { buildURL } from '../../url';
+import { buildUrl } from '../../url';
 
 export default function Dashboard() {
   const router = useRouter();
@@ -11,7 +11,7 @@ export default function Dashboard() {
       <p>Dashboard</p>
       <button
         onClick={async () => {
-          await fetch(buildURL('/api/logout?type=admin'), {
+          await fetch(buildUrl('/api/logout?type=admin'), {
             method: 'POST',
             credentials: 'same-origin',
           });

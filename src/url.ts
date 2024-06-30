@@ -25,7 +25,7 @@ export function getUrl(): string {
  * set to `false` when used for NextJs's links and routers.
  * @returns An absolute url with the path and given search parameters.
  */
-export function buildURL(
+export function buildUrl(
   path: string,
   searchParams?: { [key: string]: string },
   absolute?: boolean
