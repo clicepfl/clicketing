@@ -6,8 +6,8 @@ import nextConfig from '../next.config';
  */
 export function getUrl(): string {
   if (typeof window === 'undefined') {
-    const h = require('next/headers');
-    return h.headers().get('next-url');
+    const h = require('next/headers'); // Dirty trick since including `next/headers` is not allowed on client-side.
+    return h.headers().get('next-url'); // Added by the middleware.
   } else {
     return window.location.href;
   }
