@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { buildUrl } from '../../url';
+import { deleteAdminSession } from '../../session';
 
 export default function Dashboard() {
   const router = useRouter();
@@ -11,10 +11,7 @@ export default function Dashboard() {
       <p>Dashboard</p>
       <button
         onClick={async () => {
-          await fetch(buildUrl('/api/logout?type=admin'), {
-            method: 'POST',
-            credentials: 'same-origin',
-          });
+          await deleteAdminSession();
           router.refresh();
         }}
       >

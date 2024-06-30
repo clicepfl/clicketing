@@ -1,34 +1,8 @@
 'use client';
 
-import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import { buildUrl, getUrl } from '../../url';
-
-async function adminLogin(
-  token: string,
-  router: AppRouterInstance,
-  returnUrl: string | null,
-  onError: () => void
-) {
-  // Construct the login url to call the API
-  const url = buildUrl('/api/login', { type: 'admin', token });
-
-  const res = await fetch(url, {
-    method: 'POST',
-    credentials: 'same-origin', // Allow the Set-Cookie header returned to take effect.
-  });
-
-  if (res.ok) {
-    if (returnUrl) {
-      router.push(returnUrl);
-    } else {
-      router.push('/admin');
-    }
-  } else {
-    onError();
-  }
-}
+import { createAdminSession } from '../../session';
 
 export default function Login() {
   const params = useSearchParams();
@@ -43,9 +17,14 @@ export default function Login() {
       <>
         <input value={token} onChange={(e) => setToken(e.target.value)} />
         <button
-          onClick={() =>
-            adminLogin(token, router, returnUrl, () => setError('Login failed'))
-          }
+          onClick={async () => {
+            if (!(await createAdminSession(token))) {
+              setError('Login failed');
+              return;
+            }
+
+            router.push(returnUrl || '/admin');
+          }}
         >
           Login
         </button>
