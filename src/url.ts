@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { BASE_URL } from './config';
+import nextConfig from '../next.config';
 
 /**
  * @returns The full current URL. Works both on server and client side.
@@ -14,28 +14,28 @@ export function getUrl(): string {
 }
 
 /**
- *  Builds an absolute URL for the given path.
+ * Builds an URL for the given path.
  * @param path path of the URL to build. If it is relative,
  * it will either be appended at the back of `BASE_URL`, if defined,
  * or at the end of the current host.
  * @param searchParams dictionary of search parameters to add to the URL.
  * The entries will be URL encoded.
+ * @param absolute wether the URL must be absolute. If true (default), it will
+ * use the current host and the basepath specified in `next.config.js`. Should be
+ * set to `false` when used for NextJs's links and routers.
  * @returns An absolute url with the path and given search parameters.
  */
 export function buildURL(
   path: string,
-  searchParams?: { [key: string]: string }
+  searchParams?: { [key: string]: string },
+  absolute?: boolean
 ): URL {
-  var u;
+  var u: URL;
 
-  if (BASE_URL) {
-    if (path.startsWith('/')) {
-      u = new URL(join(BASE_URL, path));
-    } else {
-      u = new URL(path);
-    }
+  if (absolute !== false && path.startsWith('/')) {
+    u = new URL(join(nextConfig.basePath, path), getUrl());
   } else {
-    u = new URL(path, getUrl());
+    u = new URL(path);
   }
 
   if (searchParams) {
