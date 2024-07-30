@@ -16,6 +16,7 @@ datasource db {
 
 model Event {
   id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug         String    @unique
   name         String
   type         EventType @default(OTHER)
   mailTemplate String

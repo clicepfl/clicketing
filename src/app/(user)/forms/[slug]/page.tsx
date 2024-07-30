@@ -14,7 +14,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
 
   let form;
   switch (event.type) {
-    case 'SIMPLE': {
+    case 'OTHER': {
       form = <Simple event={event} />;
     }
   }
