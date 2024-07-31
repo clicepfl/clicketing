@@ -1,6 +1,7 @@
 import { createDirectus, rest, staticToken } from '@directus/sdk';
 import { DIRECTUS_TOKEN } from '../config';
 import { components, Schema } from './schema';
+import { getTranslation } from './locales';
 
 export const DIRECTUS_URL = 'https://clic.epfl.ch/directus';
 
@@ -30,4 +31,36 @@ export function getDirectusImageUrl(
         typeof image === 'string' ? image : image.filename_disk
       }`
     : undefined;
+}
+
+/**
+ * Remove useless translations, according to the request locale.
+ * @param object The object containing the locales. The locale directory.ies can be lower in the hierarchy,
+ * e.g. `object` can be a dictionary with one key being the translation dictionary.
+ * @param locale The locale to keep
+ */
+export function cleanTranslations<T>(object: T, locale: string): T {
+  function rec(value: any, locale: string | undefined): any {
+    if (Array.isArray(value)) {
+      return value.map((v) => rec(v, locale));
+    } else if (value && typeof value === 'object') {
+      return Object.entries(value)
+        .map((e) => {
+          if (e[0] === 'translations') {
+            let t: any[] = e[1] as any[];
+            try {
+              t = [getTranslation(value, locale, true)];
+            } catch {}
+            return [e[0], t];
+          } else {
+            return [e[0], rec(e[1], locale)];
+          }
+        })
+        .reduce((a, b) => ({ ...a, [b[0]]: b[1] }), {});
+    } else {
+      return value;
+    }
+  }
+
+  return rec(object, locale);
 }
