@@ -1,9 +1,9 @@
 'use server';
 
 import { headers } from 'next/headers';
-import { getVerifiedAdminSession, verifyAdminSession } from '../../session';
+import { getVerifiedAdminSession, verifyAdminSession } from '../../../session';
 import { redirect } from 'next/navigation';
-import { buildUrl } from '../../url';
+import { buildUrl } from '../../../url';
 
 export default async function AdminLayout({
   children,
