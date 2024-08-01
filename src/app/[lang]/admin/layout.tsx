@@ -3,7 +3,7 @@
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { getVerifiedAdminSession } from 'session';
-import { buildUrl } from 'url-utils';
+import { buildUrl } from 'utils';
 
 export default async function AdminLayout({
   children,

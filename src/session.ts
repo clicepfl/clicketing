@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { ADMIN_TOKEN, JWT_SECRET, SESSION_LIFE } from './config';
-import { buildUrl } from './url-utils';
+import { buildUrl } from './utils';
 
 export interface AdminSession {
   type: 'admin';

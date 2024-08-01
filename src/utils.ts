@@ -46,3 +46,28 @@ export function buildUrl(
 
   return u;
 }
+
+/**
+ * Encapsulate a result from a server action into either a value or an error message.
+ */
+export type ApiResult<R> =
+  | { ok: true; data: R }
+  | { ok: false; error: ApiError };
+/**
+ * Creates an `ApiResult` for success.
+ * @param data The data to return in the ApiResult
+ */
+export function Ok<R>(data: R): ApiResult<R> {
+  return { ok: true, data };
+}
+/**
+ * Creates an `ApiResult` for error.
+ * @param error The error message to return in the ApiResult
+ */
+export function Err<R>(error: ApiError): ApiResult<R> {
+  return { ok: false, error };
+}
+
+export enum ApiError {
+  AlreadyRegistered = 'AlreadyRegistered',
+}
