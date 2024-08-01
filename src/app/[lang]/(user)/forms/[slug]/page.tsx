@@ -1,10 +1,10 @@
 'use server';
 
-import { Simple } from './simple';
-import { notFound } from 'next/navigation';
-import { cleanTranslations, directus } from 'directus/directus';
 import { readItem } from '@directus/sdk';
+import { cleanTranslations, directus } from 'directus/directus';
+import { notFound } from 'next/navigation';
 import { prisma } from 'prisma';
+import { Simple } from './simple';
 
 export default async function Page({
   params,

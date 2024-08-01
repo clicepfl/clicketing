@@ -1,5 +1,4 @@
 import config from '@/../../next.config';
-import React, { useContext } from 'react';
 
 export type Locale = string;
 

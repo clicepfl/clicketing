@@ -1,7 +1,7 @@
 import { createDirectus, rest, staticToken } from '@directus/sdk';
 import { DIRECTUS_TOKEN } from '../config';
-import { components, Schema } from './schema';
 import { getTranslation } from './locales';
+import { Schema, components } from './schema';
 
 export const DIRECTUS_URL = 'https://clic.epfl.ch/directus';
 

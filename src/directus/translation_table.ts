@@ -1,5 +1,4 @@
-import React from 'react';
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 
 export type TranslationTable = { [lang: string]: { [key: string]: string } };
 
