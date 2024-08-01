@@ -1,9 +1,9 @@
 'use server';
 
 import { readItem } from '@directus/sdk';
+import prisma from 'db';
 import { cleanTranslations, directus } from 'directus/directus';
 import { notFound } from 'next/navigation';
-import { prisma } from 'prisma';
 import { Simple } from './simple';
 
 export default async function Page({
@@ -11,7 +11,9 @@ export default async function Page({
 }: {
   params: { slug: string; locale: string };
 }) {
-  const event = await prisma.event.findUnique({ where: { slug: params.slug } });
+  const event = await prisma.event.findUnique({
+    where: { slug: params.slug },
+  });
   const news = await directus().request(
     readItem('news', event.directusId, {
       // @ts-ignore
