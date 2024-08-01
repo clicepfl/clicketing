@@ -5,6 +5,7 @@ import { News } from 'directus/aliases';
 import { getTranslation } from 'directus/locales';
 import i18nConfig from 'i18nConfig';
 import { useCurrentLocale } from 'next-i18n-router/client';
+import { registerParticipant } from './db-registration';
 
 export function Simple({ event, news }: { event: Event; news: News }) {
   const locale = useCurrentLocale(i18nConfig);
@@ -14,7 +15,21 @@ export function Simple({ event, news }: { event: Event; news: News }) {
     <>
       <h1>{event.name}</h1>
       <p>{t.description}</p>
-      <button>Register</button>
+      <button
+        onClick={async () => {
+          const res = await registerParticipant(event.id, {
+            email: 'ludovic.mermod@epfl.ch',
+            name: 'Ludovic',
+            surname: 'Mermod',
+          });
+
+          if (!res.ok) {
+            alert((res as any).error);
+          }
+        }}
+      >
+        Register
+      </button>
     </>
   );
 }
