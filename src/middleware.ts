@@ -11,3 +11,8 @@ export function middleware(request: NextRequest) {
   res.headers.set('next-url', request.url);
   return res;
 }
+
+// applies this middleware only to files in the app directory
+export const config = {
+  matcher: '/((?!api|static|.*\\..*|_next).*)',
+};
