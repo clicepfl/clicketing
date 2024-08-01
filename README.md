@@ -18,7 +18,7 @@ npx husky
 
 ### Run the stack locally
 
-To boot up the full service stack locally, you can use the `docker compose up` command, from the root of the project. Then, you will be able to access:
+First, get the directus token and put it in a `.env` file at the root of the repository (see [`.env.example`](.env.example)). Then boot up the full service stack locally, using the `docker compose up` command, from the root of the project. You will be able to access:
 
 - The webapp on [localhost:3000](http://localhost:3000)
 - The database view on [localhost:5555](http://localhost:5555)
@@ -31,4 +31,5 @@ The configuration is done through environment variables:
 
 - `JWT_SECRET`: private key used to sign sessions. Required.
 - `ADMIN_TOKEN`: Admin panel password. Required.
+- `DIRECTUS_TOKEN`: Token to access the directus instance. Required.
 - `SESSION_LIFE`: The duration of a session, in milliseconds. Defaults to 1 day.
