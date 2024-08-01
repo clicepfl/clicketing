@@ -4,7 +4,7 @@ import { sign, verify } from 'jsonwebtoken';
 import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { JWT_SECRET, ADMIN_TOKEN, SESSION_LIFE } from './config';
-import { buildUrl } from './url';
+import { buildUrl } from './url-utils';
 import { revalidatePath } from 'next/cache';
 
 export interface AdminSession {

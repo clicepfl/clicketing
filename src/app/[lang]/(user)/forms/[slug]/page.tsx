@@ -2,9 +2,9 @@
 
 import { Simple } from './simple';
 import { notFound } from 'next/navigation';
-import { cleanTranslations, directus } from '../../../../../directus/directus';
+import { cleanTranslations, directus } from 'directus/directus';
 import { readItem } from '@directus/sdk';
-import { prisma } from '../../../../../prisma';
+import { prisma } from 'prisma';
 
 export default async function Page({
   params,

@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { deleteAdminSession } from '../../../session';
+import { deleteAdminSession } from 'session';
 
 export default function Dashboard() {
   const router = useRouter();
