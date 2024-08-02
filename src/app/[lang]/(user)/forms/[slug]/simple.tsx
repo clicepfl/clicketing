@@ -25,6 +25,8 @@ export function Simple({ event, news }: { event: Event; news: News }) {
 
           if ('error' in res) {
             alert(res.localized_message[locale]);
+          } else {
+            router.push(`/forms/${event.slug}/done`);
           }
         }}
       >
