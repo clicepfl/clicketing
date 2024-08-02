@@ -23,8 +23,8 @@ export function Simple({ event, news }: { event: Event; news: News }) {
             surname: 'Mermod',
           });
 
-          if (!res.ok) {
-            alert((res as any).error);
+          if ('error' in res) {
+            alert(res.localized_message[locale]);
           }
         }}
       >

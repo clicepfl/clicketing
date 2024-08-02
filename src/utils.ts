@@ -1,3 +1,5 @@
+import { readTranslations } from '@directus/sdk';
+import { directus } from 'directus/directus';
 import { join } from 'path';
 import nextConfig from '../next.config';
 
@@ -52,7 +54,11 @@ export function buildUrl(
  */
 export type ApiResult<R> =
   | { ok: true; data: R }
-  | { ok: false; error: ApiError };
+  | {
+      ok: false;
+      error: string;
+      localized_message: { [locale: string]: string };
+    };
 /**
  * Creates an `ApiResult` for success.
  * @param data The data to return in the ApiResult
@@ -64,10 +70,25 @@ export function Ok<R>(data: R): ApiResult<R> {
  * Creates an `ApiResult` for error.
  * @param error The error message to return in the ApiResult
  */
-export function Err<R>(error: ApiError): ApiResult<R> {
-  return { ok: false, error };
+export async function Err<R>(error: ApiError): Promise<ApiResult<R>> {
+  let res = await directus().request(
+    readTranslations({
+      filter: {
+        key: { _eq: `clicketing.error.${error}` },
+      },
+    })
+  );
+
+  return {
+    ok: false,
+    error,
+    localized_message: res.reduce(
+      (acc, v) => ({ ...acc, [v.language]: v.value }),
+      {}
+    ),
+  };
 }
 
 export enum ApiError {
-  AlreadyRegistered = 'AlreadyRegistered',
+  AlreadyRegistered = 'already_registered',
 }
