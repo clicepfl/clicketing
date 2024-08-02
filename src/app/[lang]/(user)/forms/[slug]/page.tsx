@@ -14,6 +14,10 @@ export default async function Page({
   const event = await prisma.event.findUnique({
     where: { slug: params.slug },
   });
+  const registration = await prisma.registration.findFirst({
+    where: { eventId: event.id, email: 'ludovic.mermod@epfl.ch' },
+  });
+
   const news = await directus().request(
     readItem('news', event.directusId, {
       // @ts-ignore
@@ -29,7 +33,11 @@ export default async function Page({
   switch (event.type) {
     case 'OTHER': {
       form = (
-        <Simple event={event} news={cleanTranslations(news, params.locale)} />
+        <Simple
+          initialValue={registration}
+          event={event}
+          news={cleanTranslations(news, params.locale)}
+        />
       );
     }
   }
