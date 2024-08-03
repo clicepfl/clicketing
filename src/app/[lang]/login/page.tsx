@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import { createAdminSession } from 'session';
+import { createAdminSession } from '../../../session';
 
 export default function Login() {
   const params = useSearchParams();

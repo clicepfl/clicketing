@@ -1,9 +1,9 @@
 'use server';
 
 import { readItem } from '@directus/sdk';
-import prisma from 'db';
-import { cleanTranslations, directus } from 'directus/directus';
 import { notFound } from 'next/navigation';
+import prisma from '../../../../../db';
+import { cleanTranslations, directus } from '../../../../../directus/directus';
 import { Simple } from './simple';
 
 export default async function Page({

@@ -1,10 +1,13 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { deleteAdminSession } from 'session';
 
 export default function Dashboard() {
   const router = useRouter();
+
+  function deleteAdminSession() {
+    throw new Error('Function not implemented.');
+  }
 
   return (
     <>

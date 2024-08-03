@@ -1,7 +1,7 @@
 'use server';
 
-import prisma from 'db';
-import { ApiError, ApiResult, Err, Ok } from 'utils';
+import prisma from '../../../../../db';
+import { ApiError, ApiResult, Err, Ok } from '../../../../../utils';
 
 export async function registerParticipant(
   event: string,

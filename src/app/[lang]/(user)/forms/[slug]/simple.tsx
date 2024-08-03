@@ -1,11 +1,11 @@
 'use client';
 
 import { Event, Registration } from '@prisma/client';
-import { News } from 'directus/aliases';
-import { getTranslation } from 'directus/locales';
-import i18nConfig from 'i18nConfig';
 import { useCurrentLocale } from 'next-i18n-router/client';
 import { useRouter } from 'next/navigation';
+import { News } from '../../../../../directus/aliases';
+import { getTranslation } from '../../../../../directus/locales';
+import i18nConfig from '../../../../../i18nConfig';
 import { registerParticipant } from './db-registration';
 
 export function Simple({

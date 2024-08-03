@@ -1,7 +1,7 @@
 import { readTranslations } from '@directus/sdk';
-import { directus } from 'directus/directus';
 import { join } from 'path';
 import nextConfig from '../next.config';
+import { directus } from './directus/directus';
 
 /**
  * @returns The full current URL. Works both on server and client side.

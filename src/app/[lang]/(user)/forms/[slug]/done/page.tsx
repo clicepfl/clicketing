@@ -1,5 +1,5 @@
-import prisma from 'db';
 import Link from 'next/link';
+import prisma from '../../../../../../db';
 
 export default async function Page({ params }: { params: { slug: string } }) {
   const event = await prisma.event.findUnique({
