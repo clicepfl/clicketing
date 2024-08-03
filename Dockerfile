@@ -9,6 +9,7 @@ COPY package.json package-lock.json ./
 RUN npm config set fetch-retry-maxtimeout 600000 -g && npm ci
 
 COPY . .
+RUN npx prisma generate
 RUN npm run build
 
 # switch to unprivileged user from node base image
