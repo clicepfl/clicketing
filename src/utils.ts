@@ -91,4 +91,5 @@ export async function Err<R>(error: ApiError): Promise<ApiResult<R>> {
 
 export enum ApiError {
   AlreadyRegistered = 'already_registered',
+  Forbidden = 'forbidden',
 }

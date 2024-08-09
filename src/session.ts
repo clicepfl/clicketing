@@ -85,3 +85,7 @@ export async function deleteAdminSession() {
   cookies().delete(ADMIN_SESSION_COOKIE);
   revalidatePath('/admin', 'layout');
 }
+
+export async function hasValidAdminSession(): Promise<boolean> {
+  return (await getVerifiedAdminSession()) !== null;
+}
