@@ -1,31 +1,40 @@
 'use client';
 
 import { ErrorMessage, Field, Form, Formik } from 'formik';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as Yup from 'yup';
-import { createEvent } from '../../../../db/events';
+import { createEvent, getUsedSlugs } from '../../../../db/events';
 
-const validator = Yup.object({
-  name: Yup.string()
-    .required('Required')
-    .min(5, 'Must be at least 5 characters')
-    .max(50, 'Must be at most 50 characters')
-    .matches(
-      /^(\w|\d)+( (\w|\d)+)*$/,
-      'Must only contain alphanumeric characters and spaces'
-    ),
-  slug: Yup.string().matches(
-    /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
-    'Must be pascal-case'
-  ),
-  directusId: Yup.number().required('Required').min(0),
-  startTime: Yup.date().required('Required'),
-  endTime: Yup.date().required('Required'),
-  staffingSlotSize: Yup.number().required('Required').min(15),
-});
+const validator = (slugs: string[]) =>
+  Yup.object({
+    name: Yup.string()
+      .required('Required')
+      .min(5, 'Must be at least 5 characters')
+      .max(50, 'Must be at most 50 characters')
+      .matches(
+        /^(\w|\d)+( (\w|\d)+)*$/,
+        'Must only contain alphanumeric characters and spaces'
+      ),
+    slug: Yup.string()
+      .matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Must be pascal-case')
+      .notOneOf(slugs, 'Must be unique'),
+    directusId: Yup.number().required('Required').min(0),
+    startTime: Yup.date().required('Required'),
+    endTime: Yup.date().required('Required'),
+    staffingSlotSize: Yup.number().required('Required').min(15),
+  });
 
 export default function Page() {
   const slugInput = useRef<HTMLInputElement>(null);
+  const [usedSlugs, setUsedSlugs] = useState([] as string[]);
+
+  useEffect(() => {
+    getUsedSlugs().then((r) => {
+      if (r.ok) {
+        setUsedSlugs(r.data);
+      }
+    });
+  }, []);
 
   return (
     <Formik
@@ -38,7 +47,7 @@ export default function Page() {
         staffingSlotSize: 15,
       }}
       onSubmit={(v) => createEvent(v)}
-      validationSchema={validator}
+      validationSchema={validator(usedSlugs)}
       validateOnBlur
       validateOnMount
       validateOnChange

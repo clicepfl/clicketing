@@ -69,27 +69,37 @@ export function Ok<R>(data: R): ApiResult<R> {
 /**
  * Creates an `ApiResult` for error.
  * @param error The error message to return in the ApiResult
+ * @param addLocalizedMessage Whether to fetch the localizations of the error
+ *        message on directus. Defaults to true.
  */
-export async function Err<R>(error: ApiError): Promise<ApiResult<R>> {
-  let res = await directus().request(
-    readTranslations({
-      filter: {
-        key: { _eq: `clicketing.error.${error}` },
-      },
-    })
-  );
+export async function Err<R>(
+  error: ApiError,
+  addLocalizedMessage: boolean = true
+): Promise<ApiResult<R>> {
+  if (addLocalizedMessage) {
+    let res = await directus().request(
+      readTranslations({
+        filter: {
+          key: { _eq: `clicketing.error.${error}` },
+        },
+      })
+    );
 
-  return {
-    ok: false,
-    error,
-    localized_message: res.reduce(
-      (acc, v) => ({ ...acc, [v.language]: v.value }),
-      {}
-    ),
-  };
+    return {
+      ok: false,
+      error,
+      localized_message: res.reduce(
+        (acc, v) => ({ ...acc, [v.language]: v.value }),
+        {}
+      ),
+    };
+  } else {
+    return { ok: false, error, localized_message: {} };
+  }
 }
 
 export enum ApiError {
   AlreadyRegistered = 'already_registered',
   Forbidden = 'forbidden',
+  Internal = 'internal',
 }

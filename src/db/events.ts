@@ -1,5 +1,6 @@
 'use server';
 
+import { Event } from '@prisma/client';
 import prisma from '../db';
 import { hasValidAdminSession } from '../session';
 import { ApiError, ApiResult, Err, Ok } from '../utils';
@@ -21,18 +22,38 @@ export async function createEvent(event: {
 
   console.log(event.startTime, typeof event.startTime);
 
-  const e: Event = await prisma.event.create({
-    data: {
-      name: event.name,
-      slug: event.slug || convertNameToSlug(event.name),
-      directusId: event.directusId.toString(),
-      mailTemplate: '',
-      eventStartTime: new Date(event.startTime).toISOString(),
-      eventEndTime: new Date(event.endTime).toISOString(),
-      staffingTimeSlotSize: 30,
-      data: {},
-    },
-  });
+  try {
+    const e: Event = await prisma.event.create({
+      data: {
+        name: event.name,
+        slug: event.slug || convertNameToSlug(event.name),
+        directusId: event.directusId.toString(),
+        mailTemplate: '',
+        eventStartTime: new Date(event.startTime).toISOString(),
+        eventEndTime: new Date(event.endTime).toISOString(),
+        staffingTimeSlotSize: 30,
+        data: {},
+      },
+    });
 
-  return Ok(e);
+    return Ok(e);
+  } catch (_) {
+    return Err(ApiError.Internal);
+  }
+}
+
+export async function getUsedSlugs(): Promise<ApiResult<string[]>> {
+  if (!(await hasValidAdminSession())) {
+    return Err(ApiError.Forbidden);
+  }
+
+  try {
+    return Ok(
+      (await prisma.event.findMany({ select: { slug: true } })).map(
+        (v) => v.slug
+      )
+    );
+  } catch (_) {
+    return Err(ApiError.Internal);
+  }
 }
