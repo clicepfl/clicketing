@@ -1,6 +1,7 @@
 'use server';
 
 import { Event } from '@prisma/client';
+import { notFound } from 'next/navigation';
 import prisma from '../db';
 import { hasValidAdminSession } from '../session';
 import { ApiError, ApiResult, Err, Ok } from '../utils';
@@ -58,4 +59,16 @@ export async function getUsedSlugs(): Promise<ApiResult<string[]>> {
   } catch (_) {
     return Err(ApiError.Internal);
   }
+}
+
+export async function getEventBySlug(slug: string) {
+  const event = await prisma.event.findUnique({
+    where: { slug },
+  });
+
+  if (event === null) {
+    notFound();
+  }
+
+  return event;
 }
