@@ -14,6 +14,11 @@ export default async function Page({
   const event = await prisma.event.findUnique({
     where: { slug: params.slug },
   });
+
+  if (event === null) {
+    notFound();
+  }
+
   const registration = await prisma.registration.findFirst({
     where: { eventId: event.id, email: 'ludovic.mermod@epfl.ch' },
   });
