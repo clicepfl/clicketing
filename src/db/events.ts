@@ -20,7 +20,26 @@ export async function createEvent(event: Event): Promise<ApiResult<Event>> {
     });
 
     return Ok(e);
-  } catch (_) {
+  } catch (e) {
+    console.error(e);
+    return Err(ApiError.Internal);
+  }
+}
+
+export async function updateEvent(event: Event): Promise<ApiResult<Event>> {
+  if (!(await hasValidAdminSession())) {
+    return Err(ApiError.Forbidden);
+  }
+
+  try {
+    const updatedEvent: Event = await prisma.event.update({
+      where: { id: event.id },
+      data: event,
+    });
+
+    return Ok(updatedEvent);
+  } catch (error) {
+    console.error(error);
     return Err(ApiError.Internal);
   }
 }
