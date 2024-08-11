@@ -3,6 +3,7 @@
 import { Editor } from '@monaco-editor/react';
 import { Event } from '@prisma/client';
 import { useRef, useState } from 'react';
+import { setMailTemplate } from '../../../../../../db/events';
 import { sendTestMail } from '../../../../../../mail';
 import { injectTestQrCode } from '../../../../../../qrcode';
 
@@ -41,6 +42,7 @@ export default function MailEditor({ event }: { event: Event }) {
       >
         Test
       </button>
+      <button onClick={() => setMailTemplate(event.id, template)}>Save</button>
       <div
         dangerouslySetInnerHTML={{
           __html: injectTestQrCode(template),

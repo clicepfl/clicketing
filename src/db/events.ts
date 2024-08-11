@@ -45,6 +45,17 @@ export async function updateEvent(event: Event): Promise<ApiResult<Event>> {
   }
 }
 
+export async function setMailTemplate(event: string, template: string) {
+  if (!(await hasValidAdminSession())) {
+    return Err(ApiError.Forbidden);
+  }
+
+  await prisma.event.update({
+    where: { id: event },
+    data: { mailTemplate: template },
+  });
+}
+
 export async function getUsedSlugs(): Promise<ApiResult<string[]>> {
   if (!(await hasValidAdminSession())) {
     return Err(ApiError.Forbidden);
