@@ -1,25 +1,8 @@
-'use client';
+import prisma from '../../../db';
+import AdminDashboard from './AdminDashboard';
 
-import { useRouter } from 'next/navigation';
+export default async function Dashboard() {
+  const events = await prisma.event.findMany();
 
-export default function Dashboard() {
-  const router = useRouter();
-
-  function deleteAdminSession() {
-    throw new Error('Function not implemented.');
-  }
-
-  return (
-    <>
-      <p>Dashboard</p>
-      <button
-        onClick={async () => {
-          await deleteAdminSession();
-          router.refresh();
-        }}
-      >
-        Logout
-      </button>
-    </>
-  );
+  return <AdminDashboard events={events} />;
 }
