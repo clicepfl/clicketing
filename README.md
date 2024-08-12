@@ -33,3 +33,8 @@ The configuration is done through environment variables:
 - `ADMIN_TOKEN`: Admin panel password. Required.
 - `DIRECTUS_TOKEN`: Token to access the directus instance. Required.
 - `SESSION_LIFE`: The duration of a session, in milliseconds. Defaults to 1 day.
+- `MAIL_USER`: Username used for authentication
+- `MAIL_PASSWORD`: Password used for authentication
+- `MAIL_HOST`: Domain of the mail server
+- `MAIL_PORT`: Port to connect to on the mail server
+- `MAIL_FROM`: Mail address to display as sender
