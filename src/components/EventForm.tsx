@@ -2,6 +2,7 @@
 
 import { Event, EventType } from '@prisma/client';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
+import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import * as Yup from 'yup';
 import { createEvent, getUsedSlugs, updateEvent } from '../db/events';
@@ -151,6 +152,10 @@ export default function EventForm({ initialValue }: { initialValue?: Event }) {
           {values.type === 'FACULTY_DINNER' ? <FacultyDinner /> : <></>}
 
           <button type="submit">{isUpdateForm ? 'Update' : 'Create'}</button>
+
+          <Link href={`/admin/event/${values.slug}/mail`}>
+            Edit mail template
+          </Link>
         </Form>
       )}
     </Formik>
