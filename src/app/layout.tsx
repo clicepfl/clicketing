@@ -1,3 +1,5 @@
+import '@styles/style.scss';
+
 export default function RootLayout({
   children,
 }: {
@@ -6,7 +8,6 @@ export default function RootLayout({
   return (
     <html>
       <body>
-        {/* Layout UI */}
         <main>{children}</main>
       </body>
     </html>
