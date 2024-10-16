@@ -6,7 +6,6 @@ WORKDIR /app
 # use "node" user with UID/GID 1000 (avoid permission issues with root)
 USER node
 
-ENV ADMIN_TOKEN=1234
 ENV JWT_SECRET=1234
 
 # install dependencies and run in watch mode
