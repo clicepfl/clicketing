@@ -2,5 +2,5 @@
   "singleQuote": true,
   "trailingComma": "es5",
   "tabWidth": 2,
-  "plugins": ["prettier-plugin-organize-imports", "prettier-plugin-prisma"]
+  "plugins": ["prettier-plugin-organize-imports"]
 }
