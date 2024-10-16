@@ -12,6 +12,9 @@ COPY . .
 RUN npx prisma generate
 RUN npm run build
 
+ENV DIRECTUS_URL=https://clic.epfl.ch/directus
+ENV NEXT_PUBLIC_DIRECTUS_URL=https://clic.epfl.ch/directus
+
 # switch to unprivileged user from node base image
 RUN chown -R node .
 USER node
