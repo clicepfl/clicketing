@@ -1,17 +1,39 @@
-import Link from 'next/link';
-import prisma from '../../../../../../db';
+import Card from '@/components/Card';
+import CalendarIcon from '@/components/icons/CalendarIcon';
+import CheckCircleIcon from '@/components/icons/CheckCircleIcon';
+import CutleryIcon from '@/components/icons/CutleryIcon';
+import MapPinIcon from '@/components/icons/MapPinIcon';
+import PriceIcon from '@/components/icons/PriceIcon';
+import TeamIcon from '@/components/icons/TeamIcon';
+import UserIcon from '@/components/icons/UserIcon';
+import InfoItem from '@/components/InfoItem';
+import InfoLine from '@/components/InfoLine';
+import { ElementType, ReactNode } from 'react';
 
-export default async function Page({ params }: { params: { slug: string } }) {
-  const event = await prisma.event.findUnique({
-    where: { slug: params.slug },
-  });
-
+export default function Home() {
+  const infoItems: [ElementType, ReactNode][] = [
+    [CalendarIcon, '12/12/2022'],
+    [MapPinIcon, 'BC Building'],
+    [PriceIcon, 'Free'],
+  ];
   return (
-    <div>
-      <p>Thanks for your registration to {event.name} !</p>
+    <div className="form">
+      <h1>Event</h1>
+      <InfoLine infoItems={infoItems}></InfoLine>
       <p>
-        See your <Link href={`/forms/${event.slug}`}>registration</Link>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+        commodo consequat.
       </p>
+      <section>
+        <Card Icon={UserIcon}>Name Surname</Card>
+        <Card Icon={CutleryIcon}>Menu</Card>
+        <Card Icon={TeamIcon}>Group</Card>
+      </section>
+      <InfoItem Icon={CheckCircleIcon}>
+        <p>You registration to Event is confirmed</p>
+      </InfoItem>
     </div>
   );
 }

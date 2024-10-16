@@ -1,51 +1,35 @@
-'use server';
+import Card from '@/components/Card';
+import CalendarIcon from '@/components/icons/CalendarIcon';
+import CutleryIcon from '@/components/icons/CutleryIcon';
+import MapPinIcon from '@/components/icons/MapPinIcon';
+import PriceIcon from '@/components/icons/PriceIcon';
+import TeamIcon from '@/components/icons/TeamIcon';
+import UserIcon from '@/components/icons/UserIcon';
+import InfoLine from '@/components/InfoLine';
+import { ElementType, ReactNode } from 'react';
 
-import { readItem } from '@directus/sdk';
-import { notFound } from 'next/navigation';
-import prisma from '../../../../../db';
-import { cleanTranslations, directus } from '../../../../../directus/directus';
-import { Simple } from './simple';
-
-export default async function Page({
-  params,
-}: {
-  params: { slug: string; locale: string };
-}) {
-  const event = await prisma.event.findUnique({
-    where: { slug: params.slug },
-  });
-
-  if (event === null) {
-    notFound();
-  }
-
-  const registration = await prisma.registration.findFirst({
-    where: { eventId: event.id, email: 'ludovic.mermod@epfl.ch' },
-  });
-
-  const news = await directus().request(
-    readItem('news', event.directusId, {
-      // @ts-ignore
-      fields: ['*', { translations: ['*'] }],
-    })
+export default function Home() {
+  const infoItems: [ElementType, ReactNode][] = [
+    [CalendarIcon, '12/12/2022'],
+    [MapPinIcon, 'BC Building'],
+    [PriceIcon, 'Free'],
+  ];
+  return (
+    <div className="form">
+      <h1>Event</h1>
+      <InfoLine infoItems={infoItems}></InfoLine>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+        commodo consequat.
+      </p>
+      <section>
+        <Card Icon={UserIcon}>Name Surname</Card>
+        <Card Icon={CutleryIcon}>Menu</Card>
+        <Card Icon={TeamIcon}>Group</Card>
+      </section>
+      <button>Confirm Registration</button>
+    </div>
   );
-
-  if (event == null) {
-    notFound();
-  }
-
-  let form;
-  switch (event.type) {
-    case 'OTHER': {
-      form = (
-        <Simple
-          initialValue={registration}
-          event={event}
-          news={cleanTranslations(news, params.locale)}
-        />
-      );
-    }
-  }
-
-  return form;
 }
