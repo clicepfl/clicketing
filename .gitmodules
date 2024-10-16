@@ -1,0 +1,3 @@
+[submodule "directus-config"]
+	path = directus-config
+	url = https://github.com/clicepfl/directus-config
