@@ -1,5 +1,4 @@
 import config from '@/../next.config';
-import React, { useContext } from 'react';
 
 export type Locale = string;
 
@@ -11,12 +10,6 @@ export function locale(locale?: string | { locale?: string }) {
 }
 
 export type TranslationTable = { [lang: string]: { [key: string]: string } };
-
-export const TranslationTableContext = React.createContext(
-  {} as { [key: string]: string }
-);
-
-export const useTranslationTable = () => useContext(TranslationTableContext);
 
 export function capitalize(val?: string) {
   return val && val.length > 0
