@@ -1,21 +1,26 @@
 # Developpment compose configuration
 # DO NOT USE IN PRODUCTION
 
+include:
+  - directus-config/directus.yaml
+
 services:
   app:
     build:
       context: .
       dockerfile: ./Dockerfile.dev
-    environment:
-      NODE_ENV: development
-      DATABASE_URL: postgres://clicketing:123456@postgres/clicketing
     volumes:
       # Bind-mount the app project folder into the container
       - type: bind
         source: .
         target: /app
+
+  caddy:
+    image: caddy
+    volumes:
+      - ./Caddyfile.dev:/etc/caddy/Caddyfile
     ports:
-      - 3000:3000
+      - 80:80
 
 volumes:
   database:
