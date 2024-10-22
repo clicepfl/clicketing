@@ -15,7 +15,7 @@ on:
 
 # abort running jobs if newer version is detected on same branch
 concurrency:
-  group: ${{ github.head_ref || github.ref }}
+  group: ${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 env:
@@ -37,6 +37,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          submodules: recursive
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
