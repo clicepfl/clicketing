@@ -15,6 +15,7 @@
     "@monaco-editor/react": "^4.6.0",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/nodemailer": "^6.4.15",
+    "@types/qrcode": "^1.5.5",
     "formik": "^2.4.6",
     "jsonwebtoken": "^9.0.2",
     "next": "^14.1.1",
