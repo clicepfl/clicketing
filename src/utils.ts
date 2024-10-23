@@ -1,7 +1,7 @@
 import { readTranslations } from '@directus/sdk';
 import { join } from 'path';
 import nextConfig from '../next.config';
-import { directus } from './directus/directus';
+import { directus } from './directus';
 
 /**
  * @returns The full current URL. Works both on server and client side.
@@ -117,3 +117,9 @@ export function convertToDateTimeLocalString(date: Date): string {
 
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
+
+export const CORS_ALLOW_ALL_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+};
