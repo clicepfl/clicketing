@@ -1,11 +1,43 @@
-import { directus } from '@/directus';
-import { readSingleton } from '@directus/sdk';
+import ICBDForm from '@/components/ICBDForm';
+import { directus, INTERNAL_DIRECTUS_URL } from '@/directus';
+import { getTranslation } from '@/locales';
+import { readItems } from '@directus/sdk';
 
-export default async function Page() {
+export default async function Home() {
+  let db_activities = await directus().request(
+    readItems('icbd_activities', {
+      //@ts-expect-error
+      fields: ['id', { translations: ['*'] }, 'timeslots', 'type'],
+    })
+  );
+  console.log(JSON.stringify(db_activities, null, 2));
+  console.log(INTERNAL_DIRECTUS_URL);
+
+  let activities = db_activities.map((a) => {
+    const infos = getTranslation(a, 'en-US');
+    const time = `${a.timeslots[0].start_time.substring(0, 5)} - ${a.timeslots[0].end_time.substring(0, 5)}`;
+    const room = a.timeslots[0].room;
+
+    return {
+      id: infos.id,
+      title: infos.name,
+      description: infos.description,
+      type: 'talk',
+      time: time,
+      room: room,
+    };
+  });
+
+  let talks = activities.filter((a) => a.type === 'talk');
+  let discussions = activities.filter((a) => a.type === 'discussion');
+
   return (
-    <p>
-      {JSON.stringify(await directus().request(readSingleton('association')))}
-      <img src="http://localhost/clicketing/api/qrcode?value=89d02ba9-9e4a-402a-b562-b0f3207556c6&size=1024" />
-    </p>
+    <ICBDForm
+      date="11/03/2025"
+      location="BC Building"
+      caution="10CHF Caution"
+      talks={talks}
+      discussions={discussions}
+    ></ICBDForm>
   );
 }
