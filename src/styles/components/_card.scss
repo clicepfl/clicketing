@@ -1,17 +1,18 @@
 @use '../base' as *;
 
 .card {
+  user-select: none;
   display: flex;
   align-items: center;
   width: 100%;
   margin: 0.6rem;
-  gap: 0.4rem;
+  gap: 0.6rem;
   border-radius: 0.5rem;
   transition: all 0.3s ease;
   padding: 0.4rem 0.6rem;
   background-color: var(--transparent-white);
 
-  &:hover {
+  &.selectable:hover {
     background-color: var(--transparent-white-2);
     cursor: pointer;
   }
