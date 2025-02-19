@@ -1,17 +1,17 @@
 import ICBDForm from '@/components/ICBDForm';
-import { directus, INTERNAL_DIRECTUS_URL } from '@/directus';
+import { directus } from '@/directus';
 import { getTranslation } from '@/locales';
 import { readItems } from '@directus/sdk';
 
-export default async function Home() {
+export default async function Home({ params }) {
+  let eventId = params.eventId;
+
   let db_activities = await directus().request(
     readItems('icbd_activities', {
       //@ts-expect-error
       fields: ['id', { translations: ['*'] }, 'timeslots', 'type'],
     })
   );
-  console.log(JSON.stringify(db_activities, null, 2));
-  console.log(INTERNAL_DIRECTUS_URL);
 
   let activities = db_activities.map((a) => {
     const infos = getTranslation(a, 'en-US');
@@ -22,7 +22,7 @@ export default async function Home() {
       id: infos.id,
       title: infos.name,
       description: infos.description,
-      type: 'talk',
+      type: a.type,
       time: time,
       room: room,
     };
@@ -33,6 +33,7 @@ export default async function Home() {
 
   return (
     <ICBDForm
+      eventId={eventId}
       date="11/03/2025"
       location="BC Building"
       caution="10CHF Caution"

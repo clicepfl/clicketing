@@ -5,15 +5,17 @@ export default function Card({
   children,
   selectable = false,
   onClick,
+  iconProps,
 }: {
-  Icon: ElementType;
+  Icon?: ElementType;
   children: ReactNode;
   selectable?: boolean;
   onClick?: () => void;
+  iconProps?: any;
 }) {
   return (
     <div className={`card ${selectable ? 'selectable' : ''}`} onClick={onClick}>
-      <Icon className="icon" />
+      {Icon && <Icon className="icon" {...iconProps} />}
       {children}
     </div>
   );

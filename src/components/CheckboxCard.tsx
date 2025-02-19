@@ -4,6 +4,7 @@ import Checkbox from './Checkbox';
 
 export default function CheckboxCard({
   children,
+  checkboxState,
 }: {
   children: ReactNode;
   checkboxState: {
@@ -11,5 +12,13 @@ export default function CheckboxCard({
     setValue: (value: boolean) => void;
   };
 }) {
-  return <Card Icon={Checkbox}>{children}</Card>;
+  return (
+    <Card>
+      <Checkbox
+        checked={checkboxState.value}
+        setChecked={checkboxState.setValue}
+      ></Checkbox>
+      {children}
+    </Card>
+  );
 }
