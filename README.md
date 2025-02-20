@@ -40,7 +40,7 @@ Apply directus schema and populate the database:
 
 First, get the directus token and put it in a `.env` file at the root of the repository (see [`.env.example`](.env.example)). Then boot up the full service stack locally, using the `docker compose up` command, from the root of the project. You will be able to access:
 
-- The webapp on [localhost/clicketing](http://localhost:clicketing)
+- The webapp on [localhost/clicketing](http://localhost/clicketing)
 - The directus view on [localhost/directus](http://localhost/directus)
 
 The username is `clic@epfl.ch`.
