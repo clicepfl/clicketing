@@ -1,6 +1,8 @@
 import { ElementType, useState } from 'react';
 import Card from './Card';
 import OutsideAlerter from './OutsideAlerter';
+import Split from './Split';
+import ChevronIcon from './icons/ChevronIcon';
 
 export default function DropdownCard({
   Icon,
@@ -26,7 +28,10 @@ export default function DropdownCard({
           selectable={true}
           onClick={() => setStayOpen(!stayOpen)}
         >
-          {dropdownState.value || placeholder}
+          <Split>
+            {dropdownState.value || placeholder}
+            <ChevronIcon className="icon" />
+          </Split>
         </Card>
       </OutsideAlerter>
       <div className="dropdown-content">
