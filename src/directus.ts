@@ -25,7 +25,9 @@ export const PUBLIC_DIRECTUS_URL = process.env
  * @returns a handle to Directus' API.
  */
 export function directus() {
-  const directus = createDirectus<Schema>(INTERNAL_DIRECTUS_URL).with(rest());
+  const directus = createDirectus<Schema>(INTERNAL_DIRECTUS_URL).with(
+    rest({ onRequest: (o) => ({ ...o, cache: 'no-store' }) })
+  );
 
   return (process.env.DIRECTUS_TOKEN || '') !== ''
     ? directus.with(staticToken(process.env.DIRECTUS_TOKEN as string))
