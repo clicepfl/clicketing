@@ -59,7 +59,7 @@ export async function sendICBDActivitiesRegistrations({
   const registration = registrations.find((r) => r.id === registrationID);
 
   const noSlotActivitiesRegistrations = activities
-    .filter((id) => noSlotActivitiesIDs.includes(id))
+    .filter((a) => noSlotActivitiesIDs.includes(a.id))
     .map((a) => {
       return {
         icbd_activity: a,
@@ -80,7 +80,10 @@ export async function sendICBDActivitiesRegistrations({
     });
 
   await directus().request(
-    createItems('icbd_activities_registrations', activityRegistrations)
+    createItems('icbd_activities_registrations', [
+      ...activityRegistrations,
+      ...noSlotActivitiesRegistrations,
+    ])
   );
 }
 

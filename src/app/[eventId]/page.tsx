@@ -35,7 +35,7 @@ export default async function Home({ params }) {
     const room = a.timeslots[0].room;
 
     return {
-      id: infos.id,
+      id: a.id,
       title: infos.name,
       description: infos.description,
       type: a.type,
