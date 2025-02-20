@@ -13,7 +13,10 @@ export default function CheckboxCard({
   };
 }) {
   return (
-    <Card>
+    <Card
+      selectable={true}
+      onClick={() => checkboxState.setValue(!checkboxState.value)}
+    >
       <Checkbox
         checked={checkboxState.value}
         setChecked={checkboxState.setValue}
