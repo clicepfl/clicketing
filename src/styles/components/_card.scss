@@ -17,3 +17,14 @@
     cursor: pointer;
   }
 }
+
+a:has(.card) {
+  text-decoration: none;
+  color: var(--text-color);
+  width: 100%;
+  margin: 0.6rem;
+
+  .card {
+    margin: 0;
+  }
+}

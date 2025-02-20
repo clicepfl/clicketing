@@ -5,10 +5,10 @@ import {
   sendRegistration,
 } from '@/actions/icbd';
 import { ElementType, ReactNode, useReducer } from 'react';
+import Card from './Card';
 import CheckboxCard from './CheckboxCard';
 import DropdownCard from './DropdownCard';
 import ErrorMessage from './ErrorMessage';
-import InfoItem from './InfoItem';
 import InfoLine from './InfoLine';
 import SplitText from './SplitText';
 import TextInputCard from './TextInputCard';
@@ -431,13 +431,13 @@ function Loading({}) {
 function Confirmation({}) {
   return (
     <>
-      <InfoItem Icon={CheckCircleIcon}>
-        <p>Your registration to Event is successful !</p>
-        <p>
-          Check your email for confirmation, and don't forget to pay your
-          caution at the CLIC office{/*TODO*/}
-        </p>
-      </InfoItem>
+      <Card Icon={CheckCircleIcon}>
+        <p>Your registration to ICBD is successful !</p>
+      </Card>
+      <p>
+        Check your email for confirmation, and don't forget to pay your caution
+        at the CLIC office{/*TODO*/}
+      </p>
     </>
   );
 }

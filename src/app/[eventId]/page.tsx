@@ -2,9 +2,25 @@ import ICBDForm from '@/components/ICBDForm';
 import { directus } from '@/directus';
 import { getTranslation } from '@/locales';
 import { readItems } from '@directus/sdk';
+import { notFound } from 'next/navigation';
 
 export default async function Home({ params }) {
   let eventId = params.eventId;
+
+  let events = await directus().request(
+    readItems('events', {
+      //@ts-expect-error
+      fields: ['*', { translations: ['*'] }],
+    })
+  );
+
+  let event = events
+    .filter((event) => event.opened)
+    .find((e) => e.id == eventId);
+
+  if (!event) {
+    return notFound();
+  }
 
   let db_activities = await directus().request(
     readItems('icbd_activities', {
@@ -28,8 +44,8 @@ export default async function Home({ params }) {
     };
   });
 
-  let talks = activities.filter((a) => a.type === 'talk');
-  let discussions = activities.filter((a) => a.type === 'discussion');
+  let talks = activities.filter((a) => a.type == 'talk');
+  let discussions = activities.filter((a) => a.type == 'discussion');
 
   return (
     <ICBDForm
