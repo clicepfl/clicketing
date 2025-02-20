@@ -46,6 +46,7 @@ export default async function Home({ params }) {
 
   let talks = activities.filter((a) => a.type == 'talk');
   let discussions = activities.filter((a) => a.type == 'discussion');
+  let interviews = activities.filter((a) => a.type == 'interview');
 
   return (
     <ICBDForm
@@ -55,6 +56,7 @@ export default async function Home({ params }) {
       caution="10CHF Caution"
       talks={talks}
       discussions={discussions}
+      interviews={interviews}
     ></ICBDForm>
   );
 }

@@ -30,8 +30,7 @@ type State = {
   consent: boolean;
   selectedTalks: boolean[];
   selectedDiscussions: boolean[];
-  speedNetworking: boolean;
-  mockInterview: boolean;
+  selectedInterviews: boolean[];
   errorMessage: string;
 };
 
@@ -66,8 +65,9 @@ async function register({
   section,
   year,
   activitiesIDs,
+  noSlotActivitiesIDs,
 }) {
-  let registrationID = sendRegistration({
+  let registrationID = await sendRegistration({
     first_name: first_name,
     last_name: last_name,
     email: email,
@@ -76,8 +76,9 @@ async function register({
     eventID: eventId,
   });
 
-  sendICBDActivitiesRegistrations({
+  await sendICBDActivitiesRegistrations({
     activitiesIDs: activitiesIDs,
+    noSlotActivitiesIDs: noSlotActivitiesIDs,
     registrationID: registrationID,
   });
 }
@@ -114,8 +115,7 @@ function validateValues(s: State) {
   if (
     !s.selectedTalks.some((selected) => selected) &&
     !s.selectedDiscussions.some((selected) => selected) &&
-    !s.speedNetworking &&
-    !s.mockInterview
+    !s.selectedInterviews.some((selected) => selected)
   ) {
     return 'No activities selected';
   }
@@ -130,6 +130,7 @@ export default function ICBDForm({
   caution,
   talks,
   discussions,
+  interviews,
 }: {
   eventId: string;
   date: string;
@@ -137,6 +138,7 @@ export default function ICBDForm({
   caution: string;
   talks: { title: string; time: string; id: number }[];
   discussions: { title: string; time: string; id: number }[];
+  interviews: { title: string; time: string; id: number }[];
 }) {
   // Info items
   const infoItems: [ElementType, ReactNode][] = [
@@ -156,8 +158,7 @@ export default function ICBDForm({
     consent: false,
     selectedTalks: talks.map(() => false),
     selectedDiscussions: discussions.map(() => false),
-    speedNetworking: false,
-    mockInterview: false,
+    selectedInterviews: interviews.map(() => false),
     errorMessage: '',
   };
 
@@ -194,6 +195,7 @@ export default function ICBDForm({
                 setField={setField}
                 talks={talks}
                 discussions={discussions}
+                interviews={interviews}
                 eventId={eventId}
               ></Form>
             );
@@ -216,12 +218,14 @@ function Form({
   setField,
   talks,
   discussions,
+  interviews,
   eventId,
 }: {
   s: State;
   setField: (field: string, value) => void;
   talks: { title: string; time: string; id: number }[];
   discussions: { title: string; time: string; id: number }[];
+  interviews: { title: string; time: string; id: number }[];
   eventId: string;
 }) {
   function changeSelection(
@@ -342,43 +346,30 @@ function Form({
       </section>
 
       <section>
-        <h2>Speed Networking</h2>
+        <h2>Interviews</h2>
 
         <p>
-          Your slot will be assigned to you when you come to pay your caution of
-          10CHF at the CLIC Office in INM 117 [...?].
+          Your slot for these activities will only be assigned to you when you
+          come to pay your caution of 10CHF at the CLIC Office in INM 117, if
+          there are still slots available.
         </p>
 
-        <CheckboxCard
-          checkboxState={{
-            value: s.speedNetworking,
-            setValue: (value) => setField('speedNetworking', value),
-          }}
-        >
-          <SplitText
-            snippets={['I would like to participate in the Speed Networking']}
-          ></SplitText>
-        </CheckboxCard>
-      </section>
-
-      <section>
-        <h2>Mock Interview</h2>
-
-        <p>
-          Your slot will be assigned to you when you come to pay your caution of
-          10CHF at the CLIC Office in INM 117 [...?].
-        </p>
-
-        <CheckboxCard
-          checkboxState={{
-            value: s.mockInterview,
-            setValue: (value) => setField('mockInterview', value),
-          }}
-        >
-          <SplitText
-            snippets={['I would like to participate in a Mock Interview']}
-          ></SplitText>
-        </CheckboxCard>
+        {interviews.map((interview, i) => (
+          <CheckboxCard
+            key={i}
+            checkboxState={{
+              value: s.selectedInterviews[i],
+              setValue: (value) => {
+                setField(
+                  'selectedInterviews',
+                  changeSelection(i, value, s.selectedInterviews)
+                );
+              },
+            }}
+          >
+            <SplitText snippets={[interview.title]} />
+          </CheckboxCard>
+        ))}
       </section>
 
       <button
@@ -395,6 +386,10 @@ function Form({
               .filter((discussion, i) => s.selectedDiscussions[i])
               .map((discussion) => discussion.id);
 
+            let interviewsIds = interviews
+              .filter((interview, i) => s.selectedInterviews[i])
+              .map((interview) => interview.id);
+
             setField('formState', FormStates.Loading);
 
             register({
@@ -405,6 +400,7 @@ function Form({
               section: s.section,
               year: s.year,
               activitiesIDs: [...talksIds, ...discussionsIds],
+              noSlotActivitiesIDs: interviewsIds,
             })
               .then(() => {
                 setField('formState', FormStates.Confirmation);
@@ -412,6 +408,7 @@ function Form({
               .catch((error) => {
                 setField('errorMessage', error);
                 setField('formState', FormStates.Error);
+                console.log(error);
               });
           }
         }}

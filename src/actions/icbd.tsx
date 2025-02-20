@@ -1,5 +1,7 @@
+'use server';
+
 import { directus } from '@/directus';
-import { createItems, readItems } from '@directus/sdk';
+import { createItems, readItem, readItems } from '@directus/sdk';
 
 export async function sendRegistration({
   first_name,
@@ -9,17 +11,11 @@ export async function sendRegistration({
   year,
   eventID,
 }) {
-  const events = await directus().request(
-    readItems('events', {
+  const event = await directus().request(
+    readItem('events', eventID, {
       fields: ['*'],
     })
   );
-
-  const event = events.find((e) => e.id === eventID);
-
-  if (!event) {
-    throw new Error(`Event with id ${eventID} not found`);
-  }
 
   const eventRegistration = {
     event: event,
@@ -43,6 +39,7 @@ export async function sendRegistration({
 
 export async function sendICBDActivitiesRegistrations({
   activitiesIDs,
+  noSlotActivitiesIDs,
   registrationID,
 }) {
   let activities = await directus().request(
@@ -60,6 +57,16 @@ export async function sendICBDActivitiesRegistrations({
   );
 
   const registration = registrations.find((r) => r.id === registrationID);
+
+  const noSlotActivitiesRegistrations = activities
+    .filter((id) => noSlotActivitiesIDs.includes(id))
+    .map((a) => {
+      return {
+        icbd_activity: a,
+        registration: registration,
+        attended: false,
+      };
+    });
 
   const activityRegistrations = activities
     .filter((a) => activitiesIDs.includes(a.id))
