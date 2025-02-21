@@ -1,7 +1,7 @@
 'use server';
 
 import { directus } from '@/directus';
-import { createItems, readItem, readItems } from '@directus/sdk';
+import { createItems, readItem, readItems, updateItem } from '@directus/sdk';
 
 export async function emailAlreadyUsed(
   email: string,
@@ -102,9 +102,8 @@ export async function sendICBDActivitiesRegistrations({
   );
 }
 
-export async function getICBDInfo() {
-  // const icbd = await directus().request(
-  //   //@ts-ignore
-  //   readSingleton('ICBD', { fields: ['*', { translations: ['*'] }] })
-  // );
+export async function completeRegistration(id: string) {
+  await directus().request(
+    updateItem('registrations', id, { registration_complete: true })
+  );
 }

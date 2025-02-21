@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  completeRegistration,
   emailAlreadyUsed,
   sendICBDActivitiesRegistrations,
   sendRegistration,
@@ -68,7 +69,7 @@ async function register({
   activitiesIDs,
   noSlotActivitiesIDs,
 }) {
-  let registrationID = await sendRegistration({
+  let registrationId = await sendRegistration({
     first_name,
     last_name,
     email,
@@ -80,8 +81,10 @@ async function register({
   await sendICBDActivitiesRegistrations({
     activitiesIDs,
     noSlotActivitiesIDs,
-    registrationID,
+    registrationID: registrationId,
   });
+
+  await completeRegistration(registrationId);
 }
 
 async function validateValues(s: State, eventId: string) {
