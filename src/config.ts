@@ -17,7 +17,7 @@ function checkVariable(name: string) {
  * Ensure all required environment variables are present.
  */
 export function validateEnvs() {
-  const envs = ['JWT_SECRET', 'DIRECTUS_TOKEN'];
+  const envs = ['DIRECTUS_TOKEN'];
 
   if (!envs.map(checkVariable).every((e) => e)) {
     exit(1);
