@@ -3,16 +3,31 @@
 import { directus } from '@/directus';
 import { createItems, readItem, readItems } from '@directus/sdk';
 
+export async function emailAlreadyUsed(
+  email: string,
+  eventId: string
+): Promise<boolean> {
+  const registrations = await directus().request(
+    readItems('registrations', {
+      filter: {
+        _and: [{ email: { _eq: email } }, { event: { _eq: eventId } }],
+      },
+    })
+  );
+
+  return registrations.length !== 0;
+}
+
 export async function sendRegistration({
   first_name,
   last_name,
   email,
   section,
   year,
-  eventID,
+  eventId,
 }) {
   const event = await directus().request(
-    readItem('events', eventID, {
+    readItem('events', eventId, {
       fields: ['*'],
     })
   );

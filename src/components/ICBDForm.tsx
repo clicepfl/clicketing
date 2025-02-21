@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  emailAlreadyUsed,
   sendICBDActivitiesRegistrations,
   sendRegistration,
 } from '@/actions/icbd';
@@ -73,7 +74,7 @@ async function register({
     email: email,
     section: section,
     year: year,
-    eventID: eventId,
+    eventId: eventId,
   });
 
   await sendICBDActivitiesRegistrations({
@@ -83,7 +84,7 @@ async function register({
   });
 }
 
-function validateValues(s: State) {
+async function validateValues(s: State, eventId: string) {
   if (!s.firstName || s.firstName.length === 0) {
     return 'First name is required';
   }
@@ -94,6 +95,9 @@ function validateValues(s: State) {
 
   if (!s.email) {
     return 'Email is required';
+  }
+  if (await emailAlreadyUsed(s.email, eventId)) {
+    return 'Email is already used';
   }
 
   if (!/^[A-Za-z]+\.[A-Za-z]+@epfl\.ch$/.test(s.email)) {
@@ -204,7 +208,7 @@ export default function ICBDForm({
           case FormStates.Confirmation:
             return <Confirmation></Confirmation>;
           case FormStates.Error:
-            return <Error></Error>;
+            return <Error message={state.errorMessage}></Error>;
           default:
             return null;
         }
@@ -373,8 +377,8 @@ function Form({
       </section>
 
       <button
-        onClick={() => {
-          const error = validateValues(s);
+        onClick={async () => {
+          const error = await validateValues(s, eventId);
 
           setField('errorMessage', error);
 
@@ -392,24 +396,23 @@ function Form({
 
             setField('formState', FormStates.Loading);
 
-            register({
-              eventId,
-              first_name: s.firstName,
-              last_name: s.lastName,
-              email: s.email,
-              section: s.section,
-              year: s.year,
-              activitiesIDs: [...talksIds, ...discussionsIds],
-              noSlotActivitiesIDs: interviewsIds,
-            })
-              .then(() => {
-                setField('formState', FormStates.Confirmation);
-              })
-              .catch((error) => {
-                setField('errorMessage', error);
-                setField('formState', FormStates.Error);
-                console.log(error);
+            try {
+              await register({
+                eventId,
+                first_name: s.firstName,
+                last_name: s.lastName,
+                email: s.email,
+                section: s.section,
+                year: s.year,
+                activitiesIDs: [...talksIds, ...discussionsIds],
+                noSlotActivitiesIDs: interviewsIds,
               });
+              setField('formState', FormStates.Confirmation);
+            } catch (error) {
+              setField('errorMessage', error.message);
+              setField('formState', FormStates.Error);
+              console.log(error);
+            }
           }
         }}
       >
@@ -439,10 +442,10 @@ function Confirmation({}) {
   );
 }
 
-function Error({}) {
+function Error({ message }: { message: string }) {
   return (
     <>
-      <p>Registration failed</p>
+      <p>Registration failed: {message}</p>
       <p>Please refresh the page and try again</p>
       <p>Contact clic@epfl.ch if the issue persists</p>
     </>
