@@ -4,4 +4,5 @@ module.exports = {
     instrumentationHook: true, // See `src/instrumentation.ts`
   },
   basePath: '/clicketing',
+  reactStrictMode: true,
 };
