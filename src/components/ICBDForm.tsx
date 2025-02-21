@@ -69,18 +69,18 @@ async function register({
   noSlotActivitiesIDs,
 }) {
   let registrationID = await sendRegistration({
-    first_name: first_name,
-    last_name: last_name,
-    email: email,
-    section: section,
-    year: year,
-    eventId: eventId,
+    first_name,
+    last_name,
+    email,
+    section,
+    year,
+    eventId,
   });
 
   await sendICBDActivitiesRegistrations({
-    activitiesIDs: activitiesIDs,
-    noSlotActivitiesIDs: noSlotActivitiesIDs,
-    registrationID: registrationID,
+    activitiesIDs,
+    noSlotActivitiesIDs,
+    registrationID,
   });
 }
 
@@ -152,7 +152,7 @@ export default function ICBDForm({
   ];
 
   // Define initial state
-  const initialState: State = {
+  const initialState = {
     formState: FormStates.Form,
     firstName: '',
     lastName: '',

@@ -33,12 +33,12 @@ export async function sendRegistration({
   );
 
   const eventRegistration = {
-    event: event,
-    email: email,
-    first_name: first_name,
+    event,
+    email,
+    first_name,
     family_name: last_name,
-    year: year,
-    section: section,
+    year,
+    section,
     checked_in: false,
     retreived_deposit: false,
     can_retrieve_deposit: false,
@@ -78,7 +78,7 @@ export async function sendICBDActivitiesRegistrations({
     .map((a) => {
       return {
         icbd_activity: a,
-        registration: registration,
+        registration,
         attended: false,
       };
     });
@@ -88,7 +88,7 @@ export async function sendICBDActivitiesRegistrations({
     .map((a) => {
       return {
         icbd_activity: a,
-        registration: registration,
+        registration,
         start: a.timeslots[0].start_time,
         attended: false,
       };
