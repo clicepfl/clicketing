@@ -1,8 +1,6 @@
 import { exit } from 'process';
 
-export const JWT_SECRET = process.env.JWT_SECRET;
 export const DIRECTUS_TOKEN = process.env.DIRECTUS_TOKEN;
-export const SESSION_LIFE = parseInt(process.env.SESSION_LIFE) | (60 * 60 * 24); // 1 day
 
 function checkVariable(name: string) {
   if (process.env[name] === undefined) {
