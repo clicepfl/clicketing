@@ -208,7 +208,7 @@ export default function ICBDForm({
           case FormStates.Confirmation:
             return <Confirmation></Confirmation>;
           case FormStates.Error:
-            return <Error message={state.errorMessage}></Error>;
+            return <_Error message={state.errorMessage}></_Error>;
           default:
             return null;
         }
@@ -442,7 +442,7 @@ function Confirmation({}) {
   );
 }
 
-function Error({ message }: { message: string }) {
+function _Error({ message }: { message: string }) {
   return (
     <>
       <p>Registration failed: {message}</p>

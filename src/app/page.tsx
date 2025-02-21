@@ -3,6 +3,8 @@ import TicketIcon from '@/components/icons/TicketIcon';
 import { directus } from '@/directus';
 import { readItems } from '@directus/sdk';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home({ params }) {
   let events = await directus().request(
     readItems('events', {
