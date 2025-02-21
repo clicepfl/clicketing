@@ -17,6 +17,7 @@ import TextInputCard from './TextInputCard';
 import CalendarIcon from './icons/CalendarIcon';
 import CheckCircleIcon from './icons/CheckCircleIcon';
 import EmailIcon from './icons/EmailIcon';
+import ErrorIcon from './icons/ErrorIcon';
 import MapPinIcon from './icons/MapPinIcon';
 import PriceIcon from './icons/PriceIcon';
 import TeamIcon from './icons/TeamIcon';
@@ -134,7 +135,7 @@ export default function ICBDForm({
   eventId,
   date,
   location,
-  caution,
+  deposit,
   talks,
   discussions,
   interviews,
@@ -142,7 +143,7 @@ export default function ICBDForm({
   eventId: string;
   date: string;
   location: string;
-  caution: string;
+  deposit: string;
   talks: { title: string; time: string; id: number }[];
   discussions: { title: string; time: string; id: number }[];
   interviews: { title: string; time: string; id: number }[];
@@ -151,7 +152,7 @@ export default function ICBDForm({
   const infoItems: [ElementType, ReactNode][] = [
     [CalendarIcon, date],
     [MapPinIcon, location],
-    [PriceIcon, caution],
+    [PriceIcon, deposit],
   ];
 
   // Define initial state
@@ -177,7 +178,7 @@ export default function ICBDForm({
       case 'SET_ERROR':
         return { ...state, errorMessage: action.value };
       default:
-        throw Error('Unknown action');
+        throw Error('Invalid action type');
     }
   }
 
@@ -209,9 +210,15 @@ export default function ICBDForm({
           case FormStates.Loading:
             return <Loading></Loading>;
           case FormStates.Confirmation:
-            return <Confirmation></Confirmation>;
+            return (
+              <Confirmation
+                interviewSelected={state.selectedInterviews.some(
+                  (selected) => selected
+                )}
+              ></Confirmation>
+            );
           case FormStates.Error:
-            return <_Error message={state.errorMessage}></_Error>;
+            return <ErrorDisplay message={state.errorMessage}></ErrorDisplay>;
           default:
             return null;
         }
@@ -247,12 +254,6 @@ function Form({
 
   return (
     <>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-        commodo consequat.
-      </p>
       <section>
         <TextInputCard
           Icon={UserIcon}
@@ -357,7 +358,7 @@ function Form({
 
         <p>
           Your slot for these activities will only be assigned to you when you
-          come to pay your caution of 10CHF at the CLIC Office in INM 117, if
+          come to pay your deposit of 10CHF at the CLIC Office in INM 117, if
           there are still slots available.
         </p>
 
@@ -431,21 +432,34 @@ function Loading({}) {
   return <p>Loading...</p>;
 }
 
-function Confirmation({}) {
+function Confirmation({ interviewSelected }: { interviewSelected: boolean }) {
   return (
     <>
       <Card Icon={CheckCircleIcon}>
         <p>Your registration to ICBD is successful !</p>
       </Card>
+
       <p>
-        Check your email for confirmation, and don't forget to pay your caution
-        at the CLIC office{/*TODO*/}
+        Check your email for confirmation, and don't forget to pay your deposit
+        at the CLIC office in INM 117. We are available between 10:00 and 17:00
+        on weekdays.
       </p>
+      <p>This deposit will be refunded to you when you attend the event.</p>
+      {interviewSelected && (
+        <Card Icon={ErrorIcon}>
+          <p>
+            You have registered for a <b>Mock Interview</b> or{' '}
+            <b>Speed Networking</b> activity. Your slot for this activity will
+            only be confirmed after you pay your deposit, if slots are still
+            available.
+          </p>
+        </Card>
+      )}
     </>
   );
 }
 
-function _Error({ message }: { message: string }) {
+function ErrorDisplay({ message }: { message: string }) {
   return (
     <>
       <p>Registration failed: {message}</p>

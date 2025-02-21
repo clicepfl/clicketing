@@ -46,6 +46,10 @@ h1 {
   font-size: 3rem;
   font-weight: 600;
   text-align: left;
+
+  @media (max-width: 40rem) {
+    font-size: 2.3rem;
+  }
 }
 
 h2 {

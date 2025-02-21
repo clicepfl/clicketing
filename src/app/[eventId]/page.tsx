@@ -68,7 +68,7 @@ export default async function Home({ params }) {
       eventId={eventId}
       date="11/03/2025"
       location="BC Building"
-      caution="10CHF Caution"
+      deposit="10CHF Deposit"
       talks={talks}
       discussions={discussions}
       interviews={interviews}
