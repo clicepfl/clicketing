@@ -1,0 +1,31 @@
+.checkbox {
+  appearance: none;
+  border: 2px solid var(--text-color);
+  border-radius: 25%;
+  aspect-ratio: 1 / 1;
+  width: 85%;
+  overflow: hidden;
+
+  cursor: pointer;
+
+  &:checked {
+    background-color: var(--text-color);
+    color: var(--bg-color);
+    &::before {
+      display: block;
+      width: 100%;
+      text-align: center;
+      content: '✔';
+      font-size: 1rem;
+      line-height: 100%;
+    }
+  }
+}
+
+div:has(> .checkbox) {
+  height: 1.4rem;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

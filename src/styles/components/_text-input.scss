@@ -1,0 +1,17 @@
+.text-input {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-color);
+  font-family: inherit;
+  font-size: inherit;
+  width: 100%;
+
+  &:focus {
+    border-bottom: 2px solid var(--primary-color);
+  }
+
+  &::placeholder {
+    color: var(--text-color);
+  }
+}

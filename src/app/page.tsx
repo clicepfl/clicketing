@@ -1,11 +1,32 @@
+import Card from '@/components/Card';
+import TicketIcon from '@/components/icons/TicketIcon';
 import { directus } from '@/directus';
-import { readSingleton } from '@directus/sdk';
+import { readItems } from '@directus/sdk';
 
-export default async function Page() {
+export const dynamic = 'force-dynamic';
+
+export default async function Home({ params }) {
+  let events = await directus().request(
+    readItems('events', {
+      //@ts-expect-error
+      fields: ['*', { translations: ['*'] }],
+    })
+  );
+
+  console.log(events);
+
   return (
-    <p>
-      {JSON.stringify(await directus().request(readSingleton('association')))}
-      <img src="http://localhost/clicketing/api/qrcode?value=89d02ba9-9e4a-402a-b562-b0f3207556c6&size=1024" />
-    </p>
+    <div className="form">
+      <h1>Open Event Forms</h1>
+      {events
+        .filter((event) => event.opened)
+        .map((event) => (
+          <a href={`/clicketing/${event.id}`}>
+            <Card key={event.id} Icon={TicketIcon}>
+              {event.name}
+            </Card>
+          </a>
+        ))}
+    </div>
   );
 }

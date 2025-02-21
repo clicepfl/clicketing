@@ -1,11 +1,17 @@
+@use 'sass:color';
+
 :root {
-  --text-color: #c5cdfd;
-  --bg-color: #0e2c59;
+  $base: #d65d00;
 
-  --button-text-color: #000f3a;
-  --button-bg-color: #f3f5ff;
-  --button-bg-color-hover: #dde3ff;
+  --text-color: #{color.scale($base, $lightness: 80%)};
+  --bg-color: #{$base};
 
-  --transparent-white: rgba(255, 255, 255, 0.08);
-  --transparent-white-2: rgba(255, 255, 255, 0.16);
+  --button-text-color: #{color.scale($base, $lightness: -50%)};
+  --button-bg-color: #{color.scale($base, $lightness: 70%)};
+  --button-bg-color-hover: #{color.scale($base, $lightness: 60%)};
+
+  --transparent-white: rgba(255, 255, 255, 0.1);
+  --transparent-white-2: rgba(255, 255, 255, 0.2);
+
+  --transparent-dark: #{color.scale($base, $lightness: -15%, $alpha: -30%)};
 }
