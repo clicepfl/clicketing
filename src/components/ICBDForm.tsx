@@ -178,7 +178,7 @@ export default function ICBDForm({
       case 'SET_ERROR':
         return { ...state, errorMessage: action.value };
       default:
-        throw Error({ message: 'Invalid action type' });
+        throw Error('Invalid action type');
     }
   }
 
@@ -218,7 +218,7 @@ export default function ICBDForm({
               ></Confirmation>
             );
           case FormStates.Error:
-            return <_Error message={state.errorMessage}></_Error>;
+            return <ErrorDisplay message={state.errorMessage}></ErrorDisplay>;
           default:
             return null;
         }
@@ -459,7 +459,7 @@ function Confirmation({ interviewSelected }: { interviewSelected: boolean }) {
   );
 }
 
-function _Error({ message }: { message: string }) {
+function ErrorDisplay({ message }: { message: string }) {
   return (
     <>
       <p>Registration failed: {message}</p>
