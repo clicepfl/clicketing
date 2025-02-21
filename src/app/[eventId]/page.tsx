@@ -33,6 +33,10 @@ export default async function Home({ params }) {
   console.log(db_activities);
 
   let activities = db_activities.map((a) => {
+    if (a.timeslots === null) {
+      return null;
+    }
+
     const infos = getTranslation(a, 'en-US');
     const time = `${a.timeslots[0].start_time.substring(0, 5)} - ${a.timeslots[0].end_time.substring(0, 5)}`;
     const room = a.timeslots[0].room;
@@ -47,9 +51,13 @@ export default async function Home({ params }) {
     };
   });
 
-  let talks = activities.filter((a) => a.type == 'talk');
-  let discussions = activities.filter((a) => a.type == 'discussion');
-  let interviews = activities.filter((a) => a.type == 'interview');
+  let talks = activities.filter((a) => a !== null && a.type == 'talk');
+  let discussions = activities.filter(
+    (a) => a !== null && a.type == 'discussion'
+  );
+  let interviews = activities.filter(
+    (a) => a !== null && a.type == 'interview'
+  );
 
   console.log(talks);
   console.log(discussions);
