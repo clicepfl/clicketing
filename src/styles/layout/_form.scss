@@ -6,4 +6,11 @@
   max-width: 60ch;
   margin: 0 auto;
   padding: 0 2rem;
+
+  margin-top: 8rem;
+  margin-bottom: 3rem;
+
+  @media (max-width: 40rem) {
+    margin-top: 4rem;
+  }
 }
