@@ -13,12 +13,10 @@ export default async function Home({ params }) {
       fields: ['*', { translations: ['*'] }],
     })
   );
-  console.log(events);
 
   let event = events
     .filter((event) => event.opened)
     .find((e) => e.id == eventId);
-  console.log(event);
 
   if (!event) {
     return notFound();
@@ -30,7 +28,6 @@ export default async function Home({ params }) {
       fields: ['id', { translations: ['*'] }, 'timeslots', 'type'],
     })
   );
-  console.log(db_activities);
 
   let activities = db_activities.map((a) => {
     if (a.timeslots === null) {
@@ -58,10 +55,6 @@ export default async function Home({ params }) {
   let interviews = activities.filter(
     (a) => a !== null && a.type == 'interview'
   );
-
-  console.log(talks);
-  console.log(discussions);
-  console.log(interviews);
 
   return (
     <ICBDForm
