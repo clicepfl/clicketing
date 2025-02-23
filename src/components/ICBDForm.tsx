@@ -441,7 +441,7 @@ function Confirmation({ interviewSelected }: { interviewSelected: boolean }) {
 
       <p>
         Check your email for confirmation, and don't forget to pay your deposit
-        at the CLIC office in INM 117. We are available between 10:00 and 17:00
+        at the CLIC office in INM 177. We are available between 10:00 and 17:00
         on weekdays.
       </p>
       <p>This deposit will be refunded to you when you attend the event.</p>
