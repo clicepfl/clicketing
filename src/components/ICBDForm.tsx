@@ -358,7 +358,7 @@ function Form({
 
         <p>
           Your slot for these activities will only be assigned to you when you
-          come to pay your deposit of 10CHF at the CLIC Office in INM 117, if
+          come to pay your deposit of 10CHF at the CLIC Office in INM 177, if
           there are still slots available.
         </p>
 
