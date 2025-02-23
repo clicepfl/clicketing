@@ -1,7 +1,8 @@
 import ICBDForm from '@/components/ICBDForm';
 import { directus } from '@/directus';
 import { getTranslation } from '@/locales';
-import { readItems } from '@directus/sdk';
+import { readItem, readItems } from '@directus/sdk';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 export default async function Home({ params }) {
@@ -13,12 +14,10 @@ export default async function Home({ params }) {
       fields: ['*', { translations: ['*'] }],
     })
   );
-  console.log(events);
 
   let event = events
     .filter((event) => event.opened)
     .find((e) => e.id == eventId);
-  console.log(event);
 
   if (!event) {
     return notFound();
@@ -30,7 +29,6 @@ export default async function Home({ params }) {
       fields: ['id', { translations: ['*'] }, 'timeslots', 'type'],
     })
   );
-  console.log(db_activities);
 
   let activities = db_activities.map((a) => {
     if (a.timeslots === null) {
@@ -59,10 +57,6 @@ export default async function Home({ params }) {
     (a) => a !== null && a.type == 'interview'
   );
 
-  console.log(talks);
-  console.log(discussions);
-  console.log(interviews);
-
   return (
     <ICBDForm
       eventId={eventId}
@@ -74,4 +68,27 @@ export default async function Home({ params }) {
       interviews={interviews}
     ></ICBDForm>
   );
+}
+
+export async function generateMetadata({ params }): Promise<Metadata> {
+  const event = await directus().request(
+    readItem('events', params.eventId, {
+      //@ts-expect-error
+      fields: ['*', { translations: ['*'] }],
+    })
+  );
+
+  return {
+    title: `${event.name} - Registration`,
+    openGraph: {
+      type: 'website',
+      siteName: 'Clicketing',
+      title: `Register to ${event.name}`,
+      url: `https://clic.epfl.ch/clicketing/${event.id}`,
+      locale: 'en_US',
+      images: [
+        'https://clic.epfl.ch/directus/assets/776736f4-ebea-420a-9c5b-3e297e22b782?width=500',
+      ],
+    },
+  };
 }

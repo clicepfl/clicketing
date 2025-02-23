@@ -2,6 +2,7 @@ import Card from '@/components/Card';
 import TicketIcon from '@/components/icons/TicketIcon';
 import { directus } from '@/directus';
 import { readItems } from '@directus/sdk';
+import { Metadata } from 'next';
 
 export const dynamic = 'force-dynamic';
 
@@ -30,3 +31,7 @@ export default async function Home({ params }) {
     </div>
   );
 }
+
+export const metadata: Metadata = {
+  title: 'Clicketing',
+};
