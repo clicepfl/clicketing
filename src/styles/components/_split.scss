@@ -3,4 +3,10 @@
   gap: 1.5rem;
   justify-content: space-between;
   width: 100%;
+
+  :last-child {
+    @media (min-width: 70ch) {
+      white-space: nowrap;
+    }
+  }
 }
