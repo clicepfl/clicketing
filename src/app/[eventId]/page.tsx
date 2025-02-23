@@ -87,7 +87,7 @@ export async function generateMetadata({ params }): Promise<Metadata> {
       url: `https://clic.epfl.ch/clicketing/${event.id}`,
       locale: 'en_US',
       images: [
-        'https://clic.epfl.ch/directus/assets/776736f4-ebea-420a-9c5b-3e297e22b782?width=500',
+        'https://clic.epfl.ch/directus/assets/43241404-0dff-4f17-989e-e0f156707266',
       ],
     },
   };
