@@ -34,6 +34,8 @@ type State = {
   selectedTalks: boolean[];
   selectedDiscussions: boolean[];
   selectedInterviews: boolean[];
+  cvCorrection: boolean;
+  cvCorrectionConfirmed: boolean;
   errorMessage: string;
 };
 
@@ -120,10 +122,15 @@ async function validateValues(s: State, eventId: string) {
     return 'Consent is required';
   }
 
+  if (s.cvCorrection && !s.cvCorrectionConfirmed) {
+    return 'You must be present at the CV presentation';
+  }
+
   if (
     !s.selectedTalks.some((selected) => selected) &&
     !s.selectedDiscussions.some((selected) => selected) &&
-    !s.selectedInterviews.some((selected) => selected)
+    !s.selectedInterviews.some((selected) => selected) &&
+    !s.cvCorrection
   ) {
     return 'No activities selected';
   }
@@ -139,6 +146,7 @@ export default function ICBDForm({
   talks,
   discussions,
   interviews,
+  cvcorrections,
 }: {
   eventId: string;
   date: string;
@@ -147,6 +155,7 @@ export default function ICBDForm({
   talks: { title: string; time: string; id: number }[];
   discussions: { title: string; time: string; id: number }[];
   interviews: { title: string; time: string; id: number }[];
+  cvcorrections: { title: string; time: string; id: number }[];
 }) {
   // Info items
   const infoItems: [ElementType, ReactNode][] = [
@@ -167,6 +176,7 @@ export default function ICBDForm({
     selectedTalks: talks.map(() => false),
     selectedDiscussions: discussions.map(() => false),
     selectedInterviews: interviews.map(() => false),
+    cvCorrection: false,
     errorMessage: '',
   };
 
@@ -204,18 +214,20 @@ export default function ICBDForm({
                 talks={talks}
                 discussions={discussions}
                 interviews={interviews}
+                cvcorrections={cvcorrections}
                 eventId={eventId}
-              ></Form>
+              />
             );
           case FormStates.Loading:
             return <Loading></Loading>;
           case FormStates.Confirmation:
             return (
               <Confirmation
-                interviewSelected={state.selectedInterviews.some(
-                  (selected) => selected
-                )}
-              ></Confirmation>
+                interviewSelected={
+                  state.cvCorrection ||
+                  state.selectedInterviews.some((selected) => selected)
+                }
+              />
             );
           case FormStates.Error:
             return <ErrorDisplay message={state.errorMessage}></ErrorDisplay>;
@@ -233,6 +245,7 @@ function Form({
   talks,
   discussions,
   interviews,
+  cvcorrections,
   eventId,
 }: {
   s: State;
@@ -240,6 +253,7 @@ function Form({
   talks: { title: string; time: string; id: number }[];
   discussions: { title: string; time: string; id: number }[];
   interviews: { title: string; time: string; id: number }[];
+  cvcorrections: { title: string; time: string; id: number }[];
   eventId: string;
 }) {
   function changeSelection(
@@ -354,6 +368,36 @@ function Form({
       </section>
 
       <section>
+        <h2>CV Correction</h2>
+
+        <CheckboxCard
+          checkboxState={{
+            value: s.cvCorrection,
+            setValue: (value) => {
+              setField('cvCorrection', value);
+            },
+          }}
+        >
+          I want to participate in a CV correction
+        </CheckboxCard>
+        {s.cvCorrection ? (
+          <CheckboxCard
+            checkboxState={{
+              value: s.cvCorrectionConfirmed,
+              setValue: (value) => {
+                setField('cvCorrectionConfirmed', value);
+              },
+            }}
+          >
+            I attest I will be present at the presentation on 7th from 12:15 to
+            14:00
+          </CheckboxCard>
+        ) : (
+          <></>
+        )}
+      </section>
+
+      <section>
         <h2>Interviews</h2>
 
         <p>
@@ -408,7 +452,11 @@ function Form({
                 email: s.email,
                 section: s.section,
                 year: s.year,
-                activitiesIDs: [...talksIds, ...discussionsIds],
+                activitiesIDs: [
+                  ...talksIds,
+                  ...discussionsIds,
+                  ...(s.cvCorrection ? cvcorrections : []),
+                ],
                 noSlotActivitiesIDs: interviewsIds,
               });
               setField('formState', FormStates.Confirmation);
@@ -448,10 +496,10 @@ function Confirmation({ interviewSelected }: { interviewSelected: boolean }) {
       {interviewSelected && (
         <Card Icon={ErrorIcon}>
           <p>
-            You have registered for a <b>Mock Interview</b> or{' '}
-            <b>Speed Networking</b> activity. Your slot for this activity will
-            only be confirmed after you pay your deposit, if slots are still
-            available.
+            You have registered for a <b>Mock Interview</b>,{' '}
+            <b>Speed Networking</b> or <b>CV Correction</b> activity. Your slot
+            for this activity will only be confirmed after you pay your deposit,
+            if slots are still available.
           </p>
         </Card>
       )}

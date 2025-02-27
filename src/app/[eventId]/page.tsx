@@ -56,6 +56,9 @@ export default async function Home({ params }) {
   let interviews = activities.filter(
     (a) => a !== null && a.type == 'interview'
   );
+  let cvcorrections = activities.filter(
+    (a) => a !== null && a.type == 'cv_correction'
+  );
 
   return (
     <ICBDForm
@@ -66,7 +69,8 @@ export default async function Home({ params }) {
       talks={talks}
       discussions={discussions}
       interviews={interviews}
-    ></ICBDForm>
+      cvcorrections={cvcorrections}
+    />
   );
 }
 
