@@ -106,7 +106,7 @@ async function validateValues(s: State, eventId: string) {
     return 'Email is already used';
   }
 
-  if (!/^[A-Za-z]+\.[A-Za-z]+@epfl\.ch$/.test(s.email)) {
+  if (!/^[A-Za-z\-]+\.[A-Za-z\-]+@epfl\.ch$/.test(s.email)) {
     return 'Email must be EPFL email';
   }
 
