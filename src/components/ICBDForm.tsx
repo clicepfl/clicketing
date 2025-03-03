@@ -454,7 +454,10 @@ function Form({
                 section: s.section,
                 year: s.year,
                 activitiesIDs: [...talksIds, ...discussionsIds],
-                noSlotActivitiesIDs: [...interviewsIds, cvCorrection.id],
+                noSlotActivitiesIDs: [
+                  ...interviewsIds,
+                  ...(s.cvCorrection ? [cvCorrection.id] : []),
+                ],
               });
               setField('formState', FormStates.Confirmation);
             } catch (error) {
