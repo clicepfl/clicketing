@@ -75,7 +75,7 @@ async function register({
   let registrationId = await sendRegistration({
     first_name,
     last_name,
-    email,
+    email: email.toLowerCase(),
     section,
     year,
     eventId,
@@ -102,7 +102,7 @@ async function validateValues(s: State, eventId: string) {
   if (!s.email) {
     return 'Email is required';
   }
-  if (await emailAlreadyUsed(s.email, eventId)) {
+  if (await emailAlreadyUsed(s.email.toLowerCase(), eventId)) {
     return 'Email is already used';
   }
 
