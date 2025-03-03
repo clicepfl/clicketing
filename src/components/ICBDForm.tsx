@@ -371,6 +371,12 @@ function Form({
       <section>
         <h2>CV Correction</h2>
 
+        <p>
+          Your slot for the CV correction will only be assigned to you when you
+          come to pay your deposit of 10CHF at the CLIC Office in INM 177, if
+          there are still slots available.
+        </p>
+
         <CheckboxCard
           checkboxState={{
             value: s.cvCorrection,
@@ -390,8 +396,8 @@ function Form({
               },
             }}
           >
-            I attest I will be present at the presentation on 7th from 12:15 to
-            14:00
+            I attest I will assist the remote presentation on the Friday 7th
+            from 12:15 to 14:00
           </CheckboxCard>
         ) : (
           <></>
@@ -402,9 +408,9 @@ function Form({
         <h2>Interviews</h2>
 
         <p>
-          Your slot for these activities will only be assigned to you when you
-          come to pay your deposit of 10CHF at the CLIC Office in INM 177, if
-          there are still slots available.
+          Your slot for any interview will only be assigned to you when you come
+          to pay your deposit of 10CHF at the CLIC Office in INM 177, if there
+          are still slots available.
         </p>
 
         {interviews.map((interview, i) => (
