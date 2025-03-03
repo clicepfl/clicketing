@@ -56,9 +56,18 @@ export default async function Home({ params }) {
   let interviews = activities.filter(
     (a) => a !== null && a.type == 'interview'
   );
-  let cvcorrections = activities.filter(
+  let cvCorrections = activities.filter(
     (a) => a !== null && a.type == 'cv_correction'
   );
+
+  // Assert only one cv_correction activity
+  if (cvCorrections.length != 1) {
+    throw new Error(
+      `Exactly one CV Correction activity expected, {cvCorrections.length} found`
+    );
+  }
+
+  let cvCorrection = cvCorrections[0];
 
   return (
     <ICBDForm
@@ -69,7 +78,7 @@ export default async function Home({ params }) {
       talks={talks}
       discussions={discussions}
       interviews={interviews}
-      cvcorrections={cvcorrections}
+      cvCorrection={cvCorrection}
     />
   );
 }

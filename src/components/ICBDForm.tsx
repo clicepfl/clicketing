@@ -146,7 +146,7 @@ export default function ICBDForm({
   talks,
   discussions,
   interviews,
-  cvcorrections,
+  cvCorrection,
 }: {
   eventId: string;
   date: string;
@@ -155,7 +155,7 @@ export default function ICBDForm({
   talks: { title: string; time: string; id: number }[];
   discussions: { title: string; time: string; id: number }[];
   interviews: { title: string; time: string; id: number }[];
-  cvcorrections: { title: string; time: string; id: number }[];
+  cvCorrection: { title: string; time: string; id: number };
 }) {
   // Info items
   const infoItems: [ElementType, ReactNode][] = [
@@ -177,6 +177,7 @@ export default function ICBDForm({
     selectedDiscussions: discussions.map(() => false),
     selectedInterviews: interviews.map(() => false),
     cvCorrection: false,
+    cvCorrectionConfirmed: false,
     errorMessage: '',
   };
 
@@ -214,7 +215,7 @@ export default function ICBDForm({
                 talks={talks}
                 discussions={discussions}
                 interviews={interviews}
-                cvcorrections={cvcorrections}
+                cvCorrection={cvCorrection}
                 eventId={eventId}
               />
             );
@@ -245,7 +246,7 @@ function Form({
   talks,
   discussions,
   interviews,
-  cvcorrections,
+  cvCorrection,
   eventId,
 }: {
   s: State;
@@ -253,7 +254,7 @@ function Form({
   talks: { title: string; time: string; id: number }[];
   discussions: { title: string; time: string; id: number }[];
   interviews: { title: string; time: string; id: number }[];
-  cvcorrections: { title: string; time: string; id: number }[];
+  cvCorrection: { title: string; time: string; id: number };
   eventId: string;
 }) {
   function changeSelection(
@@ -452,12 +453,8 @@ function Form({
                 email: s.email,
                 section: s.section,
                 year: s.year,
-                activitiesIDs: [
-                  ...talksIds,
-                  ...discussionsIds,
-                  ...(s.cvCorrection ? cvcorrections : []),
-                ],
-                noSlotActivitiesIDs: interviewsIds,
+                activitiesIDs: [...talksIds, ...discussionsIds],
+                noSlotActivitiesIDs: [...interviewsIds, cvCorrection.id],
               });
               setField('formState', FormStates.Confirmation);
             } catch (error) {
