@@ -1,4 +1,3 @@
-import { QrcodeSuccessCallback } from 'html5-qrcode';
 import { useEffect, useState } from 'react';
 import QrCodeScanner from './QrCodeScanner';
 import TextInputCard from './TextInputCard';
@@ -40,19 +39,14 @@ export default function QRScannerSelector({
     }
   }, [selected]);
 
-  const onScanSuccess: QrcodeSuccessCallback = async (decodedText) => {
-    if (
-      selected !== decodedText &&
-      items.some((i) => i.value === decodedText)
-    ) {
-      setSelected(decodedText);
-    }
-  };
-
   return (
     <div className="checkin">
       <QrCodeScanner
-        qrCodeSuccessCallback={onScanSuccess}
+        qrCodeSuccessCallback={(decodedText) =>
+          setSelected((selected) =>
+            items.some((i) => i.value === decodedText) ? decodedText : selected
+          )
+        }
         fps={10}
         qrbox={{ width: 250, height: 250 }}
       />
