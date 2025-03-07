@@ -8,6 +8,8 @@ export type ParticipantInfos = {
   email: string;
   checkedIn: boolean;
   depositMade: boolean;
+  depositReturned: boolean;
+  depositCanBeReturned;
 };
 
 export type DialogValues =

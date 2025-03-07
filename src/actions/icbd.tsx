@@ -1,6 +1,7 @@
 'use server';
 
 import { directus } from '@/directus';
+import { Registration } from '@/types/aliases';
 import { createItems, readItem, readItems, updateItem } from '@directus/sdk';
 
 export async function emailAlreadyUsed(
@@ -116,8 +117,10 @@ export async function getRegistration(id: string) {
   }
 }
 
-export async function checkinRegistration(registrationId: string) {
-  await directus().request(
+export async function checkInRegistration(
+  registrationId: string
+): Promise<Registration> {
+  return await directus().request(
     updateItem('registrations', registrationId, { checked_in: true })
   );
 }
