@@ -1,3 +1,6 @@
+import Card from '@/components/Card';
+import ClipboardCheckIcon from '@/components/icons/ClipboardCheckIcon';
+import TicketIcon from '@/components/icons/TicketIcon';
 import { directus } from '@/directus';
 import { Event } from '@/types/aliases';
 import { readItems } from '@directus/sdk';
@@ -6,10 +9,14 @@ import Link from 'next/link';
 
 export default async function AdminPanel({ params }) {
   return (
-    <div>
+    <div className="form">
       <h1>Admin panel</h1>
-      <Link href={`${params.admin}/checkin`}>Check-in</Link>
-      <Link href={`${params.admin}/attendance`}>Attendance</Link>
+      <Link href={`${params.admin}/checkin`}>
+        <Card Icon={TicketIcon}>Check-in</Card>
+      </Link>
+      <Link href={`${params.admin}/attendance`}>
+        <Card Icon={ClipboardCheckIcon}>Attendance</Card>
+      </Link>
     </div>
   );
 }

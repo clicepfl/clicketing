@@ -2,6 +2,7 @@ import Card from '@/components/Card';
 import TicketIcon from '@/components/icons/TicketIcon';
 import { directus } from '@/directus';
 import { readItems } from '@directus/sdk';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,11 +22,11 @@ export default async function Home({ params }) {
       {events
         .filter((event) => event.opened)
         .map((event) => (
-          <a href={`/clicketing/${event.slug}`}>
+          <Link href={`/${event.slug}`}>
             <Card key={event.id} Icon={TicketIcon}>
               {event.name}
             </Card>
-          </a>
+          </Link>
         ))}
     </div>
   );
