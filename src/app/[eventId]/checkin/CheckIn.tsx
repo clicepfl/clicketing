@@ -3,7 +3,7 @@
 import { checkInRegistration, getRegistration } from '@/actions/icbd';
 import Card from '@/components/Card';
 import { ParticipantInfos } from '@/components/Dialog';
-import QRScannerSelector from '@/components/ListQRScanner';
+import QRScannerSelector from '@/components/QRScannerSelector';
 import SplitText from '@/components/SplitText';
 import CheckCircleIcon from '@/components/icons/CheckCircleIcon';
 import ErrorIcon from '@/components/icons/ErrorIcon';

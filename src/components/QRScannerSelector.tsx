@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import QrCodeScanner from './QrCodeScanner';
+import QrCodeScanner from './QRScanner';
 import TextInputCard from './TextInputCard';
 import UserIcon from './icons/UserIcon';
 

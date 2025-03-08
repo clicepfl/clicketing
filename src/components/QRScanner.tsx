@@ -27,13 +27,13 @@ const createConfig = (props: Html5QrcodeCameraScanConfig) => {
   return config;
 };
 
-const Html5QrcodePlugin = (
+export default function QrCodeScanner(
   props: Html5QrcodeCameraScanConfig & {
     verbose?: boolean;
     qrCodeSuccessCallback?: QrcodeSuccessCallback;
     qrCodeErrorCallback?: QrcodeErrorCallback;
   }
-) => {
+) {
   useEffect(() => {
     // when component mounts
     const config = createConfig(props);
@@ -61,6 +61,4 @@ const Html5QrcodePlugin = (
   }, []);
 
   return <div className="qr-code" id={qrcodeRegionId} />;
-};
-
-export default Html5QrcodePlugin;
+}
