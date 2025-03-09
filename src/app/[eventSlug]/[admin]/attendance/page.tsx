@@ -7,17 +7,20 @@ export default async function Page({ params }) {
 
   const activities = await directus().request(
     readItems('icbd_activities', {
-      fields: ['*'],
+      // @ts-expect-error
+      fields: ['*', { translations: ['*'] }],
       filter: { type: { _in: ['interview', 'cv_correction'] } },
     })
   );
 
   const registrations = await directus().request(
     readItems('icbd_activities_registrations', {
-      fields: ['*'],
+      fields: ['*', { registration: ['*'] }],
       filter: { icbd_activity: { _in: activities.map((a) => a.id) } },
     })
   );
+
+  console.log(registrations);
 
   return <Attendance activities={activities} registrations={registrations} />;
 }

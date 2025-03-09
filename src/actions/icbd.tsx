@@ -1,7 +1,7 @@
 'use server';
 
 import { directus } from '@/directus';
-import { Registration } from '@/types/aliases';
+import { ICBDActivityRegistration, Registration } from '@/types/aliases';
 import { createItems, readItem, readItems, updateItem } from '@directus/sdk';
 
 export async function emailAlreadyUsed(
@@ -122,5 +122,15 @@ export async function checkInRegistration(
 ): Promise<Registration> {
   return await directus().request(
     updateItem('registrations', registrationId, { checked_in: true })
+  );
+}
+
+export async function markAttendance(
+  icbdRegistrationId: string
+): Promise<ICBDActivityRegistration> {
+  return await directus().request(
+    updateItem('icbd_activities_registrations', icbdRegistrationId, {
+      attended: true,
+    })
   );
 }
