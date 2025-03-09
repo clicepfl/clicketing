@@ -3,6 +3,8 @@
 import { markAttendance } from '@/actions/icbd';
 import Card from '@/components/Card';
 import DropdownCard from '@/components/DropdownCard';
+import ClockIcon from '@/components/icons/ClockIcon';
+import TeamIcon from '@/components/icons/TeamIcon';
 import QRScannerSelector from '@/components/QRScannerSelector';
 import { getTranslation } from '@/locales';
 import {
@@ -33,9 +35,10 @@ export default function Attendance({
   console.log(registrations);
 
   return (
-    <div>
+    <div className="form">
+      <h1>Attendance</h1>
       <DropdownCard
-        Icon={'symbol'}
+        Icon={TeamIcon}
         placeholder={'Select an activity'}
         options={activities.map((a) => ({
           value: a.id.toString(),
@@ -49,7 +52,7 @@ export default function Attendance({
       {activity !== null ? (
         <>
           <DropdownCard
-            Icon={'symbol'}
+            Icon={ClockIcon}
             placeholder={'Select a timeslot'}
             options={activities
               .find((a) => a.id.toString() == activity)
