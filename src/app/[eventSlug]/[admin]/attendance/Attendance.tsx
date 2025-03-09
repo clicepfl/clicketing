@@ -54,12 +54,14 @@ export default function Attendance({
           <DropdownCard
             Icon={ClockIcon}
             placeholder={'Select a timeslot'}
-            options={activities
-              .find((a) => a.id.toString() == activity)
-              .timeslots.map((a) => ({
-                value: a.start_time,
-                display: a.start_time,
-              }))}
+            options={(
+              activities.find((a) => a.id.toString() == activity).timeslots as {
+                start_time: string;
+              }[]
+            ).map((a) => ({
+              value: a.start_time,
+              display: a.start_time,
+            }))}
             dropdownState={{
               value: timeslot,
               setValue: setSelectedTimeslot,

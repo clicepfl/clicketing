@@ -20,6 +20,13 @@ export default function DropdownCard({
 }) {
   const [stayOpen, setStayOpen] = useState(false);
 
+  let option =
+    dropdownState.value !== null
+      ? options.find((o) => o.value === dropdownState.value)
+      : null;
+
+  let display = option ? option.display : placeholder;
+
   return (
     <div className={`dropdown ${stayOpen ? 'open' : ''}`}>
       <OutsideAlerter handleClickOutside={() => setStayOpen(false)}>
@@ -29,9 +36,7 @@ export default function DropdownCard({
           onClick={() => setStayOpen(!stayOpen)}
         >
           <Split>
-            {dropdownState.value !== null
-              ? options.find((o) => o.value === dropdownState.value).display
-              : placeholder}
+            {display}
             <ChevronIcon className="icon" />
           </Split>
         </Card>

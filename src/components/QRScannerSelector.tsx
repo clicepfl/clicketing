@@ -19,18 +19,20 @@ export default function QRScannerSelector({
   dialog(value: string, close: () => void);
 }) {
   const [selected, setSelected] = useState(null as string | null);
-  const [filter, setFilter] = useState(null as string | null);
+  const [filter, setFilter] = useState('');
   const [filteredEntries, setFilteredEntries] = useState(
     [] as QRScannerSelectorEntry[]
   );
 
   useEffect(() => {
-    if (filter === null || filter.length < 5) {
+    if (filter.length < 1) {
       setFilteredEntries([]);
       return;
     }
 
-    setFilteredEntries(items.filter((i) => i.searchValue.includes(filter)));
+    setFilteredEntries(
+      items.filter((i) => i.searchValue.includes(filter)).slice(0, 5)
+    );
   }, [filter, items]);
 
   useEffect(() => {

@@ -30,7 +30,7 @@ const createConfig = (props: Html5QrcodeCameraScanConfig) => {
 export default function QrCodeScanner(
   props: Html5QrcodeCameraScanConfig & {
     verbose?: boolean;
-    qrCodeSuccessCallback?: QrcodeSuccessCallback;
+    qrCodeSuccessCallback: QrcodeSuccessCallback;
     qrCodeErrorCallback?: QrcodeErrorCallback;
   }
 ) {
@@ -38,7 +38,7 @@ export default function QrCodeScanner(
     // when component mounts
     const config = createConfig(props);
     const verbose = props.verbose === true;
-    // Suceess callback is required.
+    // Success callback is required.
     if (!props.qrCodeSuccessCallback) {
       throw 'qrCodeSuccessCallback is required callback.';
     }
