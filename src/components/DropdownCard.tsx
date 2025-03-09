@@ -12,7 +12,7 @@ export default function DropdownCard({
 }: {
   Icon: ElementType;
   placeholder: string;
-  options: string[];
+  options: { value: string; display: string }[];
   dropdownState: {
     value: string | null;
     setValue: (value: string) => void;
@@ -29,22 +29,24 @@ export default function DropdownCard({
           onClick={() => setStayOpen(!stayOpen)}
         >
           <Split>
-            {dropdownState.value || placeholder}
+            {dropdownState.value !== null
+              ? options.find((o) => o.value === dropdownState.value).display
+              : placeholder}
             <ChevronIcon className="icon" />
           </Split>
         </Card>
       </OutsideAlerter>
       <div className="dropdown-content">
-        {options.map((str) => (
+        {options.map((e) => (
           <div
             className="dropdown-item"
-            key={str}
+            key={e.value}
             onClick={() => {
-              dropdownState.setValue(str);
+              dropdownState.setValue(e.value);
               setStayOpen(false);
             }}
           >
-            {str}
+            {e.display}
           </div>
         ))}
       </div>
