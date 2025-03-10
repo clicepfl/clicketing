@@ -88,3 +88,12 @@ button {
     cursor: pointer;
   }
 }
+
+.vertical-stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.clickable {
+  cursor: pointer;
+}

@@ -4,8 +4,11 @@ import { markAttendance } from '@/actions/icbd';
 import Card from '@/components/Card';
 import DropdownCard from '@/components/DropdownCard';
 import ClockIcon from '@/components/icons/ClockIcon';
+import CheckMarkIcon from '@/components/icons/CheckMarkIcon';
+import QuestionMarkIcon from '@/components/icons/QuestionMarkIcon';
 import TeamIcon from '@/components/icons/TeamIcon';
 import QRScannerSelector from '@/components/QRScannerSelector';
+import Split from '@/components/Split';
 import { getTranslation } from '@/locales';
 import {
   ICBDActivity,
@@ -14,11 +17,29 @@ import {
 } from '@/types/aliases';
 import { useState } from 'react';
 
-function AttendanceDisplay(props: { email: string; attended: boolean }) {
+
+function AttendanceDisplay(props: {
+  email: string;
+  first_name?: string;
+  last_name?: string;
+  attended: boolean;
+}) {
   return (
-    <p>
-      {props.email}: {JSON.stringify(props.attended)}
-    </p>
+    <div className="clickable">
+      <Split>
+        <div className="vertical-stack">
+          <b>
+            {props.first_name} {props.last_name}
+          </b>
+          <span>{props.email}</span>
+        </div>
+        {props.attended ? (
+          <CheckMarkIcon className="icon" />
+        ) : (
+          <QuestionMarkIcon className="icon" />
+        )}
+      </Split>
+    </div>
   );
 }
 
@@ -79,6 +100,8 @@ export default function Attendance({
                   component: (
                     <AttendanceDisplay
                       email={(r.registration as Registration).email}
+                      first_name={(r.registration as Registration).first_name}
+                      last_name={(r.registration as Registration).family_name}
                       attended={r.attended}
                     />
                   ),
@@ -94,6 +117,10 @@ export default function Attendance({
                   <>
                     <AttendanceDisplay
                       email={(r.registration as Registration).email}
+
+                      first_name={(r.registration as Registration).first_name}
+                      last_name={(r.registration as Registration).family_name}
+
                       attended={r.attended}
                     />
 

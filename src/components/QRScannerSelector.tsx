@@ -42,7 +42,7 @@ export default function QRScannerSelector({
   }, [selected]);
 
   return (
-    <div className="checkin">
+    <div className="qr-scanner-selector">
       <QrCodeScanner
         qrCodeSuccessCallback={(decodedText) =>
           setSelected((selected) =>
