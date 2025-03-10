@@ -1,23 +1,33 @@
 import ICBDForm from '@/components/ICBDForm';
 import { directus } from '@/directus';
 import { getTranslation } from '@/locales';
-import { readItem, readItems } from '@directus/sdk';
-import { Metadata } from 'next';
+import { Event } from '@/types/aliases';
+import { readItems } from '@directus/sdk';
 import { notFound } from 'next/navigation';
 
 export default async function Home({ params }) {
-  let eventId = params.eventId;
+  let eventSlug = params.eventSlug;
 
-  let events = await directus().request(
-    readItems('events', {
-      //@ts-expect-error
-      fields: ['*', { translations: ['*'] }],
-    })
-  );
-
-  let event = events
-    .filter((event) => event.opened)
-    .find((e) => e.id == eventId);
+  let event: Event = (
+    await directus().request(
+      readItems('events', {
+        fields: [
+          // Explicit list to avoid leaking the admin secret
+          'id',
+          'from',
+          'to',
+          'name',
+          'slug',
+          'type',
+          //@ts-expect-error
+          { translations: ['*'] },
+        ],
+        filter: {
+          slug: eventSlug,
+        },
+      })
+    )
+  )[0];
 
   if (!event) {
     return notFound();
@@ -71,7 +81,7 @@ export default async function Home({ params }) {
 
   return (
     <ICBDForm
-      eventId={eventId}
+      eventId={event.id.toString()}
       date="11/03/2025"
       location="BC Building"
       deposit="10CHF Deposit"

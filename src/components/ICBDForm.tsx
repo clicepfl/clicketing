@@ -298,7 +298,10 @@ function Form({
         <DropdownCard
           Icon={TeamIcon}
           placeholder="Section"
-          options={Object.values(Sections)}
+          options={Object.values(Sections).map((v) => ({
+            display: v,
+            value: v,
+          }))}
           dropdownState={{
             value: s.section,
             setValue: (value) => setField('section', value),
@@ -308,7 +311,10 @@ function Form({
         <DropdownCard
           Icon={TeamIcon}
           placeholder="Year"
-          options={Object.values(Years)}
+          options={Object.values(Years).map((v) => ({
+            display: v,
+            value: v,
+          }))}
           dropdownState={{
             value: s.year,
             setValue: (value) => setField('year', value),

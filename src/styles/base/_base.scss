@@ -25,12 +25,7 @@ body {
 }
 
 main {
-  margin-top: 8rem;
-  margin-bottom: 3rem;
-
-  @media (max-width: 40rem) {
-    margin-top: 4rem;
-  }
+  margin: 0;
 }
 
 section {

@@ -17,6 +17,7 @@
     "@types/nodemailer": "^6.4.15",
     "@types/qrcode": "^1.5.5",
     "formik": "^2.4.6",
+    "html5-qrcode": "^2.3.8",
     "jsonwebtoken": "^9.0.2",
     "next": "^14.1.1",
     "next-i18n-router": "^5.5.1",

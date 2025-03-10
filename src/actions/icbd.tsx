@@ -1,6 +1,7 @@
 'use server';
 
 import { directus } from '@/directus';
+import { ICBDActivityRegistration, Registration } from '@/types/aliases';
 import { createItems, readItem, readItems, updateItem } from '@directus/sdk';
 
 export async function emailAlreadyUsed(
@@ -27,9 +28,7 @@ export async function sendRegistration({
   eventId,
 }) {
   const event = await directus().request(
-    readItem('events', eventId, {
-      fields: ['*'],
-    })
+    readItem('events', eventId, { fields: ['*'] })
   );
 
   const eventRegistration = {
@@ -76,11 +75,7 @@ export async function sendICBDActivitiesRegistrations({
   const noSlotActivitiesRegistrations = activities
     .filter((a) => noSlotActivitiesIDs.includes(a.id))
     .map((a) => {
-      return {
-        icbd_activity: a,
-        registration,
-        attended: false,
-      };
+      return { icbd_activity: a, registration, attended: false };
     });
 
   const activityRegistrations = activities
@@ -105,5 +100,37 @@ export async function sendICBDActivitiesRegistrations({
 export async function completeRegistration(id: string) {
   await directus().request(
     updateItem('registrations', id, { registration_complete: true })
+  );
+}
+
+export async function getRegistrations(eventId: string) {
+  return await directus().request(
+    readItems('registrations', { filter: { event: { _eq: eventId } } })
+  );
+}
+
+export async function getRegistration(id: string) {
+  try {
+    return await directus().request(readItem('registrations', id));
+  } catch (e) {
+    return null;
+  }
+}
+
+export async function checkInRegistration(
+  registrationId: string
+): Promise<Registration> {
+  return await directus().request(
+    updateItem('registrations', registrationId, { checked_in: true })
+  );
+}
+
+export async function markAttendance(
+  icbdRegistrationId: string
+): Promise<ICBDActivityRegistration> {
+  return await directus().request(
+    updateItem('icbd_activities_registrations', icbdRegistrationId, {
+      attended: true,
+    })
   );
 }
