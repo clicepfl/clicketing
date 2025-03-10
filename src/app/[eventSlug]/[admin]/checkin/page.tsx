@@ -4,7 +4,7 @@ import { Registration } from '@/types/aliases';
 import { readItems } from '@directus/sdk';
 import { CheckIn } from './CheckIn';
 
-export function mapRegistration(r: Registration): ParticipantInfos {
+function mapRegistration(r: Registration): ParticipantInfos {
   return {
     uid: r.id,
     firstName: r.first_name,
