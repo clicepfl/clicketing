@@ -74,7 +74,7 @@ export default function Attendance({
                   (r) => r.icbd_activity == activity && r.start === timeslot
                 )
                 .map((r) => ({
-                  value: r.id.toString(),
+                  value: (r.registration as Registration).id,
                   searchValue: (r.registration as Registration).email,
                   component: (
                     <AttendanceDisplay
@@ -85,7 +85,9 @@ export default function Attendance({
                 }))}
               onSelect={() => {}}
               dialog={function (value: string, close: () => void) {
-                const r = registrations.find((r) => r.id.toString() == value);
+                const r = registrations.find(
+                  (r) => (r.registration as Registration).id.toString() == value
+                );
                 console.log(r);
 
                 return (
