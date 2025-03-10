@@ -2,7 +2,8 @@ import ICBDForm from '@/components/ICBDForm';
 import { directus } from '@/directus';
 import { getTranslation } from '@/locales';
 import { Event } from '@/types/aliases';
-import { readItems } from '@directus/sdk';
+import { readItem, readItems } from '@directus/sdk';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 export default async function Home({ params }) {

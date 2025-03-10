@@ -31,6 +31,6 @@ export default async function AdminLayout({
   if (params.admin !== event.admin_secret) {
     return <p>Forbidden</p>;
   } else {
-    return children;
+    return <>children;</>;
   }
 }
