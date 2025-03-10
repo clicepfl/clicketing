@@ -10,8 +10,17 @@ export const dynamic = 'force-dynamic';
 export default async function Home({ params }) {
   let events = await directus().request(
     readItems('events', {
-      //@ts-expect-error
-      fields: ['*', { translations: ['*'] }],
+      fields: [
+        // Explicit list to avoid leaking the admin secret
+        'id',
+        'from',
+        'to',
+        'name',
+        'slug',
+        'type',
+        //@ts-expect-error
+        { translations: ['*'] },
+      ],
     })
   );
 
