@@ -3,12 +3,12 @@
 import { markAttendance } from '@/actions/icbd';
 import Card from '@/components/Card';
 import DropdownCard from '@/components/DropdownCard';
-import ClockIcon from '@/components/icons/ClockIcon';
-import CheckMarkIcon from '@/components/icons/CheckMarkIcon';
-import QuestionMarkIcon from '@/components/icons/QuestionMarkIcon';
-import TeamIcon from '@/components/icons/TeamIcon';
 import QRScannerSelector from '@/components/QRScannerSelector';
 import Split from '@/components/Split';
+import CheckMarkIcon from '@/components/icons/CheckMarkIcon';
+import ClockIcon from '@/components/icons/ClockIcon';
+import QuestionMarkIcon from '@/components/icons/QuestionMarkIcon';
+import TeamIcon from '@/components/icons/TeamIcon';
 import { getTranslation } from '@/locales';
 import {
   ICBDActivity,
@@ -16,7 +16,6 @@ import {
   Registration,
 } from '@/types/aliases';
 import { useState } from 'react';
-
 
 function AttendanceDisplay(props: {
   email: string;
@@ -53,7 +52,6 @@ export default function Attendance({
   const [activity, setSelectedActivity] = useState(null as string | null);
   const [timeslot, setSelectedTimeslot] = useState(null as string | null);
   const [registrations, setRegistrations] = useState(initialRegistrations);
-  console.log(registrations);
 
   return (
     <div className="form">
@@ -109,18 +107,17 @@ export default function Attendance({
               onSelect={() => {}}
               dialog={function (value: string, close: () => void) {
                 const r = registrations.find(
-                  (r) => (r.registration as Registration).id.toString() == value
+                  (r) =>
+                    (r.registration as Registration).id.toString() == value &&
+                    r.icbd_activity == activity
                 );
-                console.log(r);
 
                 return (
                   <>
                     <AttendanceDisplay
                       email={(r.registration as Registration).email}
-
                       first_name={(r.registration as Registration).first_name}
                       last_name={(r.registration as Registration).family_name}
-
                       attended={r.attended}
                     />
 

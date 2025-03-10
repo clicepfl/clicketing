@@ -41,7 +41,6 @@ export function CheckIn({
           value: p.uid,
         }))}
         onSelect={(uid) => {
-          console.log(uid);
           getRegistration(uid).then((newRes) =>
             setParticipants((value) => [
               ...value.filter((p) => p.uid != uid),

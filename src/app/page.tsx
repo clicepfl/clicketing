@@ -25,8 +25,6 @@ export default async function Home({ params }) {
     })
   );
 
-  console.log(events);
-
   return (
     <div className="form">
       <h1>Open Event Forms</h1>

@@ -20,7 +20,5 @@ export default async function Page({ params }) {
     })
   );
 
-  console.log(registrations);
-
   return <Attendance activities={activities} registrations={registrations} />;
 }

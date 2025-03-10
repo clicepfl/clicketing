@@ -475,7 +475,6 @@ function Form({
             } catch (error) {
               setField('errorMessage', error.message);
               setField('formState', FormStates.Error);
-              console.log(error);
             }
           }
         }}
