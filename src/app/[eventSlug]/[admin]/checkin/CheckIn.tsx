@@ -1,6 +1,10 @@
 'use client';
 
-import { checkInRegistration, getRegistration } from '@/actions/icbd';
+import {
+  checkInRegistration,
+  getRegistration,
+  returnDeposit,
+} from '@/actions/icbd';
 import Card from '@/components/Card';
 import { ParticipantInfos } from '@/components/Dialog';
 import QRScannerSelector from '@/components/QRScannerSelector';
@@ -79,7 +83,17 @@ export function CheckIn({
                   Deposit already returned
                 </Card>
               ) : participant.depositCanBeReturned ? (
-                <button>Return deposit</button>
+                <button
+                  onClick={async () => {
+                    const newRes = await returnDeposit(participant.uid);
+                    setParticipants((value) => [
+                      ...value.filter((p) => p.uid != participant.uid),
+                      mapRegistration(newRes),
+                    ]);
+                  }}
+                >
+                  Return deposit
+                </button>
               ) : (
                 <Card>Deposit cannot be returned</Card>
               )}

@@ -125,6 +125,14 @@ export async function checkInRegistration(
   );
 }
 
+export async function returnDeposit(
+  registrationId: string
+): Promise<Registration> {
+  return await directus().request(
+    updateItem('registrations', registrationId, { retreived_deposit: true })
+  );
+}
+
 export async function markAttendance(
   icbdRegistrationId: string
 ): Promise<ICBDActivityRegistration> {
