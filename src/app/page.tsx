@@ -18,6 +18,7 @@ export default async function Home({ params }) {
         'name',
         'slug',
         'type',
+        'opened',
         //@ts-expect-error
         { translations: ['*'] },
       ],

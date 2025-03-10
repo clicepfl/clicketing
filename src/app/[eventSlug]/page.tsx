@@ -2,7 +2,7 @@ import ICBDForm from '@/components/ICBDForm';
 import { directus } from '@/directus';
 import { getTranslation } from '@/locales';
 import { Event } from '@/types/aliases';
-import { readItem, readItems } from '@directus/sdk';
+import { readItems } from '@directus/sdk';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -96,11 +96,12 @@ export default async function Home({ params }) {
 
 export async function generateMetadata({ params }): Promise<Metadata> {
   const event = await directus().request(
-    readItem('events', params.eventId, {
+    readItems('events', {
       //@ts-expect-error
       fields: ['*', { translations: ['*'] }],
+      filter: { slug: params.eventSlug },
     })
-  );
+  )[0];
 
   return {
     title: `${event.name} - Registration`,
