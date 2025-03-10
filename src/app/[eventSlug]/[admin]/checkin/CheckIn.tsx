@@ -9,8 +9,21 @@ import CheckCircleIcon from '@/components/icons/CheckCircleIcon';
 import ErrorIcon from '@/components/icons/ErrorIcon';
 import PriceIcon from '@/components/icons/PriceIcon';
 import TicketIcon from '@/components/icons/TicketIcon';
+import { Registration } from '@/types/aliases';
 import { useState } from 'react';
-import { mapRegistration } from './page';
+
+export function mapRegistration(r: Registration): ParticipantInfos {
+  return {
+    uid: r.id,
+    firstName: r.first_name,
+    lastName: r.family_name,
+    email: r.email,
+    checkedIn: r.checked_in,
+    depositMade: r.payment != null,
+    depositCanBeReturned: r.can_retreive_deposit,
+    depositReturned: r.retreived_deposit,
+  };
+}
 
 export function CheckIn({
   participants: initialParticipants,
