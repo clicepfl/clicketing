@@ -10,6 +10,7 @@ export default async function Page({ params }) {
       // @ts-expect-error
       fields: ['*', { translations: ['*'] }],
       filter: { type: { _in: ['interview', 'cv_correction'] } },
+      limit: -1,
     })
   );
 
@@ -17,6 +18,7 @@ export default async function Page({ params }) {
     readItems('icbd_activities_registrations', {
       fields: ['*', { registration: ['*'] }],
       filter: { icbd_activity: { _in: activities.map((a) => a.id) } },
+      limit: -1,
     })
   );
 

@@ -21,7 +21,10 @@ export default async function Page(props) {
   const eventId = props.eventId;
 
   const registrations = await directus().request(
-    readItems('registrations', { filter: { event: { _eq: eventId } } })
+    readItems('registrations', {
+      filter: { event: { _eq: eventId } },
+      limit: -1,
+    })
   );
 
   const participants: ParticipantInfos[] = registrations.map((v) =>
