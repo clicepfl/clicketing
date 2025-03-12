@@ -95,12 +95,14 @@ export default async function Home({ params }) {
 }
 
 export async function generateMetadata({ params }): Promise<Metadata> {
-  const event = await directus().request(
-    readItems('events', {
-      //@ts-expect-error
-      fields: ['*', { translations: ['*'] }],
-      filter: { slug: params.eventSlug },
-    })
+  const event = (
+    await directus().request(
+      readItems('events', {
+        //@ts-expect-error
+        fields: ['*', { translations: ['*'] }],
+        filter: { slug: params.eventSlug },
+      })
+    )
   )[0];
 
   return {
