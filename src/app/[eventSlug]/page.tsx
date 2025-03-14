@@ -20,6 +20,7 @@ export default async function Home({ params }) {
           'name',
           'slug',
           'type',
+          'meals',
           //@ts-expect-error
           { translations: ['*'] },
         ],

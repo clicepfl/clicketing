@@ -27,7 +27,13 @@ type State = {
   year: string;
   consent: boolean;
   errorMessage: string;
+  mealId: null | number;
 };
+
+export interface Meal {
+  name: string;
+  description: string;
+}
 
 enum FormStates {
   Form,
@@ -59,6 +65,7 @@ async function register({
   email,
   section,
   year,
+  meal,
 }) {
   let registrationId = await sendRegistration({
     first_name,
@@ -67,6 +74,7 @@ async function register({
     section,
     year,
     eventId,
+    meal,
   });
 }
 
@@ -98,6 +106,10 @@ async function validateValues(s: State, eventId: string) {
     return 'Year is required';
   }
 
+  if (s.mealId === null) {
+    return 'Menu is required';
+  }
+
   if (!s.consent) {
     return 'Consent is required';
   }
@@ -110,11 +122,13 @@ export default function FacultyDinnerForm({
   date,
   location,
   deposit,
+  meals,
 }: {
   eventId: string;
   date: string;
   location: string;
   deposit: string;
+  meals: Meal[];
 }) {
   // Info items
   const infoItems: [ElementType, ReactNode][] = [
@@ -124,7 +138,7 @@ export default function FacultyDinnerForm({
   ];
 
   // Define initial state
-  const initialState = {
+  const initialState: State = {
     formState: FormStates.Form,
     firstName: '',
     lastName: '',
@@ -133,6 +147,7 @@ export default function FacultyDinnerForm({
     year: '',
     consent: false,
     errorMessage: '',
+    mealId: null,
   };
 
   // Define reducer
@@ -162,18 +177,18 @@ export default function FacultyDinnerForm({
       {(() => {
         switch (state.formState) {
           case FormStates.Form:
-            return <Form s={state} setField={setField} eventId={eventId} />;
+            return (
+              <Form
+                s={state}
+                setField={setField}
+                eventId={eventId}
+                meals={meals}
+              />
+            );
           case FormStates.Loading:
             return <Loading></Loading>;
           case FormStates.Confirmation:
-            return (
-              <Confirmation
-                interviewSelected={
-                  state.cvCorrection ||
-                  state.selectedInterviews.some((selected) => selected)
-                }
-              />
-            );
+            return <Confirmation />;
           case FormStates.Error:
             return <ErrorDisplay message={state.errorMessage}></ErrorDisplay>;
           default:
@@ -188,10 +203,12 @@ function Form({
   s,
   setField,
   eventId,
+  meals,
 }: {
   s: State;
   setField: (field: string, value) => void;
   eventId: string;
+  meals: Meal[];
 }) {
   function changeSelection(
     index: number,
@@ -260,13 +277,13 @@ function Form({
         <DropdownCard
           Icon={MenuIcon}
           placeholder="Menu"
-          options={Object.values(Years).map((v) => ({
-            display: v,
-            value: v,
+          options={meals.map((meal, index) => ({
+            display: meal.name,
+            value: index,
           }))}
           dropdownState={{
-            value: s.year,
-            setValue: (value) => setField('menu', value),
+            value: s.mealId,
+            setValue: (value) => setField('mealId', value),
           }}
         />
 
@@ -298,6 +315,7 @@ function Form({
                 email: s.email,
                 section: s.section,
                 year: s.year,
+                meal: s.mealId,
               });
               setField('formState', FormStates.Confirmation);
             } catch (error) {
@@ -319,7 +337,7 @@ function Loading({}) {
   return <p>Loading...</p>;
 }
 
-function Confirmation({ interviewSelected }: { interviewSelected: boolean }) {
+function Confirmation() {
   return (
     <>
       <Card Icon={CheckCircleIcon}>
