@@ -1,8 +1,8 @@
 'use client';
 
+import { emailAlreadyUsed } from '@/actions/common';
 import {
   completeRegistration,
-  emailAlreadyUsed,
   sendICBDActivitiesRegistrations,
   sendRegistration,
 } from '@/actions/icbd';

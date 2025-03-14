@@ -1,5 +1,8 @@
+'use server';
+
 import { directus } from '@/directus';
-import { readItem, readItems } from '@directus/sdk';
+import { Registration } from '@/types/aliases';
+import { readItem, readItems, updateItem } from '@directus/sdk';
 
 export async function emailAlreadyUsed(
   email: string,
@@ -26,6 +29,28 @@ export async function getRegistration(id: string) {
   try {
     return await directus().request(readItem('registrations', id));
   } catch (e) {
+    console.log(e);
     return null;
   }
+}
+
+export async function checkInRegistration(
+  registrationId: string
+): Promise<Registration> {
+  return await directus().request(
+    updateItem('registrations', registrationId, { checked_in: true })
+  );
+}
+
+export async function markPayment(
+  registrationId: string,
+  payment: string,
+  sendConfirmationMail = true
+): Promise<Registration> {
+  return await directus().request(
+    updateItem('registrations', registrationId, {
+      payment,
+      confirmation_email_sent: !sendConfirmationMail,
+    })
+  );
 }

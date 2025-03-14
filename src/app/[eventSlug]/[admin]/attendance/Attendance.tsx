@@ -105,7 +105,7 @@ export default function Attendance({
                   ),
                 }))}
               onSelect={() => {}}
-              dialog={function (value: string, close: () => void) {
+              dialog={(value, close) => {
                 const r = registrations.find(
                   (r) =>
                     (r.registration as Registration).id.toString() == value &&

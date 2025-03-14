@@ -88,14 +88,6 @@ export async function completeRegistration(id: string) {
   );
 }
 
-export async function checkInRegistration(
-  registrationId: string
-): Promise<Registration> {
-  return await directus().request(
-    updateItem('registrations', registrationId, { checked_in: true })
-  );
-}
-
 export async function returnDeposit(
   registrationId: string
 ): Promise<Registration> {
