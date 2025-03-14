@@ -1,9 +1,10 @@
-import FacultyDinnerForm from '@/components/FacultyDinnerForm';
 import { directus } from '@/directus';
 import { Event } from '@/types/aliases';
 import { readItems } from '@directus/sdk';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import FacultyDinner from './faculty-dinner';
+import ICBD from './icbd';
 
 export default async function Home({ params }) {
   let eventSlug = params.eventSlug;
@@ -33,14 +34,12 @@ export default async function Home({ params }) {
     return notFound();
   }
 
-  return (
-    <FacultyDinnerForm
-      eventId={event.id.toString()}
-      date="03/04/2025"
-      location="BC Building"
-      deposit="10CHF"
-    />
-  );
+  switch (event.type) {
+    case 'icbd':
+      return <ICBD event={event}></ICBD>;
+    case 'faculty_dinner':
+      return <FacultyDinner event={event}></FacultyDinner>;
+  }
 }
 
 export async function generateMetadata({ params }): Promise<Metadata> {
