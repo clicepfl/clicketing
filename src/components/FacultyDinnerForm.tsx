@@ -222,6 +222,14 @@ function Form({
 
   return (
     <>
+      <section className="menu">
+        {meals.map((meal, index) => (
+          <div className="menu-item" key={index}>
+            <b>{meal.name}</b>
+            <div className="menu-desc">{meal.description}</div>
+          </div>
+        ))}
+      </section>
       <section>
         <TextInputCard
           Icon={UserIcon}
@@ -346,8 +354,8 @@ function Confirmation() {
 
       <p>
         Check your email for confirmation, and don't forget to pay your deposit
-        either by QR facture or at the CLIC office in INM 177. We are available
-        between 10:00 and 17:00 on weekdays.
+        either by QR facture, or at the CLIC office in INM 177 (by cash or
+        camipro). We are available between 10:00 and 17:00 on weekdays.
       </p>
     </>
   );
