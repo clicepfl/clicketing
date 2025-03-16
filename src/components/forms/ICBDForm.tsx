@@ -7,21 +7,21 @@ import {
   sendRegistration,
 } from '@/actions/icbd';
 import { ElementType, ReactNode, useReducer } from 'react';
-import Card from './Card';
-import CheckboxCard from './CheckboxCard';
-import DropdownCard from './DropdownCard';
-import ErrorMessage from './ErrorMessage';
-import InfoLine from './InfoLine';
-import SplitText from './SplitText';
-import TextInputCard from './TextInputCard';
-import CalendarIcon from './icons/CalendarIcon';
-import CheckCircleIcon from './icons/CheckCircleIcon';
-import EmailIcon from './icons/EmailIcon';
-import ErrorIcon from './icons/ErrorIcon';
-import MapPinIcon from './icons/MapPinIcon';
-import PriceIcon from './icons/PriceIcon';
-import TeamIcon from './icons/TeamIcon';
-import UserIcon from './icons/UserIcon';
+import Card from '../Card';
+import CheckboxCard from '../CheckboxCard';
+import DropdownCard from '../DropdownCard';
+import ErrorMessage from '../ErrorMessage';
+import InfoLine from '../InfoLine';
+import SplitText from '../SplitText';
+import TextInputCard from '../TextInputCard';
+import CalendarIcon from '../icons/CalendarIcon';
+import CheckCircleIcon from '../icons/CheckCircleIcon';
+import EmailIcon from '../icons/EmailIcon';
+import ErrorIcon from '../icons/ErrorIcon';
+import MapPinIcon from '../icons/MapPinIcon';
+import PriceIcon from '../icons/PriceIcon';
+import TeamIcon from '../icons/TeamIcon';
+import UserIcon from '../icons/UserIcon';
 
 type State = {
   formState: FormStates;

@@ -1,4 +1,4 @@
-import FacultyDinnerForm, { Meal } from '@/components/FacultyDinnerForm';
+import FacultyDinnerForm, { Meal } from '@/components/forms/FacultyDinnerForm';
 import { Event } from '@/types/aliases';
 
 export default async function FacultyDinner({ event }: { event: Event }) {

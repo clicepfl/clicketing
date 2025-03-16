@@ -1,4 +1,4 @@
-import ICBDForm from '@/components/ICBDForm';
+import ICBDForm from '@/components/forms/ICBDForm';
 import { directus } from '@/directus';
 import { getTranslation } from '@/locales';
 import { Event } from '@/types/aliases';

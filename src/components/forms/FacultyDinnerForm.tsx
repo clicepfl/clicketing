@@ -3,20 +3,20 @@
 import { emailAlreadyUsed } from '@/actions/common';
 import { sendRegistration } from '@/actions/faculty-dinner';
 import { ElementType, ReactNode, useReducer } from 'react';
-import Card from './Card';
-import CheckboxCard from './CheckboxCard';
-import DropdownCard from './DropdownCard';
-import ErrorMessage from './ErrorMessage';
-import InfoLine from './InfoLine';
-import TextInputCard from './TextInputCard';
-import CalendarIcon from './icons/CalendarIcon';
-import CheckCircleIcon from './icons/CheckCircleIcon';
-import EmailIcon from './icons/EmailIcon';
-import MapPinIcon from './icons/MapPinIcon';
-import MenuIcon from './icons/MenuIcon';
-import PriceIcon from './icons/PriceIcon';
-import TeamIcon from './icons/TeamIcon';
-import UserIcon from './icons/UserIcon';
+import Card from '../Card';
+import CheckboxCard from '../CheckboxCard';
+import DropdownCard from '../DropdownCard';
+import ErrorMessage from '../ErrorMessage';
+import InfoLine from '../InfoLine';
+import TextInputCard from '../TextInputCard';
+import CalendarIcon from '../icons/CalendarIcon';
+import CheckCircleIcon from '../icons/CheckCircleIcon';
+import EmailIcon from '../icons/EmailIcon';
+import MapPinIcon from '../icons/MapPinIcon';
+import MenuIcon from '../icons/MenuIcon';
+import PriceIcon from '../icons/PriceIcon';
+import TeamIcon from '../icons/TeamIcon';
+import UserIcon from '../icons/UserIcon';
 
 type State = {
   formState: FormStates;
