@@ -1,5 +1,6 @@
 import Card from '@/components/Card';
 import ClipboardCheckIcon from '@/components/icons/ClipboardCheckIcon';
+import PriceIcon from '@/components/icons/PriceIcon';
 import TicketIcon from '@/components/icons/TicketIcon';
 import { directus } from '@/directus';
 import { Event } from '@/types/aliases';
@@ -28,6 +29,9 @@ export default async function AdminPanel({ params }) {
       return (
         <div className="form">
           <h1>Admin panel</h1>
+          <Link href={`${params.admin}/payment`}>
+            <Card Icon={PriceIcon}>Payment</Card>
+          </Link>
           <Link href={`${params.admin}/checkin`}>
             <Card Icon={TicketIcon}>Check-in</Card>
           </Link>
@@ -37,10 +41,13 @@ export default async function AdminPanel({ params }) {
         </div>
       );
 
-    case 'sdf':
+    case 'faculty_dinner':
       return (
         <div className="form">
           <h1>Admin panel</h1>
+          <Link href={`${params.admin}/payment`}>
+            <Card Icon={PriceIcon}>Payment</Card>
+          </Link>
           <Link href={`${params.admin}/checkin`}>
             <Card Icon={TicketIcon}>Check-in</Card>
           </Link>
