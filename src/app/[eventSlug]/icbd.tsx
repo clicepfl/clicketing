@@ -51,12 +51,14 @@ export default async function ICBD({ event }: { event: Event }) {
 
   let cvCorrection = cvCorrections[0];
 
+  let date = new Date(event.from).toLocaleDateString('fr-FR');
+
   return (
     <ICBDForm
       eventId={event.id.toString()}
-      date="11/03/2025"
+      date={`${date}`}
       location="BC Building"
-      deposit="10CHF Deposit"
+      deposit={`${event.price ?? 0}CHF Deposit`}
       talks={talks}
       discussions={discussions}
       interviews={interviews}
