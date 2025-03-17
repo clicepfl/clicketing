@@ -9,6 +9,7 @@ import DropdownCard from '../DropdownCard';
 import ErrorMessage from '../ErrorMessage';
 import InfoLine from '../InfoLine';
 import TextInputCard from '../TextInputCard';
+import AllergyIcon from '../icons/AllergyIcon';
 import CalendarIcon from '../icons/CalendarIcon';
 import CheckCircleIcon from '../icons/CheckCircleIcon';
 import EmailIcon from '../icons/EmailIcon';
@@ -28,6 +29,7 @@ type State = {
   consent: boolean;
   errorMessage: string;
   mealId: null | number;
+  comments: string;
 };
 
 export interface Meal {
@@ -66,6 +68,7 @@ async function register({
   section,
   year,
   meal,
+  comments,
 }) {
   let registrationId = await sendRegistration({
     first_name,
@@ -75,6 +78,7 @@ async function register({
     year,
     eventId,
     meal,
+    comments,
   });
 }
 
@@ -148,6 +152,7 @@ export default function FacultyDinnerForm({
     consent: false,
     errorMessage: '',
     mealId: null,
+    comments: '',
   };
 
   // Define reducer
@@ -295,6 +300,15 @@ function Form({
           }}
         />
 
+        <TextInputCard
+          Icon={AllergyIcon}
+          placeholder="Allergies & Dietary restrictions"
+          inputState={{
+            value: s.comments,
+            setValue: (value) => setField('comments', value),
+          }}
+        />
+
         <CheckboxCard
           checkboxState={{
             value: s.consent,
@@ -324,6 +338,7 @@ function Form({
                 section: s.section,
                 year: s.year,
                 meal: s.mealId,
+                comments: s.comments,
               });
               setField('formState', FormStates.Confirmation);
             } catch (error) {
