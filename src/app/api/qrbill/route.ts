@@ -28,7 +28,6 @@ export async function GET(request: NextRequest) {
     notFound();
   }
 
-  console.log(registration);
 
   const res = await fetch('https://clic.epfl.ch/qrbill-generator', {
     method: 'POST',
