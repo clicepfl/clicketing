@@ -1,7 +1,7 @@
 'use server';
 
 import { directus } from '@/directus';
-import { createItems, readItem } from '@directus/sdk';
+import { createItems } from '@directus/sdk';
 
 export async function sendRegistration({
   first_name,
@@ -12,12 +12,8 @@ export async function sendRegistration({
   eventId,
   meal,
 }) {
-  const event = await directus().request(
-    readItem('events', eventId, { fields: ['*'] })
-  );
-
   const eventRegistration = {
-    event,
+    event: eventId,
     email,
     first_name,
     family_name: last_name,

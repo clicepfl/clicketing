@@ -2,7 +2,7 @@
 
 import { directus } from '@/directus';
 import { ICBDActivityRegistration, Registration } from '@/types/aliases';
-import { createItems, readItem, readItems, updateItem } from '@directus/sdk';
+import { createItems, readItems, updateItem } from '@directus/sdk';
 
 export async function sendRegistration({
   first_name,
@@ -12,12 +12,8 @@ export async function sendRegistration({
   year,
   eventId,
 }) {
-  const event = await directus().request(
-    readItem('events', eventId, { fields: ['*'] })
-  );
-
   const eventRegistration = {
-    event,
+    event: eventId,
     email,
     first_name,
     family_name: last_name,
