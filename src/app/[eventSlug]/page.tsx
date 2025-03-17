@@ -21,6 +21,8 @@ export default async function Home({ params }) {
           'slug',
           'type',
           'meals',
+          'price',
+          'opened',
           //@ts-expect-error
           { translations: ['*'] },
         ],
@@ -33,6 +35,15 @@ export default async function Home({ params }) {
 
   if (!event) {
     return notFound();
+  }
+
+  if (!event.opened) {
+    return (
+      <div className="form">
+        <h1>This form is not open</h1>
+        <p>You're probably too late or too early ;)</p>
+      </div>
+    );
   }
 
   switch (event.type) {
