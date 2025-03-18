@@ -12,6 +12,7 @@ export async function sendRegistration({
   eventId,
   meal,
   comments,
+  plus_ones,
 }) {
   const eventRegistration = {
     event: eventId,
@@ -22,6 +23,7 @@ export async function sendRegistration({
     section,
     meal,
     comments,
+    plusOnes: plus_ones,
   };
 
   const createdRegistration = await directus().request(

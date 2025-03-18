@@ -8,11 +8,14 @@ import CheckboxCard from '../CheckboxCard';
 import DropdownCard from '../DropdownCard';
 import ErrorMessage from '../ErrorMessage';
 import InfoLine from '../InfoLine';
+import LargeTextInputCard from '../LargeTextInputCard';
+import NumberInputCard from '../NumberInputCard copy';
 import TextInputCard from '../TextInputCard';
 import AllergyIcon from '../icons/AllergyIcon';
 import CalendarIcon from '../icons/CalendarIcon';
 import CheckCircleIcon from '../icons/CheckCircleIcon';
 import EmailIcon from '../icons/EmailIcon';
+import InfoIcon from '../icons/InfoIcon';
 import MapPinIcon from '../icons/MapPinIcon';
 import MenuIcon from '../icons/MenuIcon';
 import PriceIcon from '../icons/PriceIcon';
@@ -30,6 +33,7 @@ type State = {
   errorMessage: string;
   mealId: null | number;
   comments: string;
+  plus_ones: number;
 };
 
 export interface Meal {
@@ -69,6 +73,7 @@ async function register({
   year,
   meal,
   comments,
+  plus_ones,
 }) {
   let registrationId = await sendRegistration({
     first_name,
@@ -79,10 +84,11 @@ async function register({
     eventId,
     meal,
     comments,
+    plus_ones,
   });
 }
 
-async function validateValues(s: State, eventId: string) {
+async function validateValues(s: State, eventId: string, guest: boolean) {
   if (!s.firstName || s.firstName.length === 0) {
     return 'First name is required';
   }
@@ -102,16 +108,27 @@ async function validateValues(s: State, eventId: string) {
     return 'Email must be EPFL email';
   }
 
-  if (!s.section || !Object.values(Sections).includes(s.section as Sections)) {
-    return 'Section is required';
-  }
+  if (!guest) {
+    if (
+      !s.section ||
+      !Object.values(Sections).includes(s.section as Sections)
+    ) {
+      return 'Section is required';
+    }
 
-  if (!s.year || !Object.values(Years).includes(s.year as Years)) {
-    return 'Year is required';
+    if (!s.year || !Object.values(Years).includes(s.year as Years)) {
+      return 'Year is required';
+    }
   }
 
   if (s.mealId === null) {
     return 'Menu is required';
+  }
+
+  if (guest) {
+    if (s.plus_ones < 0) {
+      return 'Number of guests is invalid';
+    }
   }
 
   if (!s.consent) {
@@ -127,12 +144,14 @@ export default function FacultyDinnerForm({
   location,
   deposit,
   meals,
+  guest = false,
 }: {
   eventId: string;
   date: string;
   location: string;
   deposit: string;
   meals: Meal[];
+  guest: boolean;
 }) {
   // Info items
   const infoItems: [ElementType, ReactNode][] = [
@@ -153,6 +172,7 @@ export default function FacultyDinnerForm({
     errorMessage: '',
     mealId: null,
     comments: '',
+    plus_ones: null,
   };
 
   // Define reducer
@@ -188,12 +208,13 @@ export default function FacultyDinnerForm({
                 setField={setField}
                 eventId={eventId}
                 meals={meals}
+                guest={guest}
               />
             );
           case FormStates.Loading:
             return <Loading></Loading>;
           case FormStates.Confirmation:
-            return <Confirmation />;
+            return <Confirmation guest={guest} />;
           case FormStates.Error:
             return <ErrorDisplay message={state.errorMessage}></ErrorDisplay>;
           default:
@@ -209,11 +230,13 @@ function Form({
   setField,
   eventId,
   meals,
+  guest,
 }: {
   s: State;
   setField: (field: string, value) => void;
   eventId: string;
   meals: Meal[];
+  guest: boolean;
 }) {
   function changeSelection(
     index: number,
@@ -227,6 +250,17 @@ function Form({
 
   return (
     <>
+      {guest ? (
+        <Card Icon={InfoIcon}>
+          <p>
+            This form is for guests, such as professors. If you are a student,
+            please register on the student form instead.
+          </p>
+        </Card>
+      ) : (
+        <></>
+      )}
+
       <section className="menu">
         {meals.map((meal, index) => (
           <div className="menu-item" key={index}>
@@ -261,31 +295,38 @@ function Form({
           }}
         />
 
-        <DropdownCard
-          Icon={TeamIcon}
-          placeholder="Section"
-          options={Object.values(Sections).map((v) => ({
-            display: v,
-            value: v,
-          }))}
-          dropdownState={{
-            value: s.section,
-            setValue: (value) => setField('section', value),
-          }}
-        />
+        {/* Hide these for guests */}
+        {guest ? (
+          <></>
+        ) : (
+          <>
+            <DropdownCard
+              Icon={TeamIcon}
+              placeholder="Section"
+              options={Object.values(Sections).map((v) => ({
+                display: v,
+                value: v,
+              }))}
+              dropdownState={{
+                value: s.section,
+                setValue: (value) => setField('section', value),
+              }}
+            />
 
-        <DropdownCard
-          Icon={TeamIcon}
-          placeholder="Year"
-          options={Object.values(Years).map((v) => ({
-            display: v,
-            value: v,
-          }))}
-          dropdownState={{
-            value: s.year,
-            setValue: (value) => setField('year', value),
-          }}
-        />
+            <DropdownCard
+              Icon={TeamIcon}
+              placeholder="Year"
+              options={Object.values(Years).map((v) => ({
+                display: v,
+                value: v,
+              }))}
+              dropdownState={{
+                value: s.year,
+                setValue: (value) => setField('year', value),
+              }}
+            />
+          </>
+        )}
 
         <DropdownCard
           Icon={MenuIcon}
@@ -300,14 +341,29 @@ function Form({
           }}
         />
 
-        <TextInputCard
+        <LargeTextInputCard
           Icon={AllergyIcon}
           placeholder="Allergies & Dietary restrictions"
           inputState={{
             value: s.comments,
             setValue: (value) => setField('comments', value),
           }}
+          rows={3}
         />
+
+        {guest ? (
+          <NumberInputCard
+            Icon={TeamIcon}
+            placeholder="Number of plus ones"
+            inputState={{
+              value: s.plus_ones,
+              setValue: (value) => setField('plus_ones', value),
+            }}
+            max={5}
+          />
+        ) : (
+          <></>
+        )}
 
         <CheckboxCard
           checkboxState={{
@@ -316,35 +372,38 @@ function Form({
           }}
         >
           I consent to CLIC taking photographs of me at the Faculty Dinner and
-          using them for promotional purposes.
+          using them for promotional purposes. I confirm that any plus ones I
+          register also consent to this.
         </CheckboxCard>
       </section>
 
       <button
         onClick={async () => {
-          const error = await validateValues(s, eventId);
+          const error = await validateValues(s, eventId, guest);
 
-          setField('errorMessage', error);
+          if (error) {
+            setField('errorMessage', error);
+            return;
+          }
 
-          if (!error) {
-            setField('formState', FormStates.Loading);
+          setField('formState', FormStates.Loading);
 
-            try {
-              await register({
-                eventId,
-                first_name: s.firstName,
-                last_name: s.lastName,
-                email: s.email,
-                section: s.section,
-                year: s.year,
-                meal: s.mealId,
-                comments: s.comments,
-              });
-              setField('formState', FormStates.Confirmation);
-            } catch (error) {
-              setField('errorMessage', error.message);
-              setField('formState', FormStates.Error);
-            }
+          try {
+            await register({
+              eventId,
+              first_name: s.firstName,
+              last_name: s.lastName,
+              email: s.email,
+              section: guest ? 'Guest' : s.section,
+              year: guest ? 'Guest' : s.year,
+              meal: s.mealId,
+              comments: s.comments,
+              plus_ones: guest ? s.plus_ones : 0,
+            });
+            setField('formState', FormStates.Confirmation);
+          } catch (error) {
+            setField('errorMessage', error.message);
+            setField('formState', FormStates.Error);
           }
         }}
       >
@@ -360,18 +419,27 @@ function Loading({}) {
   return <p>Loading...</p>;
 }
 
-function Confirmation() {
+function Confirmation({ guest }: { guest: boolean }) {
   return (
     <>
       <Card Icon={CheckCircleIcon}>
         <p>Your registration to the Faculty Dinner is successful !</p>
       </Card>
-
-      <p>
-        Check your email for confirmation, and don't forget to pay your deposit
-        either by QR facture, or at the CLIC office in INM 177 (by cash or
-        camipro). We are available between 10:00 and 17:00 on weekdays.
-      </p>
+      {guest ? (
+        <p>
+          Check your email for confirmation, and don't forget to pay your
+          deposit either by QR facture, or at the CLIC office in INM 177 (by
+          cash or camipro). We are available between 10:00 and 17:00 on
+          weekdays.
+        </p>
+      ) : (
+        <p>
+          Check your email for confirmation, and don't forget to pay your
+          deposit either by QR facture, or at the CLIC office in INM 177 (by
+          cash or camipro). We are available between 10:00 and 17:00 on
+          weekdays.
+        </p>
+      )}
     </>
   );
 }
