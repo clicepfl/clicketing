@@ -1,7 +1,7 @@
 'use server';
 
 import { directus } from '@/directus';
-import { createItems } from '@directus/sdk';
+import { createItems, readItem } from '@directus/sdk';
 
 export async function sendRegistration({
   first_name,
@@ -14,6 +14,12 @@ export async function sendRegistration({
   comments,
   plus_ones,
 }) {
+  const event = await directus().request(readItem('events', eventId));
+
+  if (!event.opened) {
+    throw new Error('Not opened');
+  }
+
   const eventRegistration = {
     event: eventId,
     email,
