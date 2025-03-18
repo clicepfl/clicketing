@@ -1,6 +1,5 @@
-.qr-scanner-selector {
+.selector {
   width: 100%;
-  max-width: 60ch;
   margin: 4rem auto;
   display: flex;
   flex-direction: column;
@@ -22,28 +21,29 @@
   }
 
   .search {
+    width: 100%;
     .card {
+      margin: 0;
       width: auto;
     }
     .search-results {
       display: flex;
       flex-direction: column;
       gap: 0.8rem;
-      margin: 1rem;
+      margin: 1rem 0;
+
+      .participant-display {
+        user-select: none;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+        background-color: var(--transparent-white);
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+        padding: 0.5rem 0.7rem;
+        margin: 0;
+      }
     }
-  }
-
-  .participant-display {
-    user-select: none;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-    background-color: var(--transparent-white);
-    border-radius: 0.5rem;
-    transition: all 0.3s ease;
-    padding: 0.5rem 0.7rem;
-
-    margin: 0 0.6rem;
   }
 }

@@ -1,6 +1,6 @@
 import { directus } from '@/directus';
 import { readItems } from '@directus/sdk';
-import { CheckIn } from './CheckIn';
+import Payment from './Payment';
 
 export default async function Page({ params }) {
   const eventSlug = params.eventSlug;
@@ -21,5 +21,5 @@ export default async function Page({ params }) {
     })
   );
 
-  return <CheckIn event={event} participants={registrations} />;
+  return <Payment event={event} participants={registrations} />;
 }

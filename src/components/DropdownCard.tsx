@@ -12,10 +12,10 @@ export default function DropdownCard({
 }: {
   Icon: ElementType;
   placeholder: string;
-  options: { value: string; display: string }[];
+  options: { value: any; display: string }[];
   dropdownState: {
-    value: string | null;
-    setValue: (value: string) => void;
+    value: any;
+    setValue: (value: any) => void;
   };
 }) {
   const [stayOpen, setStayOpen] = useState(false);

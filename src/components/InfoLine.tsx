@@ -1,7 +1,4 @@
 import { ElementType, ReactNode } from 'react';
-import InfoItem from './InfoItem';
-
-// (Icon, content): (ElementType, ReactNode);
 
 export default function InfoLine({
   infoItems,
@@ -15,6 +12,21 @@ export default function InfoLine({
           {infoItem[1]}
         </InfoItem>
       ))}
+    </div>
+  );
+}
+
+function InfoItem({
+  Icon,
+  children,
+}: {
+  Icon: ElementType;
+  children: ReactNode;
+}) {
+  return (
+    <div className="info-item">
+      <Icon className="icon" />
+      {children}
     </div>
   );
 }

@@ -1,4 +1,6 @@
-.text-input {
+.large-text-input,
+.text-input,
+.num-input {
   background-color: transparent;
   border: none;
   outline: none;
@@ -15,4 +17,26 @@
     color: var(--text-color);
     opacity: 0.5;
   }
+}
+
+.card:has(.large-text-input) {
+  align-items: start;
+  .icon {
+    margin-top: 0.2rem;
+  }
+}
+
+.large-text-input {
+  resize: none;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+  margin: 0;
+}
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }

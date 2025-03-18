@@ -1,27 +1,26 @@
 import { useEffect, useState } from 'react';
-import QrCodeScanner from './QRScanner';
 import TextInputCard from './TextInputCard';
 import UserIcon from './icons/UserIcon';
 
-export interface QRScannerSelectorEntry {
+export interface SearchSelectorEntry {
   value: string;
   searchValue: string;
   component: any;
 }
 
-export default function QRScannerSelector({
+export default function SearchSelector({
   items,
   onSelect,
   dialog,
 }: {
-  items: QRScannerSelectorEntry[];
+  items: SearchSelectorEntry[];
   onSelect(value: string);
   dialog(value: string, close: () => void);
 }) {
   const [selected, setSelected] = useState(null as string | null);
   const [filter, setFilter] = useState('');
   const [filteredEntries, setFilteredEntries] = useState(
-    [] as QRScannerSelectorEntry[]
+    [] as SearchSelectorEntry[]
   );
 
   useEffect(() => {
@@ -43,15 +42,6 @@ export default function QRScannerSelector({
 
   return (
     <div className="selector">
-      <QrCodeScanner
-        qrCodeSuccessCallback={(decodedText) =>
-          setSelected((selected) =>
-            items.some((i) => i.value === decodedText) ? decodedText : selected
-          )
-        }
-        fps={10}
-        qrbox={{ width: 250, height: 250 }}
-      />
       {selected != null ? (
         <div className="dialog">
           <div className="dialog-inner">

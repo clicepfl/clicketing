@@ -3,10 +3,9 @@ import { Event } from '@/types/aliases';
 import { readItems } from '@directus/sdk';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import FacultyDinner from './faculty-dinner';
-import ICBD from './icbd';
+import FacultyDinner from '../faculty-dinner';
 
-export default async function Home({ params }) {
+export default async function GuestForm({ params }) {
   let eventSlug = params.eventSlug;
 
   let event: Event = (
@@ -41,16 +40,16 @@ export default async function Home({ params }) {
     return (
       <div className="form">
         <h1>This form is not open</h1>
-        <p>You're probably too late or too early ;)</p>
+        <p>You're probably too late or too early :)</p>
       </div>
     );
   }
 
   switch (event.type) {
-    case 'icbd':
-      return <ICBD event={event}></ICBD>;
     case 'faculty_dinner':
-      return <FacultyDinner event={event}></FacultyDinner>;
+      return <FacultyDinner event={event} guest={true} />;
+    default:
+      return notFound();
   }
 }
 
@@ -66,7 +65,7 @@ export async function generateMetadata({ params }): Promise<Metadata> {
   )[0];
 
   return {
-    title: `${event.name} - Registration`,
+    title: `${event.name} - Guest Registration`,
     openGraph: {
       type: 'website',
       siteName: 'Clicketing',
