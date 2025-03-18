@@ -1,5 +1,6 @@
 .large-text-input,
-.text-input {
+.text-input,
+.num-input {
   background-color: transparent;
   border: none;
   outline: none;
@@ -27,4 +28,15 @@
 
 .large-text-input {
   resize: none;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+  margin: 0;
+}
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }

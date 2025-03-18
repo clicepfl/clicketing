@@ -1,19 +1,19 @@
 import { ElementType, useRef } from 'react';
 import Card from './Card';
 
-export default function LargeTextInputCard({
+export default function NumberInputCard({
   Icon,
   placeholder,
   inputState,
-  rows,
+  max,
 }: {
   Icon: ElementType;
   placeholder: string;
   inputState: {
-    value: string;
-    setValue: (value: string) => void;
+    value: number;
+    setValue: (value: number | null) => void;
   };
-  rows: number;
+  max: number;
 }) {
   const textInputRef = useRef(null);
 
@@ -23,14 +23,18 @@ export default function LargeTextInputCard({
       selectable={true}
       onClick={() => textInputRef.current && textInputRef.current.focus()}
     >
-      <textarea
+      <input
         ref={textInputRef}
-        className="large-text-input"
+        type="number"
+        className="num-input"
         placeholder={placeholder}
-        onChange={(e) => inputState.setValue(e.target.value)}
+        onChange={(e) => {
+          inputState.setValue(parseInt(e.target.value));
+        }}
         value={inputState.value}
-        rows={rows}
-      ></textarea>
+        min={0}
+        max={max}
+      ></input>
     </Card>
   );
 }
