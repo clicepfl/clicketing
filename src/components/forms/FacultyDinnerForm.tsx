@@ -372,8 +372,10 @@ function Form({
           }}
         >
           I consent to CLIC taking photographs of me at the Faculty Dinner and
-          using them for promotional purposes. I confirm that any plus ones I
-          register also consent to this.
+          using them for promotional purposes.{' '}
+          {guest
+            ? 'I confirm that any plus ones I register also consent to this.'
+            : ''}
         </CheckboxCard>
       </section>
 
