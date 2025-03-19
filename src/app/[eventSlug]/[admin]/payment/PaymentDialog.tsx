@@ -65,7 +65,7 @@ export function PaymentDialog({
           />
           <button
             onClick={async () => {
-              const newRes = await markPayment(participant.id, payment, false);
+              const newRes = await markPayment(participant.id, payment, true);
               setParticipants((value) => [
                 ...value.filter((p) => p.id != participant.id),
                 newRes,
