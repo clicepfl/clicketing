@@ -131,6 +131,9 @@ async function validateValues(s: State, eventId: string, guest: boolean) {
     if (s.plus_ones < 0) {
       return 'Number of guests is invalid';
     }
+    if (s.plus_ones > 5) {
+      return 'You can only bring up to 5 guests';
+    }
   }
 
   if (!s.consent) {
