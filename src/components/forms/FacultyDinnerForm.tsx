@@ -256,16 +256,37 @@ function Form({
   return (
     <>
       {guest ? (
-        <Card Icon={InfoIcon}>
+        <>
+          <Card Icon={InfoIcon}>
+            <p>
+              This form is for guests, such as professors. If you are a student,
+              please register on the student form instead.
+            </p>
+          </Card>
           <p>
-            This form is for guests, such as professors. If you are a student,
-            please register on the student form instead.
+            The IC Faculty Dinner is a traditional evening organized by CLIC for
+            students, professors and other Faculty members.
           </p>
-        </Card>
+          <p>
+            You can pay on the day of the event, or by bank transfer using the
+            QR code you'll receive by email after registration.
+          </p>
+        </>
       ) : (
-        <></>
+        <section>
+          <p>
+            The IC Faculty Dinner is a traditional evening organized by CLIC for
+            students, professors and other Faculty members.
+          </p>
+          <p>
+            You can pay your seat by cash or camipro at the INM office in
+            INM177, or by bank transfer using the QR code you'll receive by
+            email after registration.
+          </p>
+        </section>
       )}
 
+      <h2>Menu</h2>
       <section className="menu">
         {meals.map((meal, index) => (
           <div className="menu-item" key={index}>
