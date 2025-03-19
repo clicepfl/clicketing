@@ -434,16 +434,14 @@ function Confirmation({ guest }: { guest: boolean }) {
       </Card>
       {guest ? (
         <p>
-          Check your email for confirmation, and don't forget to pay your
-          deposit either by QR facture, or at the CLIC office in INM 177 (by
-          cash or camipro). We are available between 10:00 and 17:00 on
-          weekdays.
+          Check your email for confirmation, and pay the entrance fee either by
+          QR facture, or directly at the event by cash or camipro.
         </p>
       ) : (
         <p>
           Check your email for confirmation, and don't forget to pay your
-          deposit either by QR facture, or at the CLIC office in INM 177 (by
-          cash or camipro). We are available between 10:00 and 17:00 on
+          entrance fee either by QR facture, or at the CLIC office in INM 177
+          (by cash or camipro). We are available between 10:00 and 17:00 on
           weekdays.
         </p>
       )}
