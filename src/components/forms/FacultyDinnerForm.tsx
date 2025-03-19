@@ -55,6 +55,8 @@ enum Years {
   BA6 = 'BA6',
   MA2 = 'MA2',
   MA4 = 'MA4',
+  PhD = 'PhD',
+  Other = 'Other',
 }
 
 enum Sections {
