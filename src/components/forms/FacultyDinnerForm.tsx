@@ -425,7 +425,7 @@ function Form({
               eventId,
               first_name: s.firstName,
               last_name: s.lastName,
-              email: s.email,
+              email: s.email.toLowerCase(),
               section: guest ? 'Guest' : s.section,
               year: guest ? 'Guest' : s.year,
               meal: s.mealId,
