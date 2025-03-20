@@ -367,16 +367,6 @@ function Form({
           }}
         />
 
-        <LargeTextInputCard
-          Icon={AllergyIcon}
-          placeholder="Allergies & Dietary restrictions"
-          inputState={{
-            value: s.comments,
-            setValue: (value) => setField('comments', value),
-          }}
-          rows={3}
-        />
-
         {guest ? (
           <NumberInputCard
             Icon={TeamIcon}
@@ -390,6 +380,20 @@ function Form({
         ) : (
           <></>
         )}
+
+        <LargeTextInputCard
+          Icon={AllergyIcon}
+          placeholder={
+            guest
+              ? 'Plus ones menus & Allergies & Dietary restrictions'
+              : 'Allergies & Dietary restrictions'
+          }
+          inputState={{
+            value: s.comments,
+            setValue: (value) => setField('comments', value),
+          }}
+          rows={3}
+        />
 
         <CheckboxCard
           checkboxState={{
