@@ -76,6 +76,7 @@ async function register({
   meal,
   comments,
   plus_ones,
+  guest,
 }) {
   let registrationId = await sendRegistration({
     first_name,
@@ -87,6 +88,7 @@ async function register({
     meal,
     comments,
     plus_ones,
+    guest,
   });
 }
 
@@ -432,6 +434,7 @@ function Form({
               meal: s.mealId,
               comments: s.comments,
               plus_ones: guest ? s.plus_ones : 0,
+              guest,
             });
             setField('formState', FormStates.Confirmation);
           } catch (error) {
