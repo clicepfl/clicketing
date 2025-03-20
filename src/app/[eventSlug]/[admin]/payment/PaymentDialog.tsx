@@ -17,6 +17,7 @@ enum PaymentMethods {
   Cash = 'cash',
   Camipro = 'camipro',
   BankTransfer = 'bank_transfer',
+  Staff = 'staff',
 }
 
 export function PaymentDialog({
