@@ -259,8 +259,9 @@ function Form({
         <>
           <Card Icon={InfoIcon}>
             <p>
-              This form is for guests, such as professors. If you are a student,
-              please register on the student form instead.
+              This form is for guests, such as professors, collaborators of the
+              IC Faculty or CLIC former members. If you are a student, please
+              register on the student form instead.
             </p>
           </Card>
           <p>
