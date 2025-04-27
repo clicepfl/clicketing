@@ -1,5 +1,7 @@
 # Clicketing
 
+Clicketing is a web application made for managing registrations, ticketing and event access for events organized by CLIC.
+
 ## Developpment
 
 ### Initial setup
