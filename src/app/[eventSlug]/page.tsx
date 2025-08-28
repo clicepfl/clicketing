@@ -4,6 +4,7 @@ import { readItems } from '@directus/sdk';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import FacultyDinner from './faculty-dinner';
+import HelloWorld from './hello-world';
 import ICBD from './icbd';
 
 export default async function Home({ params }) {
@@ -51,6 +52,8 @@ export default async function Home({ params }) {
       return <ICBD event={event}></ICBD>;
     case 'faculty_dinner':
       return <FacultyDinner event={event}></FacultyDinner>;
+    case 'hello_world':
+      return <HelloWorld event={event}></HelloWorld>;
   }
 }
 
