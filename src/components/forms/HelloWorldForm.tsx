@@ -45,7 +45,6 @@ enum Years {
   BA6 = 'BA6',
   MA2 = 'MA2',
   MA4 = 'MA4',
-  PhD = 'PhD',
   Other = 'Other',
 }
 
@@ -54,6 +53,7 @@ enum Sections {
   CommunicationSystems = 'Communication Systems',
   DataScience = 'Data Science',
   CyberSecurity = 'Cyber Security',
+  Other = 'Other',
 }
 
 async function register({
@@ -306,7 +306,7 @@ function Form({
               eventId,
               first_name: s.firstName,
               last_name: s.lastName,
-              email: s.email,
+              email: s.email.toLowerCase(),
               section: s.section,
               year: s.year,
               team: s.team,

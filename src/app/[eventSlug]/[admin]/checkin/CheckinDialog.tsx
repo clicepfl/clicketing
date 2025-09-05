@@ -149,3 +149,44 @@ export function FDCheckinDialog({
     </>
   );
 }
+
+export function HWCheckinDialog({
+  event,
+  close,
+  participant,
+  setParticipants,
+}: { event: Event } & DialogDefaultProps) {
+  const [payment, setPayment] = useState(null);
+
+  return (
+    <>
+      <Split>
+        <b>{`${participant.first_name} ${participant.family_name}`}</b>
+        <span>{participant.team}</span>
+      </Split>
+
+      {participant.checked_in ? (
+        <Card>
+          <CheckCircleIcon className="icon" />
+          Already checked in
+        </Card>
+      ) : (
+        <>
+          <button
+            onClick={async () => {
+              const newRes = await checkInRegistration(participant.id);
+              setParticipants((value) => [
+                ...value.filter((p) => p.id != participant.id),
+                newRes,
+              ]);
+            }}
+          >
+            Check-in
+          </button>
+        </>
+      )}
+
+      <button onClick={close}>Close</button>
+    </>
+  );
+}
