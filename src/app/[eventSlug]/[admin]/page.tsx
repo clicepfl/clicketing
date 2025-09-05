@@ -54,6 +54,16 @@ export default async function AdminPanel({ params }) {
         </div>
       );
 
+    case 'hello_world':
+      return (
+        <div className="form">
+          <h1>Admin panel</h1>
+          <Link href={`${params.admin}/checkin`}>
+            <Card Icon={TicketIcon}>Check-in</Card>
+          </Link>
+        </div>
+      );
+
     default:
       break;
   }

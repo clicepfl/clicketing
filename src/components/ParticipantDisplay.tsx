@@ -18,7 +18,9 @@ export default function ParticipantDisplay({
     case 'icbd':
       return <ICBDParticipantDisplay participant={participant} />;
     case 'faculty_dinner':
-      return <FDParticipantDisplay participant={participant} />;
+      return <SimpleParticipantDisplay participant={participant} />;
+    case 'hello_world':
+      return <SimpleParticipantDisplay participant={participant} />;
     default:
       break;
   }
@@ -65,7 +67,11 @@ function ICBDParticipantDisplay({
   );
 }
 
-function FDParticipantDisplay({ participant }: { participant: Registration }) {
+function SimpleParticipantDisplay({
+  participant,
+}: {
+  participant: Registration;
+}) {
   return (
     <div className="participant-display">
       <Split>

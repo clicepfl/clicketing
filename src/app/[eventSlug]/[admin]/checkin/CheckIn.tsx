@@ -4,7 +4,11 @@ import ParticipantDisplay from '@/components/ParticipantDisplay';
 import QRScannerSelector from '@/components/QRScannerSelector';
 import { Event, Registration } from '@/types/aliases';
 import { useState } from 'react';
-import { FDCheckinDialog, ICBDCheckinDialog } from './CheckinDialog';
+import {
+  FDCheckinDialog,
+  HWCheckinDialog,
+  ICBDCheckinDialog,
+} from './CheckinDialog';
 
 export function CheckIn({
   participants: initialParticipants,
@@ -38,6 +42,15 @@ export function CheckIn({
             case 'faculty_dinner':
               return (
                 <FDCheckinDialog
+                  event={event}
+                  close={close}
+                  participant={participant}
+                  setParticipants={setParticipants}
+                />
+              );
+            case 'hello_world':
+              return (
+                <HWCheckinDialog
                   event={event}
                   close={close}
                   participant={participant}
