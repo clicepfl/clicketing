@@ -1,6 +1,6 @@
 'use client';
-import { emailAlreadyUsed, teamAlreadyUsed } from '@/actions/common';
-import { sendRegistration } from '@/actions/hello-world';
+import { emailAlreadyUsed } from '@/actions/common';
+import { sendRegistration, teamAlreadyUsed } from '@/actions/hello-world';
 import { ElementType, ReactNode, useReducer } from 'react';
 import Card from '../Card';
 import CheckboxCard from '../CheckboxCard';
