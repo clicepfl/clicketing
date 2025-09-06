@@ -9,4 +9,14 @@
       white-space: nowrap;
     }
   }
+
+  .center-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .half {
+    min-width: 50%;
+  }
 }
