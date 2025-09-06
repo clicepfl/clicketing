@@ -272,6 +272,12 @@ function Form({
   return (
     <>
       <section>
+        <p>
+          To register for Hello World, you need to have formed a team of 3.
+          <br />
+          If you do not yet have a team, you can look for one on the{' '}
+          <a href="https://t.me/+kwrmi0cIc75jNjM0">Hello World Group Finder</a>.
+        </p>
         {[1, 2, 3].map((i) => (
           <>
             <h2>Team Member {i}</h2>
@@ -328,14 +334,26 @@ function Form({
           </>
         ))}
 
+        <div className="spacer"></div>
+
         <TextInputCard
           Icon={TeamIcon}
-          placeholder="Team"
+          placeholder="Team Name"
           inputState={{
             value: s.team,
             setValue: (value) => setField('team', value),
           }}
         />
+
+        <CheckboxCard
+          checkboxState={{
+            value: s.consent,
+            setValue: (value) => setField('consent', value),
+          }}
+        >
+          All three team members consent to CLIC taking photographs of them at
+          Hello World and using them for promotional purposes.
+        </CheckboxCard>
 
         <LargeTextInputCard
           Icon={PencilIcon}
@@ -346,16 +364,6 @@ function Form({
           }}
           rows={2}
         />
-
-        <CheckboxCard
-          checkboxState={{
-            value: s.consent,
-            setValue: (value) => setField('consent', value),
-          }}
-        >
-          I consent to CLIC taking photographs of me at Hello World and using
-          them for promotional purposes.
-        </CheckboxCard>
       </section>
 
       <button
