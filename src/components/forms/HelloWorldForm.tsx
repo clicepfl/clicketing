@@ -1,5 +1,5 @@
 'use client';
-import { emailAlreadyUsed } from '@/actions/common';
+import { emailAlreadyUsed, teamAlreadyUsed } from '@/actions/common';
 import { sendRegistration } from '@/actions/hello-world';
 import { ElementType, ReactNode, useReducer } from 'react';
 import Card from '../Card';
@@ -18,13 +18,19 @@ import PriceIcon from '../icons/PriceIcon';
 import TeamIcon from '../icons/TeamIcon';
 import UserIcon from '../icons/UserIcon';
 
-type State = {
-  formState: FormStates;
+type PersonState = {
   firstName: string;
   lastName: string;
   email: string;
   section: string;
   year: string;
+};
+
+type State = {
+  formState: FormStates;
+  member1: PersonState;
+  member2: PersonState;
+  member3: PersonState;
   team: string;
   consent: boolean;
   errorMessage: string;
@@ -78,32 +84,57 @@ async function register({
   });
 }
 
-async function validateValues(s: State, eventId: string) {
-  if (!s.firstName || s.firstName.length === 0) {
+async function validateMember(member: PersonState, eventId: string) {
+  if (!member.firstName || member.firstName.length === 0) {
     return 'First name is required';
   }
 
-  if (!s.lastName || s.lastName.length === 0) {
+  if (!member.lastName || member.lastName.length === 0) {
     return 'Last name is required';
   }
 
-  if (!s.email) {
+  if (!member.email) {
     return 'Email is required';
   }
-  if (await emailAlreadyUsed(s.email.toLowerCase(), eventId)) {
+  if (await emailAlreadyUsed(member.email.toLowerCase(), eventId)) {
     return 'Email is already used';
   }
 
-  if (!/^[A-Za-z\-]+\.[A-Za-z\-]+@epfl\.ch$/.test(s.email)) {
+  if (!/^[A-Za-z\-]+\.[A-Za-z\-]+@epfl\.ch$/.test(member.email)) {
     return 'Email must be EPFL email';
   }
 
-  if (!s.section || !Object.values(Sections).includes(s.section as Sections)) {
+  if (
+    !member.section ||
+    !Object.values(Sections).includes(member.section as Sections)
+  ) {
     return 'Section is required';
   }
 
-  if (!s.year || !Object.values(Years).includes(s.year as Years)) {
+  if (!member.year || !Object.values(Years).includes(member.year as Years)) {
     return 'Year is required';
+  }
+
+  return null;
+}
+
+async function validateValues(s: State, eventId: string) {
+  let members = [s.member1, s.member2, s.member3];
+
+  for (let i = 0; i < members.length; i++) {
+    const member = members[i];
+    const error = await validateMember(member, eventId);
+    if (error) {
+      return `Member ${i + 1}: ${error}`;
+    }
+  }
+
+  if (!s.team || s.team.length === 0) {
+    return 'Team name is required';
+  }
+
+  if (await teamAlreadyUsed(s.team, eventId)) {
+    return 'Team name is already used';
   }
 
   if (!s.consent) {
@@ -134,11 +165,27 @@ export default function HelloWorldForm({
   // Define initial state
   const initialState: State = {
     formState: FormStates.Form,
-    firstName: '',
-    lastName: '',
-    email: '',
-    section: '',
-    year: '',
+    member1: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      section: '',
+      year: '',
+    },
+    member2: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      section: '',
+      year: '',
+    },
+    member3: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      section: '',
+      year: '',
+    },
     team: '',
     consent: false,
     errorMessage: '',
@@ -161,6 +208,13 @@ export default function HelloWorldForm({
     dispatch({ type: 'SET_FIELD', field, value });
   }
 
+  function setMemberField(memberNumber: number, field: string, value) {
+    const memberKey = `member${memberNumber}`;
+    const member = state[memberKey];
+    const newMember = { ...member, [field]: value };
+    setField(memberKey, newMember);
+  }
+
   // Use reducer
   const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -172,7 +226,14 @@ export default function HelloWorldForm({
       {(() => {
         switch (state.formState) {
           case FormStates.Form:
-            return <Form s={state} setField={setField} eventId={eventId} />;
+            return (
+              <Form
+                s={state}
+                setField={setField}
+                setMemberField={setMemberField}
+                eventId={eventId}
+              />
+            );
           case FormStates.Loading:
             return <Loading></Loading>;
           case FormStates.Confirmation:
@@ -190,10 +251,12 @@ export default function HelloWorldForm({
 function Form({
   s,
   setField,
+  setMemberField,
   eventId,
 }: {
   s: State;
   setField: (field: string, value) => void;
+  setMemberField: (memberNumber: number, field: string, value) => void;
   eventId: string;
 }) {
   function changeSelection(
@@ -209,56 +272,61 @@ function Form({
   return (
     <>
       <section>
-        <TextInputCard
-          Icon={UserIcon}
-          placeholder="First Name"
-          inputState={{
-            value: s.firstName,
-            setValue: (value) => setField('firstName', value),
-          }}
-        />
-        <TextInputCard
-          Icon={UserIcon}
-          placeholder="Last Name"
-          inputState={{
-            value: s.lastName,
-            setValue: (value) => setField('lastName', value),
-          }}
-        />
-        <TextInputCard
-          Icon={EmailIcon}
-          placeholder="EPFL Email"
-          inputState={{
-            value: s.email,
-            setValue: (value) => setField('email', value),
-          }}
-        />
+        {[1, 2, 3].map((i) => (
+          <>
+            <h2>Team Member {i}</h2>
+            <TextInputCard
+              Icon={UserIcon}
+              placeholder="First Name"
+              inputState={{
+                value: s[`member${i}`].firstName,
+                setValue: (value) => setMemberField(i, 'firstName', value),
+              }}
+            />
+            <TextInputCard
+              Icon={UserIcon}
+              placeholder="Last Name"
+              inputState={{
+                value: s[`member${i}`].lastName,
+                setValue: (value) => setMemberField(i, 'lastName', value),
+              }}
+            />
+            <TextInputCard
+              Icon={EmailIcon}
+              placeholder="EPFL Email"
+              inputState={{
+                value: s[`member${i}`].email,
+                setValue: (value) => setMemberField(i, 'email', value),
+              }}
+            />
 
-        <DropdownCard
-          Icon={TeamIcon}
-          placeholder="Section"
-          options={Object.values(Sections).map((v) => ({
-            display: v,
-            value: v,
-          }))}
-          dropdownState={{
-            value: s.section,
-            setValue: (value) => setField('section', value),
-          }}
-        />
+            <DropdownCard
+              Icon={TeamIcon}
+              placeholder="Section"
+              options={Object.values(Sections).map((v) => ({
+                display: v,
+                value: v,
+              }))}
+              dropdownState={{
+                value: s[`member${i}`].section,
+                setValue: (value) => setMemberField(i, 'section', value),
+              }}
+            />
 
-        <DropdownCard
-          Icon={TeamIcon}
-          placeholder="Year"
-          options={Object.values(Years).map((v) => ({
-            display: v,
-            value: v,
-          }))}
-          dropdownState={{
-            value: s.year,
-            setValue: (value) => setField('year', value),
-          }}
-        />
+            <DropdownCard
+              Icon={TeamIcon}
+              placeholder="Year"
+              options={Object.values(Years).map((v) => ({
+                display: v,
+                value: v,
+              }))}
+              dropdownState={{
+                value: s[`member${i}`].year,
+                setValue: (value) => setMemberField(i, 'year', value),
+              }}
+            />
+          </>
+        ))}
 
         <TextInputCard
           Icon={TeamIcon}
@@ -302,16 +370,19 @@ function Form({
           setField('formState', FormStates.Loading);
 
           try {
-            await register({
-              eventId,
-              first_name: s.firstName,
-              last_name: s.lastName,
-              email: s.email.toLowerCase(),
-              section: s.section,
-              year: s.year,
-              team: s.team,
-              comments: s.comments,
-            });
+            for (let i = 1; i <= 3; i++) {
+              const member = s[`member${i}`];
+              await register({
+                eventId,
+                first_name: member.firstName,
+                last_name: member.lastName,
+                email: member.email.toLowerCase(),
+                section: member.section,
+                year: member.year,
+                team: s.team,
+                comments: s.comments,
+              });
+            }
             setField('formState', FormStates.Confirmation);
           } catch (error) {
             setField('errorMessage', error.message);

@@ -19,6 +19,18 @@ export async function emailAlreadyUsed(
   return registrations.length !== 0;
 }
 
+export async function teamAlreadyUsed(team: string, eventId: string) {
+  const registrations = await directus().request(
+    readItems('registrations', {
+      filter: {
+        _and: [{ team: { _eq: team } }, { event: { _eq: eventId } }],
+      },
+    })
+  );
+
+  return registrations.length !== 0;
+}
+
 export async function getRegistrations(eventId: string) {
   return await directus().request(
     readItems('registrations', { filter: { event: { _eq: eventId } } })
