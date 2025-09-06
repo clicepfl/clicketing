@@ -272,7 +272,7 @@ function Form({
   return (
     <>
       <section>
-        <p>
+        <p className="spaced-p">
           To register for Hello World, you need to have formed a team of 3.
           <br />
           If you do not yet have a team, you can look for one on the{' '}
