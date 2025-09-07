@@ -129,6 +129,12 @@ async function validateValues(s: State, eventId: string) {
     }
   }
 
+  const emails = members.map((m) => m.email.toLowerCase());
+  const uniqueEmails = new Set(emails);
+  if (uniqueEmails.size !== emails.length) {
+    return 'Team members must have different emails';
+  }
+
   if (!s.team || s.team.length === 0) {
     return 'Team name is required';
   }
