@@ -13,6 +13,7 @@ export async function sendRegistration({
   meal,
   comments,
   plus_ones,
+  guest,
 }) {
   const event = await directus().request(readItem('events', eventId));
 
@@ -30,6 +31,7 @@ export async function sendRegistration({
     meal,
     comments,
     plusOnes: plus_ones,
+    guest,
   };
 
   const createdRegistration = await directus().request(

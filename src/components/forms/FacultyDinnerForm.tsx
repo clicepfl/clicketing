@@ -76,6 +76,7 @@ async function register({
   meal,
   comments,
   plus_ones,
+  guest,
 }) {
   let registrationId = await sendRegistration({
     first_name,
@@ -87,6 +88,7 @@ async function register({
     meal,
     comments,
     plus_ones,
+    guest,
   });
 }
 
@@ -106,7 +108,7 @@ async function validateValues(s: State, eventId: string, guest: boolean) {
     return 'Email is already used';
   }
 
-  if (!/^[A-Za-z\-]+\.[A-Za-z\-]+@epfl\.ch$/.test(s.email)) {
+  if (!guest && !/^[A-Za-z\-]+\.[A-Za-z\-]+@epfl\.ch$/.test(s.email)) {
     return 'Email must be EPFL email';
   }
 
@@ -256,16 +258,38 @@ function Form({
   return (
     <>
       {guest ? (
-        <Card Icon={InfoIcon}>
+        <>
+          <Card Icon={InfoIcon}>
+            <p>
+              This form is for guests, such as professors, collaborators of the
+              IC Faculty or CLIC former members. If you are a student, please
+              register on the student form instead.
+            </p>
+          </Card>
           <p>
-            This form is for guests, such as professors. If you are a student,
-            please register on the student form instead.
+            The IC Faculty Dinner is a traditional evening organized by CLIC for
+            students, professors and other Faculty members.
           </p>
-        </Card>
+          <p>
+            You can pay on the day of the event, or by bank transfer using the
+            QR code you'll receive by email after registration.
+          </p>
+        </>
       ) : (
-        <></>
+        <section>
+          <p>
+            The IC Faculty Dinner is a traditional evening organized by CLIC for
+            students, professors and other Faculty members.
+          </p>
+          <p>
+            You can pay your seat by cash or camipro at the INM office in
+            INM177, or by bank transfer using the QR code you'll receive by
+            email after registration.
+          </p>
+        </section>
       )}
 
+      <h2>Menu</h2>
       <section className="menu">
         {meals.map((meal, index) => (
           <div className="menu-item" key={index}>
@@ -346,16 +370,6 @@ function Form({
           }}
         />
 
-        <LargeTextInputCard
-          Icon={AllergyIcon}
-          placeholder="Allergies & Dietary restrictions"
-          inputState={{
-            value: s.comments,
-            setValue: (value) => setField('comments', value),
-          }}
-          rows={3}
-        />
-
         {guest ? (
           <NumberInputCard
             Icon={TeamIcon}
@@ -369,6 +383,20 @@ function Form({
         ) : (
           <></>
         )}
+
+        <LargeTextInputCard
+          Icon={AllergyIcon}
+          placeholder={
+            guest
+              ? 'Plus ones menus & Allergies & Dietary restrictions'
+              : 'Allergies & Dietary restrictions'
+          }
+          inputState={{
+            value: s.comments,
+            setValue: (value) => setField('comments', value),
+          }}
+          rows={3}
+        />
 
         <CheckboxCard
           checkboxState={{
@@ -400,12 +428,13 @@ function Form({
               eventId,
               first_name: s.firstName,
               last_name: s.lastName,
-              email: s.email,
+              email: s.email.toLowerCase(),
               section: guest ? 'Guest' : s.section,
               year: guest ? 'Guest' : s.year,
               meal: s.mealId,
               comments: s.comments,
               plus_ones: guest ? s.plus_ones : 0,
+              guest,
             });
             setField('formState', FormStates.Confirmation);
           } catch (error) {
