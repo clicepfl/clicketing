@@ -45,12 +45,11 @@ enum FormStates {
 }
 
 enum Years {
-  MAN = 'MAN',
-  BA2 = 'BA2',
-  BA4 = 'BA4',
-  BA6 = 'BA6',
-  MA2 = 'MA2',
-  MA4 = 'MA4',
+  BA1 = 'BA1',
+  BA3 = 'BA3',
+  BA5 = 'BA5',
+  MA1 = 'MA1',
+  MA3 = 'MA3',
   Other = 'Other',
 }
 
