@@ -68,6 +68,10 @@ export async function generateMetadata({ params }): Promise<Metadata> {
     )
   )[0];
 
+  const imageUrl = event.banner
+    ? `https://clic.epfl.ch/directus/assets/${event.banner}`
+    : 'https://clic.epfl.ch/directus/assets/6b42cb6b-9556-46e8-9aae-e01526842e41';
+
   return {
     title: `${event.name} - Registration`,
     openGraph: {
@@ -76,9 +80,7 @@ export async function generateMetadata({ params }): Promise<Metadata> {
       title: `Register to ${event.name}`,
       url: `https://clic.epfl.ch/clicketing/${event.id}`,
       locale: 'en_US',
-      images: [
-        'https://clic.epfl.ch/directus/assets/43241404-0dff-4f17-989e-e0f156707266',
-      ],
+      images: [imageUrl],
     },
   };
 }
