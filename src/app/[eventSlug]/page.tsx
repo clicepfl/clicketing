@@ -41,8 +41,13 @@ export default async function Home({ params }) {
   if (!event.opened) {
     return (
       <div className="form">
-        <h1>This form is not open</h1>
-        <p>You're probably too late or too early ;)</p>
+        <h1>This event is sold out!</h1>
+
+        <p>
+          But don't worry, more is to come :) <br />
+          Follow us to keep updated on everything we're preparing : <br />
+          <a href="https://linktr.ee/clicepfl">CLIC Linktree</a>
+        </p>
       </div>
     );
   }
