@@ -1,19 +1,23 @@
 'use client';
 
-import { emailAlreadyUsed } from '@/actions/common';
+import {
+  FormStates,
+  ICSections,
+  ParticipantState,
+  Season,
+  sendRegistration,
+  SpringYears,
+  validateParticipant,
+} from '@/actions/common';
 import {
   completeRegistration,
   sendICBDActivitiesRegistrations,
-  sendRegistration,
 } from '@/actions/icbd';
 import { ElementType, ReactNode, useReducer } from 'react';
 import Card from '../Card';
 import CheckboxCard from '../CheckboxCard';
 import DropdownCard from '../DropdownCard';
 import ErrorMessage from '../ErrorMessage';
-import InfoLine from '../InfoLine';
-import SplitText from '../SplitText';
-import TextInputCard from '../TextInputCard';
 import CalendarIcon from '../icons/CalendarIcon';
 import CheckCircleIcon from '../icons/CheckCircleIcon';
 import EmailIcon from '../icons/EmailIcon';
@@ -22,14 +26,13 @@ import MapPinIcon from '../icons/MapPinIcon';
 import PriceIcon from '../icons/PriceIcon';
 import TeamIcon from '../icons/TeamIcon';
 import UserIcon from '../icons/UserIcon';
+import InfoLine from '../InfoLine';
+import SplitText from '../SplitText';
+import TextInputCard from '../TextInputCard';
 
 type State = {
   formState: FormStates;
-  firstName: string;
-  lastName: string;
-  email: string;
-  section: string;
-  year: string;
+  participant: ParticipantState;
   consent: boolean;
   selectedTalks: boolean[];
   selectedDiscussions: boolean[];
@@ -39,46 +42,16 @@ type State = {
   errorMessage: string;
 };
 
-enum FormStates {
-  Form,
-  Loading,
-  Confirmation,
-  Error,
-}
-
-enum Years {
-  MAN = 'MAN',
-  BA2 = 'BA2',
-  BA4 = 'BA4',
-  BA6 = 'BA6',
-  MA2 = 'MA2',
-  MA4 = 'MA4',
-}
-
-enum Sections {
-  ComputerScience = 'Computer Science',
-  CommunicationSystems = 'Communication Systems',
-  DataScience = 'Data Science',
-  CyberSecurity = 'Cyber Security',
-}
-
 async function register({
   eventId,
-  first_name,
-  last_name,
-  email,
-  section,
-  year,
+  participant,
   activitiesIDs,
   noSlotActivitiesIDs,
 }) {
   let registrationId = await sendRegistration({
-    first_name,
-    last_name,
-    email: email.toLowerCase(),
-    section,
-    year,
     eventId,
+    participant,
+    comments: null,
   });
 
   await sendICBDActivitiesRegistrations({
@@ -90,32 +63,15 @@ async function register({
   await completeRegistration(registrationId);
 }
 
-async function validateValues(s: State, eventId: string) {
-  if (!s.firstName || s.firstName.length === 0) {
-    return 'First name is required';
-  }
-
-  if (!s.lastName || s.lastName.length === 0) {
-    return 'Last name is required';
-  }
-
-  if (!s.email) {
-    return 'Email is required';
-  }
-  if (await emailAlreadyUsed(s.email.toLowerCase(), eventId)) {
-    return 'Email is already used';
-  }
-
-  if (!/^[A-Za-z\-]+\.[A-Za-z\-]+@epfl\.ch$/.test(s.email)) {
-    return 'Email must be EPFL email';
-  }
-
-  if (!s.section || !Object.values(Sections).includes(s.section as Sections)) {
-    return 'Section is required';
-  }
-
-  if (!s.year || !Object.values(Years).includes(s.year as Years)) {
-    return 'Year is required';
+async function validateValues(s: State, eventId: number) {
+  const error = validateParticipant(
+    s.participant,
+    eventId,
+    Season.Spring,
+    true
+  );
+  if (error) {
+    return error;
   }
 
   if (!s.consent) {
@@ -148,7 +104,7 @@ export default function ICBDForm({
   interviews,
   cvCorrection,
 }: {
-  eventId: string;
+  eventId: number;
   date: string;
   location: string;
   deposit: string;
@@ -255,7 +211,7 @@ function Form({
   discussions: { title: string; time: string; id: number }[];
   interviews: { title: string; time: string; id: number }[];
   cvCorrection: { title: string; time: string; id: number };
-  eventId: string;
+  eventId: number;
 }) {
   function changeSelection(
     index: number,
@@ -274,7 +230,7 @@ function Form({
           Icon={UserIcon}
           placeholder="First Name"
           inputState={{
-            value: s.firstName,
+            value: s.participant.firstName,
             setValue: (value) => setField('firstName', value),
           }}
         />
@@ -282,7 +238,7 @@ function Form({
           Icon={UserIcon}
           placeholder="Last Name"
           inputState={{
-            value: s.lastName,
+            value: s.participant.lastName,
             setValue: (value) => setField('lastName', value),
           }}
         />
@@ -290,7 +246,7 @@ function Form({
           Icon={EmailIcon}
           placeholder="EPFL Email"
           inputState={{
-            value: s.email,
+            value: s.participant.email,
             setValue: (value) => setField('email', value),
           }}
         />
@@ -298,12 +254,12 @@ function Form({
         <DropdownCard
           Icon={TeamIcon}
           placeholder="Section"
-          options={Object.values(Sections).map((v) => ({
+          options={Object.values(ICSections).map((v) => ({
             display: v,
             value: v,
           }))}
           dropdownState={{
-            value: s.section,
+            value: s.participant.section,
             setValue: (value) => setField('section', value),
           }}
         />
@@ -311,12 +267,12 @@ function Form({
         <DropdownCard
           Icon={TeamIcon}
           placeholder="Year"
-          options={Object.values(Years).map((v) => ({
+          options={Object.values(SpringYears).map((v) => ({
             display: v,
             value: v,
           }))}
           dropdownState={{
-            value: s.year,
+            value: s.participant.year,
             setValue: (value) => setField('year', value),
           }}
         />
@@ -460,11 +416,7 @@ function Form({
             try {
               await register({
                 eventId,
-                first_name: s.firstName,
-                last_name: s.lastName,
-                email: s.email,
-                section: s.section,
-                year: s.year,
+                participant: s.participant,
                 activitiesIDs: [...talksIds, ...discussionsIds],
                 noSlotActivitiesIDs: [
                   ...interviewsIds,

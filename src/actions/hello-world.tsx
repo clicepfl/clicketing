@@ -1,8 +1,8 @@
 'use server';
 import { directus } from '@/directus';
-import { createItems, readItem, readItems } from '@directus/sdk';
+import { readItems } from '@directus/sdk';
 
-export async function teamAlreadyUsed(team: string, eventId: string) {
+export async function teamAlreadyUsed(team: string, eventId: number) {
   const registrations = await directus().request(
     readItems('registrations', {
       filter: {
@@ -14,7 +14,7 @@ export async function teamAlreadyUsed(team: string, eventId: string) {
   return registrations.length !== 0;
 }
 
-export async function getTeamMembers(team: string, eventId: string) {
+export async function getTeamMembers(team: string, eventId: number) {
   return await directus().request(
     readItems('registrations', {
       filter: {
@@ -22,38 +22,4 @@ export async function getTeamMembers(team: string, eventId: string) {
       },
     })
   );
-}
-
-export async function sendRegistration({
-  first_name,
-  last_name,
-  email,
-  section,
-  year,
-  team,
-  eventId,
-  comments,
-}) {
-  const event = await directus().request(readItem('events', eventId));
-
-  if (!event.opened) {
-    throw new Error('Not opened');
-  }
-
-  const eventRegistration = {
-    event: eventId,
-    email,
-    first_name,
-    family_name: last_name,
-    year,
-    section,
-    team,
-    comments,
-  };
-
-  const createdRegistration = await directus().request(
-    createItems('registrations', [eventRegistration])
-  );
-
-  return createdRegistration[0].id;
 }

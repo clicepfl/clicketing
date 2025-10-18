@@ -4,34 +4,6 @@ import { directus } from '@/directus';
 import { ICBDActivityRegistration, Registration } from '@/types/aliases';
 import { createItems, readItems, updateItem } from '@directus/sdk';
 
-export async function sendRegistration({
-  first_name,
-  last_name,
-  email,
-  section,
-  year,
-  eventId,
-}) {
-  const eventRegistration = {
-    event: eventId,
-    email,
-    first_name,
-    family_name: last_name,
-    year,
-    section,
-    checked_in: false,
-    retreived_deposit: false,
-    can_retrieve_deposit: false,
-    registration_complete: false,
-  };
-
-  const createdRegistration = await directus().request(
-    createItems('registrations', [eventRegistration])
-  );
-
-  return createdRegistration[0].id;
-}
-
 export async function sendICBDActivitiesRegistrations({
   activitiesIDs,
   noSlotActivitiesIDs,

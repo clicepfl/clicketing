@@ -1,16 +1,20 @@
 'use client';
 
-import { emailAlreadyUsed } from '@/actions/common';
-import { sendRegistration } from '@/actions/faculty-dinner';
+import {
+  emptyParticipantState,
+  FormStates,
+  ICSections,
+  ParticipantState,
+  Season,
+  sendRegistration,
+  SpringYears,
+  validateParticipant,
+} from '@/actions/common';
 import { ElementType, ReactNode, useReducer } from 'react';
 import Card from '../Card';
 import CheckboxCard from '../CheckboxCard';
 import DropdownCard from '../DropdownCard';
 import ErrorMessage from '../ErrorMessage';
-import InfoLine from '../InfoLine';
-import LargeTextInputCard from '../LargeTextInputCard';
-import NumberInputCard from '../NumberInputCard copy';
-import TextInputCard from '../TextInputCard';
 import AllergyIcon from '../icons/AllergyIcon';
 import CalendarIcon from '../icons/CalendarIcon';
 import CheckCircleIcon from '../icons/CheckCircleIcon';
@@ -21,14 +25,14 @@ import MenuIcon from '../icons/MenuIcon';
 import PriceIcon from '../icons/PriceIcon';
 import TeamIcon from '../icons/TeamIcon';
 import UserIcon from '../icons/UserIcon';
+import InfoLine from '../InfoLine';
+import LargeTextInputCard from '../LargeTextInputCard';
+import NumberInputCard from '../NumberInputCard copy';
+import TextInputCard from '../TextInputCard';
 
 type State = {
   formState: FormStates;
-  firstName: string;
-  lastName: string;
-  email: string;
-  section: string;
-  year: string;
+  participant: ParticipantState;
   consent: boolean;
   errorMessage: string;
   mealId: null | number;
@@ -41,88 +45,19 @@ export interface Meal {
   description: string;
 }
 
-enum FormStates {
-  Form,
-  Loading,
-  Confirmation,
-  Error,
-}
-
-enum Years {
-  MAN = 'MAN',
-  BA2 = 'BA2',
-  BA4 = 'BA4',
-  BA6 = 'BA6',
-  MA2 = 'MA2',
-  MA4 = 'MA4',
-  PhD = 'PhD',
-  Other = 'Other',
-}
-
-enum Sections {
-  ComputerScience = 'Computer Science',
-  CommunicationSystems = 'Communication Systems',
-  DataScience = 'Data Science',
-  CyberSecurity = 'Cyber Security',
-}
-
-async function register({
-  eventId,
-  first_name,
-  last_name,
-  email,
-  section,
-  year,
-  meal,
-  comments,
-  plus_ones,
-  guest,
-}) {
-  let registrationId = await sendRegistration({
-    first_name,
-    last_name,
-    email: email.toLowerCase(),
-    section,
-    year,
+async function validateValues(s: State, eventId: number, guest: boolean) {
+  const error = await validateParticipant(
+    s.participant,
     eventId,
-    meal,
-    comments,
-    plus_ones,
+    Season.Spring,
+    true, // only IC
     guest,
-  });
-}
+    guest,
+    guest
+  ); // for guests allow external email, no section and no year
 
-async function validateValues(s: State, eventId: string, guest: boolean) {
-  if (!s.firstName || s.firstName.length === 0) {
-    return 'First name is required';
-  }
-
-  if (!s.lastName || s.lastName.length === 0) {
-    return 'Last name is required';
-  }
-
-  if (!s.email) {
-    return 'Email is required';
-  }
-  if (await emailAlreadyUsed(s.email.toLowerCase(), eventId)) {
-    return 'Email is already used';
-  }
-
-  if (!guest && !/^[A-Za-z\-]+\.[A-Za-z\-]+@epfl\.ch$/.test(s.email)) {
-    return 'Email must be EPFL email';
-  }
-
-  if (!guest) {
-    if (
-      !s.section ||
-      !Object.values(Sections).includes(s.section as Sections)
-    ) {
-      return 'Section is required';
-    }
-
-    if (!s.year || !Object.values(Years).includes(s.year as Years)) {
-      return 'Year is required';
-    }
+  if (error) {
+    return error;
   }
 
   if (s.mealId === null) {
@@ -153,7 +88,7 @@ export default function FacultyDinnerForm({
   meals,
   guest = false,
 }: {
-  eventId: string;
+  eventId: number;
   date: string;
   location: string;
   deposit: string;
@@ -170,11 +105,7 @@ export default function FacultyDinnerForm({
   // Define initial state
   const initialState: State = {
     formState: FormStates.Form,
-    firstName: '',
-    lastName: '',
-    email: '',
-    section: '',
-    year: '',
+    participant: emptyParticipantState,
     consent: false,
     errorMessage: '',
     mealId: null,
@@ -241,7 +172,7 @@ function Form({
 }: {
   s: State;
   setField: (field: string, value) => void;
-  eventId: string;
+  eventId: number;
   meals: Meal[];
   guest: boolean;
 }) {
@@ -303,7 +234,7 @@ function Form({
           Icon={UserIcon}
           placeholder="First Name"
           inputState={{
-            value: s.firstName,
+            value: s.participant.firstName,
             setValue: (value) => setField('firstName', value),
           }}
         />
@@ -311,7 +242,7 @@ function Form({
           Icon={UserIcon}
           placeholder="Last Name"
           inputState={{
-            value: s.lastName,
+            value: s.participant.lastName,
             setValue: (value) => setField('lastName', value),
           }}
         />
@@ -319,7 +250,7 @@ function Form({
           Icon={EmailIcon}
           placeholder="EPFL Email"
           inputState={{
-            value: s.email,
+            value: s.participant.email,
             setValue: (value) => setField('email', value),
           }}
         />
@@ -332,12 +263,12 @@ function Form({
             <DropdownCard
               Icon={TeamIcon}
               placeholder="Section"
-              options={Object.values(Sections).map((v) => ({
+              options={Object.values(ICSections).map((v) => ({
                 display: v,
                 value: v,
               }))}
               dropdownState={{
-                value: s.section,
+                value: s.participant.section,
                 setValue: (value) => setField('section', value),
               }}
             />
@@ -345,12 +276,12 @@ function Form({
             <DropdownCard
               Icon={TeamIcon}
               placeholder="Year"
-              options={Object.values(Years).map((v) => ({
+              options={Object.values(SpringYears).map((v) => ({
                 display: v,
                 value: v,
               }))}
               dropdownState={{
-                value: s.year,
+                value: s.participant.year,
                 setValue: (value) => setField('year', value),
               }}
             />
@@ -424,13 +355,15 @@ function Form({
           setField('formState', FormStates.Loading);
 
           try {
-            await register({
+            await sendRegistration({
               eventId,
-              first_name: s.firstName,
-              last_name: s.lastName,
-              email: s.email.toLowerCase(),
-              section: guest ? 'Guest' : s.section,
-              year: guest ? 'Guest' : s.year,
+              participant: {
+                firstName: s.participant.firstName,
+                lastName: s.participant.lastName,
+                email: s.participant.email.toLowerCase(),
+                section: guest ? 'Guest' : s.participant.section,
+                year: guest ? 'Guest' : s.participant.year,
+              },
               meal: s.mealId,
               comments: s.comments,
               plus_ones: guest ? s.plus_ones : 0,
