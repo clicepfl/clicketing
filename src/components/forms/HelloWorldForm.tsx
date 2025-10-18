@@ -1,14 +1,20 @@
 'use client';
-import { emailAlreadyUsed } from '@/actions/common';
-import { sendRegistration, teamAlreadyUsed } from '@/actions/hello-world';
+import {
+  AutumnYears,
+  emptyParticipantState,
+  FormStates,
+  ParticipantState,
+  Season,
+  Sections,
+  sendRegistration,
+  validateParticipant,
+} from '@/actions/common';
+import { teamAlreadyUsed } from '@/actions/hello-world';
 import { ElementType, ReactNode, useReducer } from 'react';
 import Card from '../Card';
 import CheckboxCard from '../CheckboxCard';
 import DropdownCard from '../DropdownCard';
 import ErrorMessage from '../ErrorMessage';
-import InfoLine from '../InfoLine';
-import LargeTextInputCard from '../LargeTextInputCard';
-import TextInputCard from '../TextInputCard';
 import CalendarIcon from '../icons/CalendarIcon';
 import CheckCircleIcon from '../icons/CheckCircleIcon';
 import EmailIcon from '../icons/EmailIcon';
@@ -17,112 +23,36 @@ import PencilIcon from '../icons/PencilIcon';
 import PriceIcon from '../icons/PriceIcon';
 import TeamIcon from '../icons/TeamIcon';
 import UserIcon from '../icons/UserIcon';
-
-type PersonState = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  section: string;
-  year: string;
-};
+import InfoLine from '../InfoLine';
+import LargeTextInputCard from '../LargeTextInputCard';
+import TextInputCard from '../TextInputCard';
 
 type State = {
   formState: FormStates;
-  member1: PersonState;
-  member2: PersonState;
-  member3: PersonState;
+  member1: ParticipantState;
+  member2: ParticipantState;
+  member3: ParticipantState;
   team: string;
   consent: boolean;
   errorMessage: string;
   comments: string;
 };
 
-enum FormStates {
-  Form,
-  Loading,
-  Confirmation,
-  Error,
-}
-
-enum Years {
-  BA1 = 'BA1',
-  BA3 = 'BA3',
-  BA5 = 'BA5',
-  MA1 = 'MA1',
-  MA3 = 'MA3',
-  Other = 'Other',
-}
-
-enum Sections {
-  ComputerScience = 'Computer Science',
-  CommunicationSystems = 'Communication Systems',
-  DataScience = 'Data Science',
-  CyberSecurity = 'Cyber Security',
-  Other = 'Other',
-}
-
-async function register({
-  eventId,
-  first_name,
-  last_name,
-  email,
-  section,
-  year,
-  team,
-  comments,
-}) {
+async function register({ eventId, participant, team, comments }) {
   let registrationId = await sendRegistration({
-    first_name,
-    last_name,
-    email: email.toLowerCase(),
-    section,
-    year,
     eventId,
-    team,
+    participant,
     comments,
+    team,
   });
 }
 
-async function validateMember(member: PersonState, eventId: string) {
-  if (!member.firstName || member.firstName.length === 0) {
-    return 'First name is required';
-  }
-
-  if (!member.lastName || member.lastName.length === 0) {
-    return 'Last name is required';
-  }
-
-  if (!member.email) {
-    return 'Email is required';
-  }
-  if (await emailAlreadyUsed(member.email.toLowerCase(), eventId)) {
-    return 'Email is already used';
-  }
-
-  if (!/^[A-Za-z\-]+\.[A-Za-z\-]+@epfl\.ch$/.test(member.email)) {
-    return 'Email must be EPFL email';
-  }
-
-  if (
-    !member.section ||
-    !Object.values(Sections).includes(member.section as Sections)
-  ) {
-    return 'Section is required';
-  }
-
-  if (!member.year || !Object.values(Years).includes(member.year as Years)) {
-    return 'Year is required';
-  }
-
-  return null;
-}
-
-async function validateValues(s: State, eventId: string) {
+async function validateValues(s: State, eventId: number) {
   let members = [s.member1, s.member2, s.member3];
 
   for (let i = 0; i < members.length; i++) {
     const member = members[i];
-    const error = await validateMember(member, eventId);
+    const error = await validateParticipant(member, eventId, Season.Autumn);
     if (error) {
       return `Member ${i + 1}: ${error}`;
     }
@@ -155,7 +85,7 @@ export default function HelloWorldForm({
   location,
   deposit,
 }: {
-  eventId: string;
+  eventId: number;
   date: string;
   location: string;
   deposit: string;
@@ -170,27 +100,9 @@ export default function HelloWorldForm({
   // Define initial state
   const initialState: State = {
     formState: FormStates.Form,
-    member1: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      section: '',
-      year: '',
-    },
-    member2: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      section: '',
-      year: '',
-    },
-    member3: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      section: '',
-      year: '',
-    },
+    member1: emptyParticipantState,
+    member2: emptyParticipantState,
+    member3: emptyParticipantState,
     team: '',
     consent: false,
     errorMessage: '',
@@ -262,7 +174,7 @@ function Form({
   s: State;
   setField: (field: string, value) => void;
   setMemberField: (memberNumber: number, field: string, value) => void;
-  eventId: string;
+  eventId: number;
 }) {
   function changeSelection(
     index: number,
@@ -327,7 +239,7 @@ function Form({
             <DropdownCard
               Icon={TeamIcon}
               placeholder="Year"
-              options={Object.values(Years).map((v) => ({
+              options={Object.values(AutumnYears).map((v) => ({
                 display: v,
                 value: v,
               }))}
@@ -385,13 +297,9 @@ function Form({
           try {
             for (let i = 1; i <= 3; i++) {
               const member = s[`member${i}`];
-              await register({
+              await sendRegistration({
                 eventId,
-                first_name: member.firstName,
-                last_name: member.lastName,
-                email: member.email.toLowerCase(),
-                section: member.section,
-                year: member.year,
+                participant: member,
                 team: s.team,
                 comments: s.comments,
               });
