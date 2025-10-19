@@ -154,7 +154,7 @@ export default function FacultyDinnerForm({
           case FormStates.Confirmation:
             return <Confirmation guest={guest} />;
           case FormStates.Error:
-            return <ErrorDisplay message={state.errorMessage}></ErrorDisplay>;
+            return <ErrorDisplay message={state.errorMessage} />;
           default:
             return null;
         }
@@ -407,16 +407,6 @@ function Confirmation({ guest }: { guest: boolean }) {
           weekdays.
         </p>
       )}
-    </>
-  );
-}
-
-function ErrorDisplay({ message }: { message: string }) {
-  return (
-    <>
-      <p>Registration failed: {message}</p>
-      <p>Please refresh the page and try again</p>
-      <p>Contact clic@epfl.ch if the issue persists</p>
     </>
   );
 }
