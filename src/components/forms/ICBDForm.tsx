@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  emptyParticipantState,
   FormStates,
   ICSections,
   ParticipantState,
@@ -121,13 +122,9 @@ export default function ICBDForm({
   ];
 
   // Define initial state
-  const initialState = {
+  const initialState: State = {
     formState: FormStates.Form,
-    firstName: '',
-    lastName: '',
-    email: '',
-    section: '',
-    year: '',
+    participant: emptyParticipantState,
     consent: false,
     selectedTalks: talks.map(() => false),
     selectedDiscussions: discussions.map(() => false),
@@ -466,16 +463,6 @@ function Confirmation({ interviewSelected }: { interviewSelected: boolean }) {
           </p>
         </Card>
       )}
-    </>
-  );
-}
-
-function ErrorDisplay({ message }: { message: string }) {
-  return (
-    <>
-      <p>Registration failed: {message}</p>
-      <p>Please refresh the page and try again</p>
-      <p>Contact clic@epfl.ch if the issue persists</p>
     </>
   );
 }

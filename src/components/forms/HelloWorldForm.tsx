@@ -38,15 +38,6 @@ type State = {
   comments: string;
 };
 
-async function register({ eventId, participant, team, comments }) {
-  let registrationId = await sendRegistration({
-    eventId,
-    participant,
-    comments,
-    team,
-  });
-}
-
 async function validateValues(s: State, eventId: number) {
   let members = [s.member1, s.member2, s.member3];
 
@@ -330,16 +321,6 @@ function Confirmation() {
         <p>Your registration to Hello World is successful !</p>
       </Card>
       <p>Check your email for confirmation, and see you soon !</p>
-    </>
-  );
-}
-
-function ErrorDisplay({ message }: { message: string }) {
-  return (
-    <>
-      <p>Registration failed: {message}</p>
-      <p>Please refresh the page and try again</p>
-      <p>Contact clic@epfl.ch if the issue persists</p>
     </>
   );
 }
