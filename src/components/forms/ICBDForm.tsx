@@ -3,11 +3,11 @@
 import {
   emptyParticipantState,
   FormStates,
-  ICSections,
+  IC_SECTIONS,
   ParticipantState,
   Season,
   sendRegistration,
-  SpringYears,
+  SPRING_YEARS,
   validateParticipant,
 } from '@/actions/common';
 import {
@@ -251,7 +251,7 @@ function Form({
         <DropdownCard
           Icon={TeamIcon}
           placeholder="Section"
-          options={Object.values(ICSections).map((v) => ({
+          options={IC_SECTIONS.map((v) => ({
             display: v,
             value: v,
           }))}
@@ -264,7 +264,7 @@ function Form({
         <DropdownCard
           Icon={TeamIcon}
           placeholder="Year"
-          options={Object.values(SpringYears).map((v) => ({
+          options={SPRING_YEARS.map((v) => ({
             display: v,
             value: v,
           }))}

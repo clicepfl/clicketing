@@ -1,4 +1,4 @@
-'use server';
+'use client';
 
 import { directus } from '@/directus';
 import { Registration } from '@/types/aliases';
@@ -11,38 +11,43 @@ export enum FormStates {
   Error,
 }
 
-export enum ICSections {
-  ComputerScience = 'Computer Science',
-  CommunicationSystems = 'Communication Systems',
-  DataScience = 'Data Science',
-  CyberSecurity = 'Cyber Security',
-}
+export const IC_SECTIONS = [
+  'Computer Science',
+  'Communication Systems',
+  'Data Science',
+  'Cyber Security',
+] as const;
+export type ICSections = (typeof IC_SECTIONS)[number];
 
-export enum Sections {
-  ComputerScience = 'Computer Science',
-  CommunicationSystems = 'Communication Systems',
-  DataScience = 'Data Science',
-  CyberSecurity = 'Cyber Security',
-}
+export const SECTIONS = [
+  'Computer Science',
+  'Communication Systems',
+  'Data Science',
+  'Cyber Security',
+  'Other',
+] as const;
+export type Sections = (typeof SECTIONS)[number];
 
-export enum SpringYears {
-  MAN = 'MAN',
-  BA2 = 'BA2',
-  BA4 = 'BA4',
-  BA6 = 'BA6',
-  MA2 = 'MA2',
-  MA4 = 'MA4',
-  Other = 'Other',
-}
+export const SPRING_YEARS = [
+  'MAN',
+  'BA2',
+  'BA4',
+  'BA6',
+  'MA2',
+  'MA4',
+  'Other',
+] as const;
+export type SpringYears = (typeof SPRING_YEARS)[number];
 
-export enum AutumnYears {
-  BA1 = 'BA1',
-  BA3 = 'BA3',
-  BA5 = 'BA5',
-  MA1 = 'MA1',
-  MA3 = 'MA3',
-  Other = 'Other',
-}
+export const AUTUMN_YEARS = [
+  'BA1',
+  'BA3',
+  'BA5',
+  'MA1',
+  'MA3',
+  'Other',
+] as const;
+export type AutumnYears = (typeof AUTUMN_YEARS)[number];
 
 export type ParticipantState = {
   firstName: string;
@@ -108,10 +113,10 @@ export async function validateParticipant(
   }
 
   function isICSection(section) {
-    return Object.values(ICSections).includes(section as ICSections);
+    return IC_SECTIONS.includes(section as ICSections);
   }
   function isAnySection(section) {
-    return Object.values(Sections).includes(section as Sections);
+    return SECTIONS.includes(section as Sections);
   }
 
   if (
@@ -124,10 +129,10 @@ export async function validateParticipant(
   }
 
   function isAutumnYear(year) {
-    return Object.values(AutumnYears).includes(year as AutumnYears);
+    return AUTUMN_YEARS.includes(year as AutumnYears);
   }
   function isSpringYear(year) {
-    return Object.values(SpringYears).includes(year as SpringYears);
+    return SPRING_YEARS.includes(year as SpringYears);
   }
 
   if (
