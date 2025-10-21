@@ -15,7 +15,7 @@ export default async function FacultyDinner({
 
   return (
     <FacultyDinnerForm
-      eventId={event.id.toString()}
+      eventId={event.id}
       date={`${date}`}
       location="BC Building"
       deposit={`${event.price ?? 0}CHF`}

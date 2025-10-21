@@ -1,20 +1,24 @@
 'use client';
 
 import {
-  emptyParticipantState,
   FormStates,
   IC_SECTIONS,
   ParticipantState,
-  Season,
-  sendRegistration,
   SPRING_YEARS,
+  Season,
+  emptyParticipantState,
   validateParticipant,
-} from '@/actions/common';
-import { ElementType, ReactNode, useReducer } from 'react';
+} from '@/actions/common-client';
+import { sendRegistration } from '@/actions/common-server';
+import { ElementType, ReactNode, useState } from 'react';
 import Card from '../Card';
 import CheckboxCard from '../CheckboxCard';
 import DropdownCard from '../DropdownCard';
 import ErrorMessage from '../ErrorMessage';
+import InfoLine from '../InfoLine';
+import LargeTextInputCard from '../LargeTextInputCard';
+import NumberInputCard from '../NumberInputCard copy';
+import TextInputCard from '../TextInputCard';
 import AllergyIcon from '../icons/AllergyIcon';
 import CalendarIcon from '../icons/CalendarIcon';
 import CheckCircleIcon from '../icons/CheckCircleIcon';
@@ -25,10 +29,6 @@ import MenuIcon from '../icons/MenuIcon';
 import PriceIcon from '../icons/PriceIcon';
 import TeamIcon from '../icons/TeamIcon';
 import UserIcon from '../icons/UserIcon';
-import InfoLine from '../InfoLine';
-import LargeTextInputCard from '../LargeTextInputCard';
-import NumberInputCard from '../NumberInputCard copy';
-import TextInputCard from '../TextInputCard';
 
 type State = {
   formState: FormStates;
@@ -113,24 +113,27 @@ export default function FacultyDinnerForm({
     plus_ones: null,
   };
 
-  // Define reducer
-  function reducer(state, action) {
-    switch (action.type) {
-      case 'SET_FIELD':
-        return { ...state, [action.field]: action.value };
-      case 'SET_ERROR':
-        return { ...state, errorMessage: action.value };
-      default:
-        throw Error('Invalid action type');
-    }
-  }
+  const [state, setState] = useState(initialState);
 
-  function setField(field, value) {
-    dispatch({ type: 'SET_FIELD', field, value });
-  }
+  const setField = <K extends keyof State>(field: K, value: State[K]) => {
+    setState((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
+  };
 
-  // Use reducer
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const setParticipantField = <K extends keyof ParticipantState>(
+    field: K,
+    value: ParticipantState[K]
+  ) => {
+    setState((prevState) => ({
+      ...prevState,
+      participant: {
+        ...prevState.participant,
+        [field]: value,
+      },
+    }));
+  };
 
   return (
     <div className="form">
@@ -144,6 +147,7 @@ export default function FacultyDinnerForm({
               <Form
                 s={state}
                 setField={setField}
+                setParticipantField={setParticipantField}
                 eventId={eventId}
                 meals={meals}
                 guest={guest}
@@ -166,12 +170,17 @@ export default function FacultyDinnerForm({
 function Form({
   s,
   setField,
+  setParticipantField,
   eventId,
   meals,
   guest,
 }: {
   s: State;
-  setField: (field: string, value) => void;
+  setField: <K extends keyof State>(field: K, value: State[K]) => void;
+  setParticipantField: <K extends keyof ParticipantState>(
+    field: K,
+    value: ParticipantState[K]
+  ) => void;
   eventId: number;
   meals: Meal[];
   guest: boolean;
@@ -225,7 +234,7 @@ function Form({
           placeholder="First Name"
           inputState={{
             value: s.participant.firstName,
-            setValue: (value) => setField('firstName', value),
+            setValue: (value) => setParticipantField('firstName', value),
           }}
         />
         <TextInputCard
@@ -233,7 +242,7 @@ function Form({
           placeholder="Last Name"
           inputState={{
             value: s.participant.lastName,
-            setValue: (value) => setField('lastName', value),
+            setValue: (value) => setParticipantField('lastName', value),
           }}
         />
         <TextInputCard
@@ -241,7 +250,7 @@ function Form({
           placeholder="EPFL Email"
           inputState={{
             value: s.participant.email,
-            setValue: (value) => setField('email', value),
+            setValue: (value) => setParticipantField('email', value),
           }}
         />
 
@@ -259,7 +268,7 @@ function Form({
               }))}
               dropdownState={{
                 value: s.participant.section,
-                setValue: (value) => setField('section', value),
+                setValue: (value) => setParticipantField('section', value),
               }}
             />
 
@@ -272,7 +281,7 @@ function Form({
               }))}
               dropdownState={{
                 value: s.participant.year,
-                setValue: (value) => setField('year', value),
+                setValue: (value) => setParticipantField('year', value),
               }}
             />
           </>

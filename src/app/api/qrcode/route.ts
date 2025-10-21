@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
   const uri: string = await toDataURL(value, { width: parseInt(size) });
   const base64 = uri.substring('data:image/png;base64,'.length);
 
-  return new Response(Buffer.from(base64, 'base64'), {
+  return new Response(new Uint8Array(Buffer.from(base64, 'base64')), {
     status: 200,
     headers: { 'Content-Type': 'image/png', ...CORS_ALLOW_ALL_HEADERS },
   });

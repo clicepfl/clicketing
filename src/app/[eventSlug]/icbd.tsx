@@ -55,7 +55,7 @@ export default async function ICBD({ event }: { event: Event }) {
 
   return (
     <ICBDForm
-      eventId={event.id.toString()}
+      eventId={event.id}
       date={`${date}`}
       location="BC Building"
       deposit={`${event.price ?? 0}CHF Deposit`}
