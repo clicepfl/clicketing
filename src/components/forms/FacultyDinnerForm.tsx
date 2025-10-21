@@ -3,11 +3,11 @@
 import {
   emptyParticipantState,
   FormStates,
-  ICSections,
+  IC_SECTIONS,
   ParticipantState,
   Season,
   sendRegistration,
-  SpringYears,
+  SPRING_YEARS,
   validateParticipant,
 } from '@/actions/common';
 import { ElementType, ReactNode, useReducer } from 'react';
@@ -176,16 +176,6 @@ function Form({
   meals: Meal[];
   guest: boolean;
 }) {
-  function changeSelection(
-    index: number,
-    newValue: boolean,
-    oldValues: boolean[]
-  ) {
-    const newValues = [...oldValues];
-    newValues[index] = newValue;
-    return newValues;
-  }
-
   return (
     <>
       {guest ? (
@@ -263,7 +253,7 @@ function Form({
             <DropdownCard
               Icon={TeamIcon}
               placeholder="Section"
-              options={Object.values(ICSections).map((v) => ({
+              options={IC_SECTIONS.map((v) => ({
                 display: v,
                 value: v,
               }))}
@@ -276,7 +266,7 @@ function Form({
             <DropdownCard
               Icon={TeamIcon}
               placeholder="Year"
-              options={Object.values(SpringYears).map((v) => ({
+              options={SPRING_YEARS.map((v) => ({
                 display: v,
                 value: v,
               }))}

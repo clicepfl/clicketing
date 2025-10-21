@@ -1,11 +1,11 @@
 'use client';
 import {
-  AutumnYears,
+  AUTUMN_YEARS,
   emptyParticipantState,
   FormStates,
   ParticipantState,
   Season,
-  Sections,
+  SECTIONS,
   sendRegistration,
   validateParticipant,
 } from '@/actions/common';
@@ -167,16 +167,6 @@ function Form({
   setMemberField: (memberNumber: number, field: string, value) => void;
   eventId: number;
 }) {
-  function changeSelection(
-    index: number,
-    newValue: boolean,
-    oldValues: boolean[]
-  ) {
-    const newValues = [...oldValues];
-    newValues[index] = newValue;
-    return newValues;
-  }
-
   return (
     <>
       <section>
@@ -217,7 +207,7 @@ function Form({
             <DropdownCard
               Icon={TeamIcon}
               placeholder="Section"
-              options={Object.values(Sections).map((v) => ({
+              options={SECTIONS.map((v) => ({
                 display: v,
                 value: v,
               }))}
@@ -230,7 +220,7 @@ function Form({
             <DropdownCard
               Icon={TeamIcon}
               placeholder="Year"
-              options={Object.values(AutumnYears).map((v) => ({
+              options={AUTUMN_YEARS.map((v) => ({
                 display: v,
                 value: v,
               }))}
