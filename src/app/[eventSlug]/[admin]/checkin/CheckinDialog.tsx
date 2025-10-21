@@ -1,4 +1,4 @@
-import { checkInRegistration, markPayment } from '@/actions/common';
+import { checkInRegistration, markPayment } from '@/actions/common-server';
 import { getTeamMembers } from '@/actions/hello-world';
 import { returnDeposit } from '@/actions/icbd';
 import Card from '@/components/Card';
@@ -161,7 +161,7 @@ export function HWCheckinDialog({
   const [teamMembers, setTeamMembers] = useState<Registration[]>([]);
 
   useEffect(() => {
-    getTeamMembers(participant.team, event.id.toString()).then((members) =>
+    getTeamMembers(participant.team, event.id).then((members) =>
       setTeamMembers(members)
     );
   }, [teamMembers]);

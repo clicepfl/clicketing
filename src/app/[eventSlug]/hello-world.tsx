@@ -9,7 +9,7 @@ export default async function HelloWorld({ event }: { event: Event }) {
 
   return (
     <HelloWorldForm
-      eventId={event.id.toString()}
+      eventId={event.id}
       date={`${date}`}
       location="BC Building"
       deposit={`${event.price ?? 0}CHF`}

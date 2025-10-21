@@ -1,4 +1,4 @@
-import { markPayment } from '@/actions/common';
+import { markPayment } from '@/actions/common-server';
 import Card from '@/components/Card';
 import DropdownCard from '@/components/DropdownCard';
 import CheckCircleIcon from '@/components/icons/CheckCircleIcon';

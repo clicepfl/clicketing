@@ -1,24 +1,27 @@
 'use client';
 
 import {
-  emptyParticipantState,
   FormStates,
   IC_SECTIONS,
   ParticipantState,
-  Season,
-  sendRegistration,
   SPRING_YEARS,
+  Season,
+  emptyParticipantState,
   validateParticipant,
-} from '@/actions/common';
+} from '@/actions/common-client';
+import { sendRegistration } from '@/actions/common-server';
 import {
   completeRegistration,
   sendICBDActivitiesRegistrations,
 } from '@/actions/icbd';
-import { ElementType, ReactNode, useReducer } from 'react';
+import { ElementType, ReactNode, useState } from 'react';
 import Card from '../Card';
 import CheckboxCard from '../CheckboxCard';
 import DropdownCard from '../DropdownCard';
 import ErrorMessage from '../ErrorMessage';
+import InfoLine from '../InfoLine';
+import SplitText from '../SplitText';
+import TextInputCard from '../TextInputCard';
 import CalendarIcon from '../icons/CalendarIcon';
 import CheckCircleIcon from '../icons/CheckCircleIcon';
 import EmailIcon from '../icons/EmailIcon';
@@ -27,9 +30,6 @@ import MapPinIcon from '../icons/MapPinIcon';
 import PriceIcon from '../icons/PriceIcon';
 import TeamIcon from '../icons/TeamIcon';
 import UserIcon from '../icons/UserIcon';
-import InfoLine from '../InfoLine';
-import SplitText from '../SplitText';
-import TextInputCard from '../TextInputCard';
 
 type State = {
   formState: FormStates;
@@ -134,24 +134,27 @@ export default function ICBDForm({
     errorMessage: '',
   };
 
-  // Define reducer
-  function reducer(state, action) {
-    switch (action.type) {
-      case 'SET_FIELD':
-        return { ...state, [action.field]: action.value };
-      case 'SET_ERROR':
-        return { ...state, errorMessage: action.value };
-      default:
-        throw Error('Invalid action type');
-    }
-  }
+  const [state, setState] = useState(initialState);
 
-  function setField(field, value) {
-    dispatch({ type: 'SET_FIELD', field, value });
-  }
+  const setField = <K extends keyof State>(field: K, value: State[K]) => {
+    setState((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
+  };
 
-  // Use reducer
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const setParticipantField = <K extends keyof ParticipantState>(
+    field: K,
+    value: ParticipantState[K]
+  ) => {
+    setState((prevState) => ({
+      ...prevState,
+      participant: {
+        ...prevState.participant,
+        [field]: value,
+      },
+    }));
+  };
 
   return (
     <div className="form">
@@ -165,6 +168,7 @@ export default function ICBDForm({
               <Form
                 s={state}
                 setField={setField}
+                setParticipantField={setParticipantField}
                 talks={talks}
                 discussions={discussions}
                 interviews={interviews}
@@ -196,6 +200,7 @@ export default function ICBDForm({
 function Form({
   s,
   setField,
+  setParticipantField,
   talks,
   discussions,
   interviews,
@@ -203,7 +208,11 @@ function Form({
   eventId,
 }: {
   s: State;
-  setField: (field: string, value) => void;
+  setField: <K extends keyof State>(field: K, value: State[K]) => void;
+  setParticipantField: <K extends keyof ParticipantState>(
+    field: K,
+    value: ParticipantState[K]
+  ) => void;
   talks: { title: string; time: string; id: number }[];
   discussions: { title: string; time: string; id: number }[];
   interviews: { title: string; time: string; id: number }[];
@@ -228,7 +237,7 @@ function Form({
           placeholder="First Name"
           inputState={{
             value: s.participant.firstName,
-            setValue: (value) => setField('firstName', value),
+            setValue: (value) => setParticipantField('firstName', value),
           }}
         />
         <TextInputCard
@@ -236,7 +245,7 @@ function Form({
           placeholder="Last Name"
           inputState={{
             value: s.participant.lastName,
-            setValue: (value) => setField('lastName', value),
+            setValue: (value) => setParticipantField('lastName', value),
           }}
         />
         <TextInputCard
@@ -244,7 +253,7 @@ function Form({
           placeholder="EPFL Email"
           inputState={{
             value: s.participant.email,
-            setValue: (value) => setField('email', value),
+            setValue: (value) => setParticipantField('email', value),
           }}
         />
 
@@ -257,7 +266,7 @@ function Form({
           }))}
           dropdownState={{
             value: s.participant.section,
-            setValue: (value) => setField('section', value),
+            setValue: (value) => setParticipantField('section', value),
           }}
         />
 
@@ -270,7 +279,7 @@ function Form({
           }))}
           dropdownState={{
             value: s.participant.year,
-            setValue: (value) => setField('year', value),
+            setValue: (value) => setParticipantField('year', value),
           }}
         />
 

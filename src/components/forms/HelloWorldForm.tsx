@@ -1,20 +1,23 @@
 'use client';
 import {
   AUTUMN_YEARS,
-  emptyParticipantState,
   FormStates,
   ParticipantState,
-  Season,
   SECTIONS,
-  sendRegistration,
+  Season,
+  emptyParticipantState,
   validateParticipant,
-} from '@/actions/common';
+} from '@/actions/common-client';
+import { sendRegistration } from '@/actions/common-server';
 import { teamAlreadyUsed } from '@/actions/hello-world';
-import { ElementType, ReactNode, useReducer } from 'react';
+import { ElementType, ReactNode, useState } from 'react';
 import Card from '../Card';
 import CheckboxCard from '../CheckboxCard';
 import DropdownCard from '../DropdownCard';
 import ErrorMessage from '../ErrorMessage';
+import InfoLine from '../InfoLine';
+import LargeTextInputCard from '../LargeTextInputCard';
+import TextInputCard from '../TextInputCard';
 import CalendarIcon from '../icons/CalendarIcon';
 import CheckCircleIcon from '../icons/CheckCircleIcon';
 import EmailIcon from '../icons/EmailIcon';
@@ -23,9 +26,6 @@ import PencilIcon from '../icons/PencilIcon';
 import PriceIcon from '../icons/PriceIcon';
 import TeamIcon from '../icons/TeamIcon';
 import UserIcon from '../icons/UserIcon';
-import InfoLine from '../InfoLine';
-import LargeTextInputCard from '../LargeTextInputCard';
-import TextInputCard from '../TextInputCard';
 
 type State = {
   formState: FormStates;
@@ -100,31 +100,25 @@ export default function HelloWorldForm({
     comments: '',
   };
 
-  // Define reducer
-  function reducer(state, action) {
-    switch (action.type) {
-      case 'SET_FIELD':
-        return { ...state, [action.field]: action.value };
-      case 'SET_ERROR':
-        return { ...state, errorMessage: action.value };
-      default:
-        throw Error('Invalid action type');
-    }
-  }
+  const [state, setState] = useState(initialState);
 
-  function setField(field, value) {
-    dispatch({ type: 'SET_FIELD', field, value });
-  }
+  const setField = <K extends keyof State>(field: K, value: State[K]) => {
+    setState((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
+  };
 
-  function setMemberField(memberNumber: number, field: string, value) {
-    const memberKey = `member${memberNumber}`;
+  const setMemberField = <K extends keyof ParticipantState>(
+    memberNumber: 1 | 2 | 3,
+    field: K,
+    value: ParticipantState[K]
+  ) => {
+    let memberKey: keyof State = `member${memberNumber}`;
     const member = state[memberKey];
     const newMember = { ...member, [field]: value };
     setField(memberKey, newMember);
-  }
-
-  // Use reducer
-  const [state, dispatch] = useReducer(reducer, initialState);
+  };
 
   return (
     <div className="form">
@@ -163,8 +157,12 @@ function Form({
   eventId,
 }: {
   s: State;
-  setField: (field: string, value) => void;
-  setMemberField: (memberNumber: number, field: string, value) => void;
+  setField: <K extends keyof State>(field: K, value: State[K]) => void;
+  setMemberField: <K extends keyof ParticipantState>(
+    memberNumber: 1 | 2 | 3,
+    field: K,
+    value: ParticipantState[K]
+  ) => void;
   eventId: number;
 }) {
   return (
@@ -176,7 +174,7 @@ function Form({
           If you do not yet have a team, you can look for one on the{' '}
           <a href="https://t.me/+kwrmi0cIc75jNjM0">Hello World Group Finder</a>.
         </p>
-        {[1, 2, 3].map((i) => (
+        {[1, 2, 3].map((i: 1 | 2 | 3) => (
           <>
             <h2>Team Member {i}</h2>
             <TextInputCard
