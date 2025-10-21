@@ -3,6 +3,7 @@ import { Event } from '@/types/aliases';
 import { readItems } from '@directus/sdk';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import BasicEvent from './basic-event';
 import FacultyDinner from './faculty-dinner';
 import HelloWorld from './hello-world';
 import ICBD from './icbd';
@@ -59,6 +60,8 @@ export default async function Home({ params }) {
       return <FacultyDinner event={event}></FacultyDinner>;
     case 'hello_world':
       return <HelloWorld event={event}></HelloWorld>;
+    default:
+      return <BasicEvent event={event}></BasicEvent>;
   }
 }
 
