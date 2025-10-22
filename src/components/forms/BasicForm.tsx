@@ -110,7 +110,7 @@ export default function BasicForm({
           case FormStates.Loading:
             return <Loading></Loading>;
           case FormStates.Confirmation:
-            return <Confirmation />;
+            return <Confirmation event={event} />;
           case FormStates.Error:
             return <ErrorDisplay message={state.errorMessage} />;
           default:
@@ -195,8 +195,8 @@ function Form({
             setValue: (value) => setField('consent', value),
           }}
         >
-          I consent to CLIC taking photographs of me at
-          {event.name} and using them for promotional purposes.
+          I consent to CLIC taking photographs of me at {event.name} and using
+          them for promotional purposes.
         </CheckboxCard>
 
         <LargeTextInputCard
@@ -249,11 +249,11 @@ function Loading({}) {
   return <p>Loading...</p>;
 }
 
-function Confirmation() {
+function Confirmation({ event }: { event: Event }) {
   return (
     <>
       <Card Icon={CheckCircleIcon}>
-        <p>Your registration to Hello World is successful !</p>
+        <p>Your registration to {event.name} is successful !</p>
       </Card>
       <p>Check your email for confirmation, and see you soon !</p>
     </>
