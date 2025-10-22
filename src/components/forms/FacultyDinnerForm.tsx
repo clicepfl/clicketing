@@ -7,9 +7,11 @@ import {
   SPRING_YEARS,
   Season,
   emptyParticipantState,
+  makeInfoItems,
   validateParticipant,
 } from '@/actions/common-client';
 import { sendRegistration } from '@/actions/common-server';
+import { Event } from '@/types/aliases';
 import { ElementType, ReactNode, useState } from 'react';
 import Card from '../Card';
 import CheckboxCard from '../CheckboxCard';
@@ -20,13 +22,10 @@ import LargeTextInputCard from '../LargeTextInputCard';
 import NumberInputCard from '../NumberInputCard copy';
 import TextInputCard from '../TextInputCard';
 import AllergyIcon from '../icons/AllergyIcon';
-import CalendarIcon from '../icons/CalendarIcon';
 import CheckCircleIcon from '../icons/CheckCircleIcon';
 import EmailIcon from '../icons/EmailIcon';
 import InfoIcon from '../icons/InfoIcon';
-import MapPinIcon from '../icons/MapPinIcon';
 import MenuIcon from '../icons/MenuIcon';
-import PriceIcon from '../icons/PriceIcon';
 import TeamIcon from '../icons/TeamIcon';
 import UserIcon from '../icons/UserIcon';
 
@@ -81,26 +80,18 @@ async function validateValues(s: State, eventId: number, guest: boolean) {
 }
 
 export default function FacultyDinnerForm({
-  eventId,
-  date,
+  event,
   location,
-  deposit,
-  meals,
   guest = false,
 }: {
-  eventId: number;
-  date: string;
+  event: Event;
   location: string;
-  deposit: string;
-  meals: Meal[];
   guest: boolean;
 }) {
   // Info items
-  const infoItems: [ElementType, ReactNode][] = [
-    [CalendarIcon, date],
-    [MapPinIcon, location],
-    [PriceIcon, deposit],
-  ];
+  const infoItems: [ElementType, ReactNode][] = makeInfoItems(event, location);
+
+  const meals: Meal[] = event.meals as Meal[];
 
   // Define initial state
   const initialState: State = {
@@ -148,7 +139,7 @@ export default function FacultyDinnerForm({
                 s={state}
                 setField={setField}
                 setParticipantField={setParticipantField}
-                eventId={eventId}
+                eventId={event.id}
                 meals={meals}
                 guest={guest}
               />

@@ -1,9 +1,10 @@
+import ClosedForm from '@/components/forms/ClosedForm';
+import FacultyDinnerForm from '@/components/forms/FacultyDinnerForm';
 import { directus } from '@/directus';
 import { Event } from '@/types/aliases';
 import { readItems } from '@directus/sdk';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import FacultyDinner from '../faculty-dinner';
 
 export default async function GuestForm({ params }) {
   let eventSlug = params.eventSlug;
@@ -37,17 +38,14 @@ export default async function GuestForm({ params }) {
   }
 
   if (!event.opened) {
-    return (
-      <div className="form">
-        <h1>This form is not open</h1>
-        <p>You're probably too late or too early :)</p>
-      </div>
-    );
+    return <ClosedForm />;
   }
 
   switch (event.type) {
     case 'faculty_dinner':
-      return <FacultyDinner event={event} guest={true} />;
+      return (
+        <FacultyDinnerForm event={event} location="BC Building" guest={true} />
+      );
     default:
       return notFound();
   }

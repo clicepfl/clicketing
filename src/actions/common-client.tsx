@@ -1,5 +1,10 @@
 'use client';
 
+import CalendarIcon from '@/components/icons/CalendarIcon';
+import MapPinIcon from '@/components/icons/MapPinIcon';
+import PriceIcon from '@/components/icons/PriceIcon';
+import { Event } from '@/types/aliases';
+import { ElementType, ReactNode } from 'react';
 import { emailAlreadyUsed } from './common-server';
 
 export enum FormStates {
@@ -143,4 +148,31 @@ export async function validateParticipant(
   }
 
   return null;
+}
+
+export function formatDate(event: Event) {
+  return new Date(event.from).toLocaleDateString('fr-FR', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
+export function formatPrice(event: Event) {
+  return `${event.price ?? 0}CHF`;
+}
+
+export function formatDeposit(event: Event) {
+  return `${event.price ?? 0}CHF deposit`;
+}
+
+export function makeInfoItems(
+  event: Event,
+  location: string,
+  isDeposit: boolean = false
+): [ElementType, ReactNode][] {
+  return [
+    [CalendarIcon, formatDate(event)],
+    [MapPinIcon, location],
+    [PriceIcon, isDeposit ? formatDeposit(event) : formatPrice(event)],
+  ];
 }

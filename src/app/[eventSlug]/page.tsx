@@ -1,11 +1,12 @@
+import BasicForm from '@/components/forms/BasicForm';
+import ClosedForm from '@/components/forms/ClosedForm';
+import FacultyDinnerForm from '@/components/forms/FacultyDinnerForm';
+import HelloWorldForm from '@/components/forms/HelloWorldForm';
 import { directus } from '@/directus';
 import { Event } from '@/types/aliases';
 import { readItems } from '@directus/sdk';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import BasicEvent from './basic-event';
-import FacultyDinner from './faculty-dinner';
-import HelloWorld from './hello-world';
 import ICBD from './icbd';
 
 export default async function Home({ params }) {
@@ -40,28 +41,20 @@ export default async function Home({ params }) {
   }
 
   if (!event.opened) {
-    return (
-      <div className="form">
-        <h1>This event is sold out!</h1>
-
-        <p>
-          But don't worry, more is to come :) <br />
-          Follow us to keep updated on everything we're preparing : <br />
-          <a href="https://linktr.ee/clicepfl">CLIC Linktree</a>
-        </p>
-      </div>
-    );
+    return <ClosedForm />;
   }
 
   switch (event.type) {
     case 'icbd':
       return <ICBD event={event}></ICBD>;
     case 'faculty_dinner':
-      return <FacultyDinner event={event}></FacultyDinner>;
+      return (
+        <FacultyDinnerForm event={event} location="BC Building" guest={false} />
+      );
     case 'hello_world':
-      return <HelloWorld event={event}></HelloWorld>;
+      return <HelloWorldForm event={event} location="BC Building" />;
     default:
-      return <BasicEvent event={event}></BasicEvent>;
+      return <BasicForm event={event} location="BC Building" />;
   }
 }
 
