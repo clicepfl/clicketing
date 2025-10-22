@@ -7,6 +7,7 @@ import {
   SPRING_YEARS,
   Season,
   emptyParticipantState,
+  makeInfoItems,
   validateParticipant,
 } from '@/actions/common-client';
 import { sendRegistration } from '@/actions/common-server';
@@ -14,6 +15,7 @@ import {
   completeRegistration,
   sendICBDActivitiesRegistrations,
 } from '@/actions/icbd';
+import { Event } from '@/types/aliases';
 import { ElementType, ReactNode, useState } from 'react';
 import Card from '../Card';
 import CheckboxCard from '../CheckboxCard';
@@ -22,12 +24,9 @@ import ErrorMessage from '../ErrorMessage';
 import InfoLine from '../InfoLine';
 import SplitText from '../SplitText';
 import TextInputCard from '../TextInputCard';
-import CalendarIcon from '../icons/CalendarIcon';
 import CheckCircleIcon from '../icons/CheckCircleIcon';
 import EmailIcon from '../icons/EmailIcon';
 import ErrorIcon from '../icons/ErrorIcon';
-import MapPinIcon from '../icons/MapPinIcon';
-import PriceIcon from '../icons/PriceIcon';
 import TeamIcon from '../icons/TeamIcon';
 import UserIcon from '../icons/UserIcon';
 
@@ -96,30 +95,26 @@ async function validateValues(s: State, eventId: number) {
 }
 
 export default function ICBDForm({
-  eventId,
-  date,
+  event,
   location,
-  deposit,
   talks,
   discussions,
   interviews,
   cvCorrection,
 }: {
-  eventId: number;
-  date: string;
+  event: Event;
   location: string;
-  deposit: string;
   talks: { title: string; time: string; id: number }[];
   discussions: { title: string; time: string; id: number }[];
   interviews: { title: string; time: string; id: number }[];
   cvCorrection: { title: string; time: string; id: number };
 }) {
   // Info items
-  const infoItems: [ElementType, ReactNode][] = [
-    [CalendarIcon, date],
-    [MapPinIcon, location],
-    [PriceIcon, deposit],
-  ];
+  const infoItems: [ElementType, ReactNode][] = makeInfoItems(
+    event,
+    location,
+    true
+  );
 
   // Define initial state
   const initialState: State = {
@@ -173,7 +168,7 @@ export default function ICBDForm({
                 discussions={discussions}
                 interviews={interviews}
                 cvCorrection={cvCorrection}
-                eventId={eventId}
+                eventId={event.id}
               />
             );
           case FormStates.Loading:

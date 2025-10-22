@@ -6,10 +6,12 @@ import {
   SECTIONS,
   Season,
   emptyParticipantState,
+  makeInfoItems,
   validateParticipant,
 } from '@/actions/common-client';
 import { sendRegistration } from '@/actions/common-server';
 import { teamAlreadyUsed } from '@/actions/hello-world';
+import { Event } from '@/types/aliases';
 import { ElementType, ReactNode, useState } from 'react';
 import Card from '../Card';
 import CheckboxCard from '../CheckboxCard';
@@ -18,12 +20,9 @@ import ErrorMessage from '../ErrorMessage';
 import InfoLine from '../InfoLine';
 import LargeTextInputCard from '../LargeTextInputCard';
 import TextInputCard from '../TextInputCard';
-import CalendarIcon from '../icons/CalendarIcon';
 import CheckCircleIcon from '../icons/CheckCircleIcon';
 import EmailIcon from '../icons/EmailIcon';
-import MapPinIcon from '../icons/MapPinIcon';
 import PencilIcon from '../icons/PencilIcon';
-import PriceIcon from '../icons/PriceIcon';
 import TeamIcon from '../icons/TeamIcon';
 import UserIcon from '../icons/UserIcon';
 
@@ -71,22 +70,14 @@ async function validateValues(s: State, eventId: number) {
 }
 
 export default function HelloWorldForm({
-  eventId,
-  date,
+  event,
   location,
-  deposit,
 }: {
-  eventId: number;
-  date: string;
+  event: Event;
   location: string;
-  deposit: string;
 }) {
   // Info items
-  const infoItems: [ElementType, ReactNode][] = [
-    [CalendarIcon, date],
-    [MapPinIcon, location],
-    [PriceIcon, deposit],
-  ];
+  const infoItems: [ElementType, ReactNode][] = makeInfoItems(event, location);
 
   // Define initial state
   const initialState: State = {
@@ -133,7 +124,7 @@ export default function HelloWorldForm({
                 s={state}
                 setField={setField}
                 setMemberField={setMemberField}
-                eventId={eventId}
+                eventId={event.id}
               />
             );
           case FormStates.Loading:
@@ -175,7 +166,7 @@ function Form({
           <a href="https://t.me/+kwrmi0cIc75jNjM0">Hello World Group Finder</a>.
         </p>
         {[1, 2, 3].map((i: 1 | 2 | 3) => (
-          <>
+          <div className="pass-through" key={i}>
             <h2>Team Member {i}</h2>
             <TextInputCard
               Icon={UserIcon}
@@ -227,7 +218,7 @@ function Form({
                 setValue: (value) => setMemberField(i, 'year', value),
               }}
             />
-          </>
+          </div>
         ))}
 
         <div className="spacer"></div>
