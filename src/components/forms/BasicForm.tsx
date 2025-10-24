@@ -222,14 +222,11 @@ function Form({
           setField('formState', FormStates.Loading);
 
           try {
-            for (let i = 1; i <= 3; i++) {
-              const member = s[`member${i}`];
-              await sendRegistration({
-                eventId: event.id,
-                participant: s.participant,
-                comments: s.comments,
-              });
-            }
+            await sendRegistration({
+              eventId: event.id,
+              participant: s.participant,
+              comments: s.comments,
+            });
             setField('formState', FormStates.Confirmation);
           } catch (error) {
             setField('errorMessage', error.message);
