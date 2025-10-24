@@ -1,65 +1,72 @@
-import { checkInRegistration, markPayment } from '@/actions/common-server';
+import { checkInRegistration } from '@/actions/common-server';
 import { getTeamMembers } from '@/actions/hello-world';
 import { returnDeposit } from '@/actions/icbd';
 import Card from '@/components/Card';
-import DropdownCard from '@/components/DropdownCard';
+import { CheckinBlock } from '@/components/CheckinBlock';
 import CheckCircleIcon from '@/components/icons/CheckCircleIcon';
 import ErrorIcon from '@/components/icons/ErrorIcon';
-import PriceIcon from '@/components/icons/PriceIcon';
 import Split from '@/components/Split';
 import { Event, Registration } from '@/types/aliases';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-interface DialogDefaultProps {
+export interface DialogProps {
+  event: Event;
   participant: Registration;
   close: () => void;
-  setParticipants: Dispatch<SetStateAction<Registration[]>>;
+  updateParticipant: (newRes: Registration) => void;
+}
+
+export function BasicCheckinDialog({
+  event,
+  close,
+  participant,
+  updateParticipant,
+}: DialogProps) {
+  return (
+    <>
+      <Split>
+        <b>{`${participant.first_name} ${participant.family_name}`}</b>
+      </Split>
+
+      <CheckinBlock
+        participant={participant}
+        onUpdateSuccess={updateParticipant}
+        requiresPayment={event.price > 0}
+      />
+
+      <button onClick={close}>Close</button>
+    </>
+  );
 }
 
 export function ICBDCheckinDialog({
+  event,
   participant,
   close,
-  setParticipants,
-}: DialogDefaultProps) {
+  updateParticipant,
+}: DialogProps) {
+  // API Call Return Deposit
+  const handleReturnDeposit = async () => {
+    const newRes = await returnDeposit(participant.id);
+    updateParticipant(newRes);
+  };
+
   return (
     <>
       <Card>{`${participant.first_name} ${participant.family_name}`}</Card>
 
-      {participant.checked_in ? (
-        <Card>
-          <CheckCircleIcon className="icon" />
-          Already checked in
-        </Card>
-      ) : (
-        <button
-          onClick={async () => {
-            const newRes = await checkInRegistration(participant.id);
-            setParticipants((value) => [
-              ...value.filter((p) => p.id != participant.id),
-              newRes,
-            ]);
-          }}
-        >
-          Check-in
-        </button>
-      )}
+      <CheckinBlock
+        participant={participant}
+        onUpdateSuccess={updateParticipant}
+        requiresPayment={false}
+      />
       {participant.retreived_deposit ? (
         <Card>
           <CheckCircleIcon className="icon" />
           Deposit already returned
         </Card>
       ) : participant.can_retreive_deposit ? (
-        <button
-          onClick={async () => {
-            const newRes = await returnDeposit(participant.id);
-            setParticipants((value) => [
-              ...value.filter((p) => p.id != participant.id),
-              newRes,
-            ]);
-          }}
-        >
-          Return deposit
-        </button>
+        <button onClick={handleReturnDeposit}>Return deposit</button>
       ) : (
         <Card>Deposit cannot be returned</Card>
       )}
@@ -68,20 +75,12 @@ export function ICBDCheckinDialog({
   );
 }
 
-enum PaymentMethods {
-  Cash = 'cash',
-  Camipro = 'camipro',
-  BankTransfer = 'bank_transfer',
-}
-
 export function FDCheckinDialog({
   event,
   close,
   participant,
-  setParticipants,
-}: { event: Event } & DialogDefaultProps) {
-  const [payment, setPayment] = useState(null);
-
+  updateParticipant,
+}: DialogProps) {
   return (
     <>
       <Split>
@@ -89,63 +88,11 @@ export function FDCheckinDialog({
         <span>{event.meals[participant.meal].name} Menu</span>
       </Split>
 
-      {participant.payment !== null ? (
-        participant.checked_in ? (
-          <Card>
-            <CheckCircleIcon className="icon" />
-            Already checked in
-          </Card>
-        ) : (
-          <>
-            <Card>
-              <CheckCircleIcon className="icon" />
-              Already paid by {participant.payment.split('_').join(' ')}
-            </Card>
-            <button
-              onClick={async () => {
-                const newRes = await checkInRegistration(participant.id);
-                setParticipants((value) => [
-                  ...value.filter((p) => p.id != participant.id),
-                  newRes,
-                ]);
-              }}
-            >
-              Check-in
-            </button>
-          </>
-        )
-      ) : (
-        <>
-          <Card>Payment has not been made</Card>
-          <DropdownCard
-            Icon={PriceIcon}
-            placeholder={'Payment method'}
-            options={Object.values(PaymentMethods).map((v) => ({
-              display: v
-                .split('_')
-                .join(' ')
-                .replace(/(^\w|\s\w)/g, (m) => m.toUpperCase()),
-              value: v,
-            }))}
-            dropdownState={{
-              value: payment,
-              setValue: setPayment,
-            }}
-          />
-          <button
-            onClick={async () => {
-              const newRes = await markPayment(participant.id, payment, false);
-              setParticipants((value) => [
-                ...value.filter((p) => p.id != participant.id),
-                newRes,
-              ]);
-            }}
-            disabled={payment === null}
-          >
-            Save Payment
-          </button>
-        </>
-      )}
+      <CheckinBlock
+        participant={participant}
+        onUpdateSuccess={updateParticipant}
+        requiresPayment={event.price > 0}
+      />
 
       <button onClick={close}>Close</button>
     </>
@@ -156,8 +103,8 @@ export function HWCheckinDialog({
   event,
   close,
   participant,
-  setParticipants,
-}: { event: Event } & DialogDefaultProps) {
+  updateParticipant,
+}: DialogProps) {
   const [teamMembers, setTeamMembers] = useState<Registration[]>([]);
 
   useEffect(() => {
@@ -188,25 +135,12 @@ export function HWCheckinDialog({
             <span className="center-text half">
               <b>{`${member.first_name} ${member.family_name}`}</b>
             </span>
-            {member.checked_in ? (
-              <Card key={member.id}>
-                <CheckCircleIcon className="icon" />
-                Already checked in
-              </Card>
-            ) : (
-              <button
-                onClick={async () => {
-                  const newRes = await checkInRegistration(member.id);
-                  setParticipants((value) => [
-                    ...value.filter((p) => p.id != member.id),
-                    newRes,
-                  ]);
-                }}
-                key={member.id}
-              >
-                Check-in {member.first_name} {member.family_name}
-              </button>
-            )}
+            <CheckinBlock
+              participant={member}
+              onUpdateSuccess={updateParticipant}
+              requiresPayment={event.price > 0}
+              checkinButtonText={`Check-in ${member.first_name} ${member.family_name}`}
+            />
           </Split>
         </>
       ))}
@@ -222,10 +156,7 @@ export function HWCheckinDialog({
             for (const member of teamMembers) {
               if (!member.checked_in) {
                 const newRes = await checkInRegistration(member.id);
-                setParticipants((value) => [
-                  ...value.filter((p) => p.id != member.id),
-                  newRes,
-                ]);
+                updateParticipant(newRes);
               }
             }
           }}

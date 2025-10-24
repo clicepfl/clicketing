@@ -65,7 +65,17 @@ export default async function AdminPanel({ params }) {
       );
 
     default:
-      break;
+      return (
+        <div className="form">
+          <h1>Admin panel</h1>
+          <Link href={`${params.admin}/payment`}>
+            <Card Icon={PriceIcon}>Payment</Card>
+          </Link>
+          <Link href={`${params.admin}/checkin`}>
+            <Card Icon={TicketIcon}>Check-in</Card>
+          </Link>
+        </div>
+      );
   }
 }
 

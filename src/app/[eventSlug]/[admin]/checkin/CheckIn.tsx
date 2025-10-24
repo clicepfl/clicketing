@@ -3,12 +3,38 @@
 import ParticipantDisplay from '@/components/ParticipantDisplay';
 import QRScannerSelector from '@/components/QRScannerSelector';
 import { Event, Registration } from '@/types/aliases';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
+  BasicCheckinDialog,
+  DialogProps,
   FDCheckinDialog,
   HWCheckinDialog,
   ICBDCheckinDialog,
 } from './CheckinDialog';
+
+const DialogComponentMap = {
+  icbd: ICBDCheckinDialog,
+  faculty_dinner: FDCheckinDialog,
+  hello_world: HWCheckinDialog,
+  default: BasicCheckinDialog,
+};
+
+function renderCheckinDialog(
+  event: Event,
+  participant: Registration,
+  updateParticipant: (newRes: Registration) => void,
+  close: () => void
+) {
+  const Component =
+    DialogComponentMap[event.type] || DialogComponentMap.default;
+  const commonProps: DialogProps = {
+    event,
+    close,
+    participant,
+    updateParticipant,
+  };
+  return <Component {...commonProps} />;
+}
 
 export function CheckIn({
   participants: initialParticipants,
@@ -18,6 +44,16 @@ export function CheckIn({
   participants: Registration[];
 }) {
   const [participants, setParticipants] = useState(initialParticipants);
+
+  const updateParticipant = useCallback(
+    (newRes: Registration) => {
+      setParticipants((currentParticipants) => [
+        ...currentParticipants.filter((p) => p.id !== newRes.id),
+        newRes,
+      ]);
+    },
+    [setParticipants]
+  );
 
   return (
     <div className="checkin">
@@ -30,36 +66,13 @@ export function CheckIn({
         onSelect={() => {}}
         dialog={(value, close) => {
           var participant = participants.find((p) => p.id == value);
-          switch (event.type) {
-            case 'icbd':
-              return (
-                <ICBDCheckinDialog
-                  participant={participant}
-                  close={close}
-                  setParticipants={setParticipants}
-                />
-              );
-            case 'faculty_dinner':
-              return (
-                <FDCheckinDialog
-                  event={event}
-                  close={close}
-                  participant={participant}
-                  setParticipants={setParticipants}
-                />
-              );
-            case 'hello_world':
-              return (
-                <HWCheckinDialog
-                  event={event}
-                  close={close}
-                  participant={participant}
-                  setParticipants={setParticipants}
-                />
-              );
-            default:
-              return <></>;
-          }
+          if (!participant) return <div>Participant not found</div>;
+          return renderCheckinDialog(
+            event,
+            participant,
+            updateParticipant,
+            close
+          );
         }}
       />
     </div>

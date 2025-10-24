@@ -22,7 +22,7 @@ export default function ParticipantDisplay({
     case 'hello_world':
       return <SimpleParticipantDisplay participant={participant} />;
     default:
-      break;
+      return <SimpleParticipantDisplay participant={participant} />;
   }
 }
 
