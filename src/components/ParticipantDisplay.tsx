@@ -1,7 +1,6 @@
 import { Event, Registration } from '@/types/aliases';
 import Card from './Card';
 import Split from './Split';
-import SplitText from './SplitText';
 import CheckCircleIcon from './icons/CheckCircleIcon';
 import ErrorIcon from './icons/ErrorIcon';
 import PriceIcon from './icons/PriceIcon';
@@ -14,33 +13,16 @@ export default function ParticipantDisplay({
   event: Event;
   participant: Registration;
 }) {
-  switch (event.type) {
-    case 'icbd':
-      return <ICBDParticipantDisplay participant={participant} />;
-    case 'faculty_dinner':
-      return <SimpleParticipantDisplay participant={participant} />;
-    case 'hello_world':
-      return <SimpleParticipantDisplay participant={participant} />;
-    default:
-      return <SimpleParticipantDisplay participant={participant} />;
-  }
-}
-
-function ICBDParticipantDisplay({
-  participant,
-}: {
-  participant: Registration;
-}) {
+  const deposit = event.type === 'icbd';
+  const requiresPayment = event.price > 0 || deposit;
   return (
     <div className="participant-display">
-      <SplitText
-        snippets={[
-          `${participant.first_name} ${participant.family_name}`,
-          participant.email,
-        ]}
-      />
+      <Split>
+        <b>{`${participant.first_name} ${participant.family_name}`}</b>
+        <span>{participant.email}</span>
+      </Split>
 
-      {participant.payment !== null ? (
+      {!requiresPayment || participant.payment !== null ? (
         participant.checked_in ? (
           <Card>
             <CheckCircleIcon className="icon" />
@@ -49,35 +31,26 @@ function ICBDParticipantDisplay({
         ) : (
           <Card>
             <TicketIcon className="icon" />
-            Deposit made, not checked in
+            {requiresPayment
+              ? deposit
+                ? 'Deposit made - Ready to check in'
+                : 'Paid - Ready to check in'
+              : 'Ready to check in'}
           </Card>
         )
       ) : participant.checked_in ? (
         <Card>
           <ErrorIcon className="icon" />
-          Checked in without deposit !!!
+          {deposit
+            ? 'Checked in without deposit !!!'
+            : 'Checked in without payment !!!'}
         </Card>
       ) : (
         <Card>
           <PriceIcon className="icon" />
-          Deposit missing !
+          {deposit ? 'Deposit missing' : 'Payment missing'}
         </Card>
       )}
-    </div>
-  );
-}
-
-function SimpleParticipantDisplay({
-  participant,
-}: {
-  participant: Registration;
-}) {
-  return (
-    <div className="participant-display">
-      <Split>
-        <b>{`${participant.first_name} ${participant.family_name}`}</b>
-        <span>{participant.email}</span>
-      </Split>
     </div>
   );
 }
