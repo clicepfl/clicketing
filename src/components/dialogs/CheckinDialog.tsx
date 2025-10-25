@@ -113,12 +113,14 @@ export function ICBDCheckinDialog({
 
   return (
     <>
-      <Card>{`${participant.first_name} ${participant.family_name}`}</Card>
+      <Split>
+        <b>{`${participant.first_name} ${participant.family_name}`}</b>
+      </Split>
 
       <CheckinBlock
         participant={participant}
         onUpdateSuccess={updateParticipant}
-        requiresPayment={false}
+        requiresPayment={true}
         paymentOnlyDialog={paymentOnlyDialog}
       />
       {paymentOnlyDialog ? null : participant.retreived_deposit ? (
