@@ -1,40 +1,10 @@
 'use client';
 
+import { renderCheckinDialog } from '@/components/dialogs/CheckinDialog';
 import ParticipantDisplay from '@/components/ParticipantDisplay';
 import QRScannerSelector from '@/components/QRScannerSelector';
 import { Event, Registration } from '@/types/aliases';
 import { useCallback, useState } from 'react';
-import {
-  BasicCheckinDialog,
-  DialogProps,
-  FDCheckinDialog,
-  HWCheckinDialog,
-  ICBDCheckinDialog,
-} from './CheckinDialog';
-
-const DialogComponentMap = {
-  icbd: ICBDCheckinDialog,
-  faculty_dinner: FDCheckinDialog,
-  hello_world: HWCheckinDialog,
-  default: BasicCheckinDialog,
-};
-
-function renderCheckinDialog(
-  event: Event,
-  participant: Registration,
-  updateParticipant: (newRes: Registration) => void,
-  close: () => void
-) {
-  const Component =
-    DialogComponentMap[event.type] || DialogComponentMap.default;
-  const commonProps: DialogProps = {
-    event,
-    close,
-    participant,
-    updateParticipant,
-  };
-  return <Component {...commonProps} />;
-}
 
 export function CheckIn({
   participants: initialParticipants,
@@ -44,7 +14,6 @@ export function CheckIn({
   participants: Registration[];
 }) {
   const [participants, setParticipants] = useState(initialParticipants);
-
   const updateParticipant = useCallback(
     (newRes: Registration) => {
       setParticipants((currentParticipants) => [
@@ -57,6 +26,7 @@ export function CheckIn({
 
   return (
     <div className="checkin">
+      <h1>Check-in</h1>
       <QRScannerSelector
         items={participants.map((p) => ({
           component: <ParticipantDisplay event={event} participant={p} />,

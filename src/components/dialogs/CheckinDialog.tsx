@@ -9,11 +9,68 @@ import Split from '@/components/Split';
 import { Event, Registration } from '@/types/aliases';
 import { useEffect, useState } from 'react';
 
+export const DialogComponentMap = {
+  icbd: ICBDCheckinDialog,
+  faculty_dinner: FDCheckinDialog,
+  hello_world: HWCheckinDialog,
+  default: BasicCheckinDialog,
+};
+
 export interface DialogProps {
   event: Event;
   participant: Registration;
   close: () => void;
   updateParticipant: (newRes: Registration) => void;
+  paymentOnlyDialog: boolean;
+}
+
+function renderDialog(
+  event: Event,
+  participant: Registration,
+  updateParticipant: (newRes: Registration) => void,
+  close: () => void,
+  paymentDialog: boolean
+) {
+  const Component =
+    DialogComponentMap[event.type] || DialogComponentMap.default;
+  const commonProps: DialogProps = {
+    event,
+    close,
+    participant,
+    updateParticipant,
+    paymentOnlyDialog: paymentDialog,
+  };
+  return <Component {...commonProps} />;
+}
+
+export function renderPaymentDialog(
+  event: Event,
+  participant: Registration,
+  updateParticipant: (newRes: Registration) => void,
+  close: () => void
+) {
+  return renderDialog(
+    event,
+    participant,
+    updateParticipant,
+    close,
+    true // payment page
+  );
+}
+
+export function renderCheckinDialog(
+  event: Event,
+  participant: Registration,
+  updateParticipant: (newRes: Registration) => void,
+  close: () => void
+) {
+  return renderDialog(
+    event,
+    participant,
+    updateParticipant,
+    close,
+    false // not payment page
+  );
 }
 
 export function BasicCheckinDialog({
@@ -21,6 +78,7 @@ export function BasicCheckinDialog({
   close,
   participant,
   updateParticipant,
+  paymentOnlyDialog,
 }: DialogProps) {
   return (
     <>
@@ -32,6 +90,7 @@ export function BasicCheckinDialog({
         participant={participant}
         onUpdateSuccess={updateParticipant}
         requiresPayment={event.price > 0}
+        paymentOnlyDialog={paymentOnlyDialog}
       />
 
       <button onClick={close}>Close</button>
@@ -44,6 +103,7 @@ export function ICBDCheckinDialog({
   participant,
   close,
   updateParticipant,
+  paymentOnlyDialog = false,
 }: DialogProps) {
   // API Call Return Deposit
   const handleReturnDeposit = async () => {
@@ -59,8 +119,9 @@ export function ICBDCheckinDialog({
         participant={participant}
         onUpdateSuccess={updateParticipant}
         requiresPayment={false}
+        paymentOnlyDialog={paymentOnlyDialog}
       />
-      {participant.retreived_deposit ? (
+      {paymentOnlyDialog ? null : participant.retreived_deposit ? (
         <Card>
           <CheckCircleIcon className="icon" />
           Deposit already returned
@@ -80,6 +141,7 @@ export function FDCheckinDialog({
   close,
   participant,
   updateParticipant,
+  paymentOnlyDialog = false,
 }: DialogProps) {
   return (
     <>
@@ -92,6 +154,7 @@ export function FDCheckinDialog({
         participant={participant}
         onUpdateSuccess={updateParticipant}
         requiresPayment={event.price > 0}
+        paymentOnlyDialog={paymentOnlyDialog}
       />
 
       <button onClick={close}>Close</button>
@@ -104,6 +167,7 @@ export function HWCheckinDialog({
   close,
   participant,
   updateParticipant,
+  paymentOnlyDialog = false,
 }: DialogProps) {
   const [teamMembers, setTeamMembers] = useState<Registration[]>([]);
 
@@ -140,12 +204,15 @@ export function HWCheckinDialog({
               onUpdateSuccess={updateParticipant}
               requiresPayment={event.price > 0}
               checkinButtonText={`Check-in ${member.first_name} ${member.family_name}`}
+              paymentOnlyDialog={paymentOnlyDialog}
             />
           </Split>
         </>
       ))}
 
-      {teamMembers.filter((member) => !member.checked_in).length === 0 ? (
+      {paymentOnlyDialog ? null : teamMembers.filter(
+          (member) => !member.checked_in
+        ).length === 0 ? (
         <Card>
           <CheckCircleIcon className="icon" />
           All team members checked in
