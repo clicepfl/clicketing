@@ -1,15 +1,19 @@
 .checkin {
   width: 100%;
-  max-width: 60ch;
-  margin: 0 auto;
-  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  max-width: 60ch;
+  margin: 0 auto;
+  height: 100vh;
   padding: 0 2rem;
 
-  gap: 1rem;
+  margin-top: 8rem;
+  margin-bottom: 3rem;
+
+  @media (max-width: 40rem) {
+    margin-top: 4rem;
+  }
 
   .qr-code {
     width: 100%;

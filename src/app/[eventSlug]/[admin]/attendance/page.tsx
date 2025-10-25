@@ -3,7 +3,21 @@ import { readItems } from '@directus/sdk';
 import Attendance from './Attendance';
 
 export default async function Page({ params }) {
-  const { eventSlug } = params;
+  const eventSlug = params.eventSlug;
+
+  const event = (
+    await directus().request(
+      readItems('events', {
+        filter: { slug: { _eq: eventSlug } },
+        limit: -1,
+      })
+    )
+  )[0];
+
+  // ICBD Only
+  if (event.type !== 'icbd') {
+    throw new Error('Attendance page is only available for ICBD events');
+  }
 
   const activities = await directus().request(
     readItems('icbd_activities', {

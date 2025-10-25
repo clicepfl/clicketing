@@ -45,7 +45,7 @@ export default async function ICBD({ event }: { event: Event }) {
   // Assert only one cv_correction activity
   if (cvCorrections.length != 1) {
     throw new Error(
-      `Exactly one CV Correction activity expected, {cvCorrections.length} found`
+      `Exactly one CV Correction activity expected, ${cvCorrections.length} found`
     );
   }
 
