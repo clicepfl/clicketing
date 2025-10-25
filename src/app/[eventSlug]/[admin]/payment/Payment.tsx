@@ -18,7 +18,7 @@ export default function Payment({ event, participants: initialParticipants }) {
   );
 
   return (
-    <div className="form">
+    <div className="checkin">
       <h1>Payment</h1>
       <SearchSelector
         items={participants.map((p) => ({

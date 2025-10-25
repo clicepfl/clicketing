@@ -49,7 +49,7 @@ export function CheckinBlock({
   if (requiresPayment && participant.payment === null) {
     return (
       <>
-        <Card>Payment has not been made</Card>
+        Payment has not been made
         <DropdownCard
           Icon={PriceIcon}
           placeholder={'Payment method'}
