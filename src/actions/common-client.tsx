@@ -73,6 +73,19 @@ export enum Season {
   Spring,
 }
 
+export enum PaymentMethods {
+  Cash = 'cash',
+  Camipro = 'camipro',
+  BankTransfer = 'bank_transfer',
+}
+
+export function formatPaymentMethod(method: string) {
+  return method
+    .split('_')
+    .join(' ')
+    .replace(/(^\w|\s\w)/g, (m) => m.toUpperCase());
+}
+
 /**
  * Validate Participant
  * @param participant : participant to validate
