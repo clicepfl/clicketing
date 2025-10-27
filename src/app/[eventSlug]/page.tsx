@@ -26,9 +26,6 @@ export default async function Home({ params }) {
           'meals',
           'price',
           'opened',
-          'intro_text',
-          'confirmation_text',
-          'background_color',
           //@ts-expect-error
           { translations: ['*'] },
         ],
