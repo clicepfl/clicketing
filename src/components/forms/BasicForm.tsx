@@ -16,7 +16,6 @@ import Card from '../Card';
 import CheckboxCard from '../CheckboxCard';
 import DropdownCard from '../DropdownCard';
 import ErrorMessage from '../ErrorMessage';
-import FancyMarkdown from '../FancyMarkdown';
 import InfoLine from '../InfoLine';
 import LargeTextInputCard from '../LargeTextInputCard';
 import TextInputCard from '../TextInputCard';
@@ -139,8 +138,6 @@ function Form({
   return (
     <>
       <section>
-        <FancyMarkdown>{event.intro_text}</FancyMarkdown>
-
         <TextInputCard
           Icon={UserIcon}
           placeholder="First Name"
@@ -255,7 +252,7 @@ function Confirmation({ event }: { event: Event }) {
       <Card Icon={CheckCircleIcon}>
         <p>Your registration to {event.name} is successful !</p>
       </Card>
-      <FancyMarkdown>{event.confirmation_text}</FancyMarkdown>
+      <p>Check your email for confirmation, and see you soon !</p>
     </>
   );
 }
