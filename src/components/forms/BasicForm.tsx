@@ -139,7 +139,16 @@ function Form({
   return (
     <>
       <section>
-        <FancyMarkdown>{event.intro_text}</FancyMarkdown>
+        <FancyMarkdown>
+          {'**Subsonic** is back 🎧 \n\n' +
+            "Grab a headset, pick a vibe and lose yourself to the sound. You'll find 3 stages all playing at the same time : " +
+            'switch channels directly on your headphone and choose between Techno, ' +
+            'Commercial and House music!\n\n' +
+            'Register below, then pay either with the ' +
+            'QR code you’ll receive by email or at the INM 177 Clic office. Our ' +
+            'opening times: 3rd-13th November (not on the weekend) from 11am to ' +
+            '2pm.\n\n Looking forward to vibing with you 💙💛❤️'}
+        </FancyMarkdown>
 
         <TextInputCard
           Icon={UserIcon}
@@ -255,7 +264,11 @@ function Confirmation({ event }: { event: Event }) {
       <Card Icon={CheckCircleIcon}>
         <p>Your registration to {event.name} is successful !</p>
       </Card>
-      <FancyMarkdown>{event.confirmation_text}</FancyMarkdown>
+      <FancyMarkdown>
+        {'⚠️ Your spot is only guaranteed after payment. Tickets go fast, so pay ' +
+          'quickly to secure yours. \n\n Check your emails for confirmation and see ' +
+          'you soon !'}
+      </FancyMarkdown>
     </>
   );
 }
