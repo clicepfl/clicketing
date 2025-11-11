@@ -144,8 +144,8 @@ function Form({
             "Grab a headset, pick a vibe and lose yourself to the sound. You'll find 3 stages all playing at the same time : " +
             'switch channels directly on your headphone and choose between Techno, ' +
             'Commercial and House music!\n\n' +
-            'Register below, then pay either with the ' +
-            'QR code you’ll receive by email or at the INM 177 Clic office. Our ' +
+            'Register below, then pay ' +
+            'at the INM 177 Clic office. Our ' +
             'opening times: 3rd-13th November (not on the weekend) from 11am to ' +
             '2pm.\n\n Looking forward to vibing with you 💙💛❤️'}
         </FancyMarkdown>
