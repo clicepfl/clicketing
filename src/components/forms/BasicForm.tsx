@@ -38,9 +38,7 @@ async function validateValues(s: State, eventId: number) {
   const error = await validateParticipant(
     s.participant,
     eventId,
-    Season.Autumn,
-    false,
-    true
+    Season.Autumn
   );
   if (error) {
     return error;
