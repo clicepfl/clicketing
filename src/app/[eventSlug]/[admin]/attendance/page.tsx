@@ -23,7 +23,7 @@ export default async function Page({ params }) {
     readItems('icbd_activities', {
       // @ts-expect-error
       fields: ['*', { translations: ['*'] }],
-      filter: { type: { _in: ['interview', 'cv_correction'] } },
+      filter: { type: { _in: ['interview'] } },
       limit: -1,
     })
   );
