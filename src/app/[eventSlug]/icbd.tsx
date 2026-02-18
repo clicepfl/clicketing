@@ -5,11 +5,15 @@ import { Event } from '@/types/aliases';
 import { readItem } from '@directus/sdk';
 
 export default async function ICBD({ event }: { event: Event }) {
-  let db_activities = (await directus().request(
-    readItem('icbd', event.icbd_event, {
-      fields: [{'activities': ['id', { translations: ['*'] }, 'timeslots', 'type']}],
-    })
-  )).activities;
+  let db_activities = (
+    await directus().request(
+      readItem('icbd', event.icbd_event, {
+        fields: [
+          { activities: ['id', { translations: ['*'] }, 'timeslots', 'type'] },
+        ],
+      })
+    )
+  ).activities;
   let activities = db_activities.map((a) => {
     if (a.timeslots === null) {
       return null;
