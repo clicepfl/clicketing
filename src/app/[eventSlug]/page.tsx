@@ -29,6 +29,7 @@ export default async function Home({ params }) {
           'intro_text',
           'confirmation_text',
           'background_color',
+          'icbd_event',
           //@ts-expect-error
           { translations: ['*'] },
         ],
