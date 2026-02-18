@@ -13,6 +13,7 @@ import { sendRegistration } from '@/actions/common-server';
 import { teamAlreadyUsed } from '@/actions/hello-world';
 import { Event } from '@/types/aliases';
 import { ElementType, ReactNode, useState } from 'react';
+import Markdown from 'react-markdown';
 import Card from '../Card';
 import CheckboxCard from '../CheckboxCard';
 import DropdownCard from '../DropdownCard';
@@ -125,12 +126,13 @@ export default function HelloWorldForm({
                 setField={setField}
                 setMemberField={setMemberField}
                 eventId={event.id}
+                event={event}
               />
             );
           case FormStates.Loading:
             return <Loading></Loading>;
           case FormStates.Confirmation:
-            return <Confirmation />;
+            return <Confirmation event={event} />;
           case FormStates.Error:
             return <ErrorDisplay message={state.errorMessage}></ErrorDisplay>;
           default:
@@ -146,6 +148,7 @@ function Form({
   setField,
   setMemberField,
   eventId,
+  event,
 }: {
   s: State;
   setField: <K extends keyof State>(field: K, value: State[K]) => void;
@@ -155,16 +158,12 @@ function Form({
     value: ParticipantState[K]
   ) => void;
   eventId: number;
+  event: Event;
 }) {
   return (
     <>
       <section>
-        <p className="spaced-p">
-          To register for Hello World, you need to have formed a team of 3.
-          <br />
-          If you do not yet have a team, you can look for one on the{' '}
-          <a href="https://t.me/+kwrmi0cIc75jNjM0">Hello World Group Finder</a>.
-        </p>
+        <Markdown>{event.intro_text}</Markdown>
         {[1, 2, 3].map((i: 1 | 2 | 3) => (
           <div className="pass-through" key={i}>
             <h2>Team Member {i}</h2>
@@ -293,13 +292,13 @@ function Loading({}) {
   return <p>Loading...</p>;
 }
 
-function Confirmation() {
+function Confirmation({ event }: { event: Event }) {
   return (
     <>
       <Card Icon={CheckCircleIcon}>
         <p>Your registration to Hello World is successful !</p>
       </Card>
-      <p>Check your email for confirmation, and see you soon !</p>
+      <Markdown>{event.confirmation_text}</Markdown>
     </>
   );
 }

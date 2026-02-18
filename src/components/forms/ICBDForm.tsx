@@ -17,6 +17,7 @@ import {
 } from '@/actions/icbd';
 import { Event } from '@/types/aliases';
 import { ElementType, ReactNode, useState } from 'react';
+import Markdown from 'react-markdown';
 import Card from '../Card';
 import CheckboxCard from '../CheckboxCard';
 import DropdownCard from '../DropdownCard';
@@ -157,6 +158,7 @@ export default function ICBDForm({
                 discussions={discussions}
                 interviews={interviews}
                 eventId={event.id}
+                event={event}
               />
             );
           case FormStates.Loading:
@@ -164,9 +166,10 @@ export default function ICBDForm({
           case FormStates.Confirmation:
             return (
               <Confirmation
-                interviewSelected={
-                  state.selectedInterviews.some((selected) => selected)
-                }
+                event={event}
+                interviewSelected={state.selectedInterviews.some(
+                  (selected) => selected
+                )}
               />
             );
           case FormStates.Error:
@@ -187,6 +190,7 @@ function Form({
   discussions,
   interviews,
   eventId,
+  event,
 }: {
   s: State;
   setField: <K extends keyof State>(field: K, value: State[K]) => void;
@@ -198,6 +202,7 @@ function Form({
   discussions: { title: string; time: string; id: number }[];
   interviews: { title: string; time: string; id: number }[];
   eventId: number;
+  event: Event;
 }) {
   function changeSelection(
     index: number,
@@ -212,6 +217,7 @@ function Form({
   return (
     <>
       <section>
+        <Markdown>{event.intro_text}</Markdown>
         <TextInputCard
           Icon={UserIcon}
           placeholder="First Name"
@@ -368,9 +374,7 @@ function Form({
                 eventId,
                 participant: s.participant,
                 activitiesIDs: [...talksIds, ...discussionsIds],
-                noSlotActivitiesIDs: [
-                  ...interviewsIds,
-                ],
+                noSlotActivitiesIDs: [...interviewsIds],
               });
               setField('formState', FormStates.Confirmation);
             } catch (error) {
@@ -392,26 +396,26 @@ function Loading({}) {
   return <p>Loading...</p>;
 }
 
-function Confirmation({ interviewSelected }: { interviewSelected: boolean }) {
+function Confirmation({
+  event,
+  interviewSelected,
+}: {
+  event: Event;
+  interviewSelected: boolean;
+}) {
   return (
     <>
       <Card Icon={CheckCircleIcon}>
         <p>Your registration to ICBD is successful !</p>
       </Card>
-
-      <p>
-        Check your email for confirmation, and don't forget to pay your deposit
-        at the CLIC office in INM 177. We are available between 10:00 and 17:00
-        on weekdays.
-      </p>
-      <p>This deposit will be refunded to you when you attend the event.</p>
+      <Markdown>{event.confirmation_text}</Markdown>
       {interviewSelected && (
         <Card Icon={ErrorIcon}>
           <p>
             You have registered for a <b>Mock Interview</b> or{' '}
-            <b>Speed Networking</b> activity. Your slot
-            for this activity will only be confirmed after you pay your deposit,
-            if slots are still available.
+            <b>Speed Networking</b> activity. Your slot for this activity will
+            only be confirmed after you pay your deposit, if slots are still
+            available.
           </p>
         </Card>
       )}

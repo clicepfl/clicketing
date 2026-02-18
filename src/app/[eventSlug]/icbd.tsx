@@ -7,7 +7,6 @@ import { readItems } from '@directus/sdk';
 export default async function ICBD({ event }: { event: Event }) {
   let db_activities = await directus().request(
     readItems('icbd_activities', {
-      //@ts-expect-error
       fields: ['id', { translations: ['*'] }, 'timeslots', 'type'],
     })
   );
@@ -38,7 +37,6 @@ export default async function ICBD({ event }: { event: Event }) {
   let interviews = activities.filter(
     (a) => a !== null && a.type == 'interview'
   );
-
 
   return (
     <ICBDForm
