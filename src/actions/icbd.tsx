@@ -11,7 +11,6 @@ export async function sendICBDActivitiesRegistrations({
 }) {
   let activities = await directus().request(
     readItems('icbd_activities', {
-      //@ts-expect-error
       fields: ['*', { translations: ['*'] }],
     })
   );
