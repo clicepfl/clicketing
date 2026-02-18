@@ -13,6 +13,7 @@ import {
 import { sendRegistration } from '@/actions/common-server';
 import { Event } from '@/types/aliases';
 import { ElementType, ReactNode, useState } from 'react';
+import Markdown from 'react-markdown';
 import Card from '../Card';
 import CheckboxCard from '../CheckboxCard';
 import DropdownCard from '../DropdownCard';
@@ -142,12 +143,13 @@ export default function FacultyDinnerForm({
                 eventId={event.id}
                 meals={meals}
                 guest={guest}
+                event={event}
               />
             );
           case FormStates.Loading:
             return <Loading></Loading>;
           case FormStates.Confirmation:
-            return <Confirmation guest={guest} />;
+            return <Confirmation event={event} guest={guest} />;
           case FormStates.Error:
             return <ErrorDisplay message={state.errorMessage} />;
           default:
@@ -165,6 +167,7 @@ function Form({
   eventId,
   meals,
   guest,
+  event,
 }: {
   s: State;
   setField: <K extends keyof State>(field: K, value: State[K]) => void;
@@ -175,6 +178,7 @@ function Form({
   eventId: number;
   meals: Meal[];
   guest: boolean;
+  event: Event;
 }) {
   return (
     <>
@@ -197,17 +201,7 @@ function Form({
           </p>
         </>
       ) : (
-        <section>
-          <p>
-            The IC Faculty Dinner is a traditional evening organized by CLIC for
-            students, professors and other Faculty members.
-          </p>
-          <p>
-            You can pay your seat by cash or camipro at the INM office in
-            INM177, or by bank transfer using the QR code you'll receive by
-            email after registration.
-          </p>
-        </section>
+        <Markdown>{event.intro_text}</Markdown>
       )}
 
       <h2>Menu</h2>
@@ -378,7 +372,7 @@ function Loading({}) {
   return <p>Loading...</p>;
 }
 
-function Confirmation({ guest }: { guest: boolean }) {
+function Confirmation({ event, guest }: { event: Event; guest: boolean }) {
   return (
     <>
       <Card Icon={CheckCircleIcon}>
@@ -390,12 +384,7 @@ function Confirmation({ guest }: { guest: boolean }) {
           QR facture, or directly at the event by cash or camipro.
         </p>
       ) : (
-        <p>
-          Check your email for confirmation, and don't forget to pay your
-          entrance fee either by QR facture, or at the CLIC office in INM 177
-          (by cash or camipro). We are available between 10:00 and 17:00 on
-          weekdays.
-        </p>
+        <Markdown>{event.confirmation_text}</Markdown>
       )}
     </>
   );

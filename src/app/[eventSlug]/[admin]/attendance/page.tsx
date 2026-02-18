@@ -21,7 +21,6 @@ export default async function Page({ params }) {
 
   const activities = await directus().request(
     readItems('icbd_activities', {
-      // @ts-expect-error
       fields: ['*', { translations: ['*'] }],
       filter: { type: { _in: ['interview'] } },
       limit: -1,

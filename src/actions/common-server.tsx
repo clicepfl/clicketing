@@ -92,7 +92,7 @@ export async function sendRegistration(
     throw new Error('Not opened');
   }
 
-  const eventRegistration: Registration = {
+  const eventRegistration = {
     event: eventId,
     email: participant.email.toLowerCase(),
     first_name: participant.firstName,
