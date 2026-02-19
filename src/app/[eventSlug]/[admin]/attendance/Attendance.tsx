@@ -77,10 +77,13 @@ export default function Attendance({
               activities.find((a) => a.id.toString() == activity).timeslots as {
                 start_time: string;
               }[]
-            ).map((a) => ({
-              value: a.start_time,
-              display: a.start_time,
-            }))}
+            ).map((a) => {
+              const [hours, minutes, seconds] = a.start_time.split(':');
+              return {
+                value: a.start_time,
+                display: `${hours}:${minutes}`,
+              };
+            })}
             dropdownState={{
               value: timeslot,
               setValue: setSelectedTimeslot,
