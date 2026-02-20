@@ -1,25 +1,11 @@
+import { getICBDActivities } from '@/actions/icbd';
 import ICBDForm from '@/components/forms/ICBDForm';
-import { directus } from '@/directus';
 import { getTranslation } from '@/locales';
 import { Event } from '@/types/aliases';
-import { readItem } from '@directus/sdk';
 
 export default async function ICBD({ event }: { event: Event }) {
-  let target_id =
-    typeof event.icbd_event === 'number'
-      ? event.icbd_event
-      : event.icbd_event?.id;
-  if (target_id === null) return null;
+  let db_activities = await getICBDActivities(event.slug);
 
-  let db_activities = (
-    await directus().request(
-      readItem('icbd', target_id, {
-        fields: [
-          { activities: ['id', { translations: ['*'] }, 'timeslots', 'type'] },
-        ],
-      })
-    )
-  ).activities;
   let activities = db_activities.map((a) => {
     if (a.timeslots === null) {
       return null;
