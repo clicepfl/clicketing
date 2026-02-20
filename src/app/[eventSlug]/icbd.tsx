@@ -10,12 +10,12 @@ export default async function ICBD({ event }: { event: Event }) {
     .sort((a, b) => {
       const at = getTranslation(a, 'en-US');
       const bt = getTranslation(b, 'en-US');
-      if (at.name == bt.name) {
+      if (at.name[0] == bt.name[0]) {
         return a.timeslots[0].start_time.localeCompare(
           b.timeslots[0].start_time
         );
       }
-      return at.name.localeCompare(bt.name);
+      return at.name[0].localeCompare(bt.name[0]);
     })
     .map((a) => {
       if (a.timeslots === null) {
