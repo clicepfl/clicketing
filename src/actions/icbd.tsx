@@ -2,7 +2,7 @@
 
 import { directus } from '@/directus';
 import { ICBDActivityRegistration, Registration } from '@/types/aliases';
-import { createItems, readItems, updateItem } from '@directus/sdk';
+import { createItems, readItems, readItem, updateItem } from '@directus/sdk';
 
 export async function sendICBDActivitiesRegistrations({
   activitiesIDs,
@@ -15,14 +15,12 @@ export async function sendICBDActivitiesRegistrations({
     })
   );
 
-  let registrations = await directus().request(
-    readItems('registrations', {
+  let registration = await directus().request(
+    readItem('registrations', registrationID, {
       //@ts-expect-error
       fields: ['*', { translations: ['*'] }],
     })
   );
-
-  const registration = registrations.find((r) => r.id === registrationID);
 
   const noSlotActivitiesRegistrations = activities
     .filter((a) => noSlotActivitiesIDs.includes(a.id))
