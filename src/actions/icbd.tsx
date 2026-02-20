@@ -57,7 +57,7 @@ export async function completeRegistration(id: string, hasInterview: boolean) {
       updateItem('registrations', id, {
         registration_complete: true,
         registration_email_sent: true,
-        payment: true,
+        payment: 'not-needed',
         retreived_deposit: true,
         can_retreive_deposit: false,
       })
