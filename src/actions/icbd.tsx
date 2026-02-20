@@ -15,14 +15,12 @@ export async function sendICBDActivitiesRegistrations({
     })
   );
 
-  let registrations = await directus().request(
-    readItems('registrations', {
+  let registration = await directus().request(
+    readItem('registrations', registrationID, {
       //@ts-expect-error
       fields: ['*', { translations: ['*'] }],
     })
   );
-
-  const registration = registrations.find((r) => r.id === registrationID);
 
   const noSlotActivitiesRegistrations = activities
     .filter((a) => noSlotActivitiesIDs.includes(a.id))
