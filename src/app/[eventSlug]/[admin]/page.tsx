@@ -16,7 +16,7 @@ function eventSpecificAdminLinks(event: Event, adminBasePath: string) {
           <Link href={`${adminBasePath}/payment`}>
             <Card Icon={PriceIcon}>Payment</Card>
           </Link>
-          <Link href={`${adminBasePath}/icbd/attendance`}>
+          <Link href={`${adminBasePath}/attendance`}>
             <Card Icon={ClipboardCheckIcon}>Attendance</Card>
           </Link>
         </>
