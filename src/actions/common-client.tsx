@@ -178,6 +178,17 @@ export function formatDeposit(event: Event) {
   return `${event.price ?? 0}CHF deposit`;
 }
 
+// Works for 00:00 strings and 00:00:00 strings
+export function formatTime(time: string) {
+  const date = new Date();
+  const [hours, minutes] = time.split(':');
+  date.setHours(parseInt(hours), parseInt(minutes));
+  return date.toLocaleTimeString('fr-FR', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
 export function makeInfoItems(
   event: Event,
   location: string,
