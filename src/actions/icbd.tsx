@@ -183,14 +183,7 @@ export async function getICBDInterviewsForParticipant(
           name: activity.translations?.[0]?.name,
           type: activity.type,
         },
-        timeslot: timeslot
-          ? {
-              room: timeslot.room,
-              start_time: timeslot.start_time,
-              end_time: timeslot.end_time,
-              custom_name: timeslot.custom_name,
-            }
-          : undefined,
+        timeslot,
         availableTimeslots,
       };
     })
