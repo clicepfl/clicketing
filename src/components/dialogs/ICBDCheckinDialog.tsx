@@ -8,7 +8,7 @@ import {
   ICBDActivityInfo,
   ICBDInterviewStatus,
   ICBDTimeslot,
-} from '@/actions/icbd-client';
+} from '@/actions/icbd-types';
 import { useEffect, useState } from 'react';
 import Card from '../Card';
 import { CheckinBlock } from '../CheckinBlock';
@@ -40,28 +40,29 @@ export function ICBDCheckinDialog({
     Record<number, ICBDTimeslot | null>
   >({});
 
+  const buildSelectedSlots = (acts: ICBDInterviewStatus[]) =>
+    Object.fromEntries(
+      acts.map((act) => {
+        const matched =
+          (act.availableTimeslots || []).find(
+            (ts) => ts.start_time === act.timeslot?.start_time
+          ) ?? null;
+        return [act.activity.id, matched ?? act.timeslot ?? null];
+      })
+    ) as unknown as Record<number, ICBDTimeslot | null>;
+
   useEffect(() => {
     if (!paymentOnlyDialog) return;
     let cancelled = false;
     (async () => {
       try {
+        if (cancelled) return;
         const acts =
           (await getICBDInterviewsForParticipant(participant.id, event.id)) ||
           [];
         if (cancelled) return;
         setInterviews(acts);
-
-        const initialSelectedSlots = Object.fromEntries(
-          (acts || []).map((act) => {
-            const matched =
-              (act.availableTimeslots || []).find(
-                (ts) => ts.start_time === act.timeslot?.start_time
-              ) ?? null;
-            return [act.activity.id, matched ?? act.timeslot ?? null];
-          })
-        ) as Record<number, ICBDTimeslot | null>;
-
-        setSelectedSlots(initialSelectedSlots);
+        setSelectedSlots(buildSelectedSlots(acts));
       } catch (err) {
         console.error('Failed to load ICBD interviews', err);
       }
@@ -96,19 +97,7 @@ export function ICBDCheckinDialog({
         (await getICBDInterviewsForParticipant(participant.id, event.id)) || [];
 
       setInterviews(updatedActs);
-
-      setSelectedSlots(
-        Object.fromEntries(
-          updatedActs.map((act) => {
-            const matched =
-              (act.availableTimeslots || []).find(
-                (ts) =>
-                  act.timeslot && ts.start_time === act.timeslot.start_time
-              ) ?? null;
-            return [act.activity.id, matched ?? act.timeslot ?? null];
-          })
-        ) as Record<number, ICBDTimeslot | null>
-      );
+      setSelectedSlots(buildSelectedSlots(updatedActs));
     } catch (err) {
       console.error('Failed to save timeslots', err);
     }

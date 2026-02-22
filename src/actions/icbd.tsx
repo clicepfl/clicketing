@@ -7,7 +7,7 @@ import {
   Registration,
 } from '@/types/aliases';
 import { createItems, readItem, readItems, updateItem } from '@directus/sdk';
-import { ICBDInterviewStatus, ICBDTimeslot } from './icbd-client';
+import { ICBDInterviewStatus, ICBDTimeslot } from './icbd-types';
 
 export async function sendICBDActivitiesRegistrations({
   activitiesIDs,
@@ -158,22 +158,15 @@ export async function getICBDInterviewsForParticipant(
       );
       if (!activity) return null;
 
-      const timeslots = activity.timeslots as {
-        room: string;
-        start_time: string;
-        end_time: string;
-        custom_name?: string;
-        max_attendees?: number;
-        full?: boolean;
-      }[];
+      const timeslots = activity.timeslots as ICBDTimeslot[];
 
       let timeslot =
         reg.start && timeslots
           ? timeslots.find((ts) => ts.start_time === reg.start)
           : undefined;
 
-    // allow the currently assigned timeslot even if it's full
-    const availableTimeslots = timeslots
+      // allow the currently assigned timeslot even if it's full
+      const availableTimeslots = timeslots
         ? timeslots.filter((ts) => !ts.full || ts.start_time === reg.start)
         : [];
 
