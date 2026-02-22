@@ -1,13 +1,13 @@
 import { checkInRegistration } from '@/actions/common-server';
 import { getTeamMembers } from '@/actions/hello-world';
-import { returnDeposit } from '@/actions/icbd';
 import Card from '@/components/Card';
 import { CheckinBlock } from '@/components/CheckinBlock';
+import Split from '@/components/Split';
 import CheckCircleIcon from '@/components/icons/CheckCircleIcon';
 import ErrorIcon from '@/components/icons/ErrorIcon';
-import Split from '@/components/Split';
 import { Event, Registration } from '@/types/aliases';
 import { useEffect, useState } from 'react';
+import { ICBDCheckinDialog } from './ICBDCheckinDialog';
 
 export const DialogComponentMap = {
   icbd: ICBDCheckinDialog,
@@ -93,46 +93,6 @@ export function BasicCheckinDialog({
         paymentOnlyDialog={paymentOnlyDialog}
       />
 
-      <button onClick={close}>Close</button>
-    </>
-  );
-}
-
-export function ICBDCheckinDialog({
-  event,
-  participant,
-  close,
-  updateParticipant,
-  paymentOnlyDialog = false,
-}: DialogProps) {
-  // API Call Return Deposit
-  const handleReturnDeposit = async () => {
-    const newRes = await returnDeposit(participant.id);
-    updateParticipant(newRes);
-  };
-
-  return (
-    <>
-      <Split>
-        <b>{`${participant.first_name} ${participant.family_name}`}</b>
-      </Split>
-
-      <CheckinBlock
-        participant={participant}
-        onUpdateSuccess={updateParticipant}
-        requiresPayment={true}
-        paymentOnlyDialog={paymentOnlyDialog}
-      />
-      {paymentOnlyDialog ? null : participant.retreived_deposit ? (
-        <Card>
-          <CheckCircleIcon className="icon" />
-          Deposit already returned
-        </Card>
-      ) : participant.can_retreive_deposit ? (
-        <button onClick={handleReturnDeposit}>Return deposit</button>
-      ) : (
-        <Card>Deposit cannot be returned</Card>
-      )}
       <button onClick={close}>Close</button>
     </>
   );
