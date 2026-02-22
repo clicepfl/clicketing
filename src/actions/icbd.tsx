@@ -191,7 +191,7 @@ export async function getICBDInterviewsForParticipant(
               custom_name: timeslot.custom_name,
             }
           : undefined,
-        availableTimeslots: availableTimeslots,
+        availableTimeslots,
       };
     })
     .filter((r) => r !== null);
