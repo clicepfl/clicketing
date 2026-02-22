@@ -1,5 +1,6 @@
 'use client';
 
+import { formatTime } from '@/actions/common-client';
 import { markAttendance } from '@/actions/icbd';
 import Card from '@/components/Card';
 import DropdownCard from '@/components/DropdownCard';
@@ -78,10 +79,9 @@ export default function Attendance({
                 start_time: string;
               }[]
             ).map((a) => {
-              const [hours, minutes, seconds] = a.start_time.split(':');
               return {
                 value: a.start_time,
-                display: `${hours}:${minutes}`,
+                display: formatTime(a.start_time),
               };
             })}
             dropdownState={{
