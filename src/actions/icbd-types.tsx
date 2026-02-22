@@ -1,5 +1,3 @@
-'use client';
-
 export interface ICBDTimeslot {
   room: string;
   start_time: string;
