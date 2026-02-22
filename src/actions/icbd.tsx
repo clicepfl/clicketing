@@ -172,14 +172,9 @@ export async function getICBDInterviewsForParticipant(
           ? timeslots.find((ts) => ts.start_time === reg.start)
           : undefined;
 
-      const availableTimeslots = timeslots
-        ? timeslots.filter((ts) => {
-            if (ts.full) {
-              return ts.start_time === reg.start; // allow the currently assigned timeslot even if it's full
-            } else {
-              return true;
-            }
-          })
+    // allow the currently assigned timeslot even if it's full
+    const availableTimeslots = timeslots
+        ? timeslots.filter((ts) => !ts.full || ts.start_time === reg.start)
         : [];
 
       return {
