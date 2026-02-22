@@ -83,11 +83,11 @@ export async function markAttendance(
   );
 }
 
-export async function getICBDActivities(eventSlug: string) {
+export async function getICBDActivities(eventId: number) {
   const event = (
     await directus().request(
       readItems('events', {
-        filter: { slug: { _eq: eventSlug } },
+        filter: { id: { _eq: eventId } },
         limit: -1,
       })
     )
