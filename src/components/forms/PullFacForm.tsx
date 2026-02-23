@@ -1,0 +1,267 @@
+'use client';
+import {
+  SPRING_YEARS,
+  FormStates,
+  ParticipantState,
+  SECTIONS,
+  Season,
+  emptyParticipantState,
+  makeInfoItems,
+  validateParticipant,
+} from '@/actions/common-client';
+import { sendRegistration } from '@/actions/common-server';
+import { directus } from '@/directus';
+import { readItems } from '@directus/sdk';
+import { Event, Pulls } from '@/types/aliases';
+import { ElementType, ReactNode, useState } from 'react';
+import Markdown from 'react-markdown';
+import Card from '../Card';
+import CheckboxCard from '../CheckboxCard';
+import DropdownCard from '../DropdownCard';
+import ErrorMessage from '../ErrorMessage';
+import InfoLine from '../InfoLine';
+import LargeTextInputCard from '../LargeTextInputCard';
+import TextInputCard from '../TextInputCard';
+import CheckCircleIcon from '../icons/CheckCircleIcon';
+import EmailIcon from '../icons/EmailIcon';
+import PencilIcon from '../icons/PencilIcon';
+import TeamIcon from '../icons/TeamIcon';
+import UserIcon from '../icons/UserIcon';
+
+type State = {
+  formState: FormStates;
+  participant: ParticipantState;
+  errorMessage: string;
+  comments: string;
+  color: number;
+};
+
+async function validateValues(s: State, eventId: number) {
+  const error = await validateParticipant(
+    s.participant,
+    eventId,
+    Season.Spring
+  );
+  if (error) {
+    return error;
+  }
+
+  return null;
+}
+
+export default function PullFacForm({
+  event,
+  location,
+  pulls
+}: {
+  event: Event;
+  location: string;
+  pulls: Pulls[];
+}) {
+  // Info items
+  const infoItems: [ElementType, ReactNode][] = makeInfoItems(event, location);
+
+  // Define initial state
+  const initialState: State = {
+    formState: FormStates.Form,
+    participant: emptyParticipantState,
+    consent: false,
+    errorMessage: '',
+    comments: '',
+  };
+
+  const [state, setState] = useState(initialState);
+
+  const setField = <K extends keyof State>(field: K, value: State[K]) => {
+    setState((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
+  };
+
+  const setParticipantField = <K extends keyof ParticipantState>(
+    field: K,
+    value: ParticipantState[K]
+  ) => {
+    setState((prevState) => ({
+      ...prevState,
+      participant: {
+        ...prevState.participant,
+        [field]: value,
+      },
+    }));
+  };
+
+  return (
+    <div className="form">
+      <h1>{event.name}</h1>
+      <InfoLine infoItems={infoItems}></InfoLine>
+
+      {(() => {
+        switch (state.formState) {
+          case FormStates.Form:
+            return (
+              <Form
+                s={state}
+                setField={setField}
+                setParticipantField={setParticipantField}
+                event={event}
+                pulls={pulls}
+              />
+            );
+          case FormStates.Loading:
+            return <Loading></Loading>;
+          case FormStates.Confirmation:
+            return <Confirmation event={event} />;
+          case FormStates.Error:
+            return <ErrorDisplay message={state.errorMessage} />;
+          default:
+            return null;
+        }
+      })()}
+    </div>
+  );
+}
+
+function Form({
+  s,
+  setField,
+  setParticipantField,
+  event,
+  pulls
+}: {
+  s: State;
+  setField: <K extends keyof State>(field: K, value: State[K]) => void;
+  setParticipantField: <K extends keyof ParticipantState>(
+    field: K,
+    value: ParticipantState[K]
+  ) => void;
+  event: Event;
+  pulls: Pulls[];
+}) {
+  return (
+    <>
+      <section>
+        <Markdown>{event.intro_text}</Markdown>
+        <TextInputCard
+          Icon={UserIcon}
+          placeholder="First Name"
+          inputState={{
+            value: s.participant.firstName,
+            setValue: (value) => setParticipantField('firstName', value),
+          }}
+        />
+        <TextInputCard
+          Icon={UserIcon}
+          placeholder="Last Name"
+          inputState={{
+            value: s.participant.lastName,
+            setValue: (value) => setParticipantField('lastName', value),
+          }}
+        />
+        <TextInputCard
+          Icon={EmailIcon}
+          placeholder="EPFL Email"
+          inputState={{
+            value: s.participant.email,
+            setValue: (value) => setParticipantField('email', value),
+          }}
+        />
+
+        <DropdownCard
+          Icon={TeamIcon}
+          placeholder="Section"
+          options={SECTIONS.map((v) => ({
+            display: v,
+            value: v,
+          }))}
+          dropdownState={{
+            value: s.participant.section,
+            setValue: (value) => setParticipantField('section', value),
+          }}
+        />
+
+        <DropdownCard
+          Icon={TeamIcon}
+          placeholder="Year"
+          options={SPRING_YEARS.map((v) => ({
+            display: v,
+            value: v,
+          }))}
+          dropdownState={{
+            value: s.participant.year,
+            setValue: (value) => setParticipantField('year', value),
+          }}
+        />
+
+        <DropdownCard
+          Icon={PencilIcon}
+          placeholder="Color"
+          options={pulls.map((v) => ({
+            display: v.name,
+            value: v.id,
+          }))}
+          dropdownState={{
+            value: s.color,
+            setValue: (value) => setField('color', value),
+          }}
+        />
+
+        <LargeTextInputCard
+          Icon={PencilIcon}
+          placeholder="Additional Comments"
+          inputState={{
+            value: s.comments,
+            setValue: (value) => setField('comments', value),
+          }}
+          rows={2}
+        />
+      </section>
+
+      <button
+        onClick={async () => {
+          const error = await validateValues(s, event.id);
+
+          if (error) {
+            setField('errorMessage', error);
+            return;
+          }
+
+          setField('formState', FormStates.Loading);
+
+          try {
+            await sendRegistration({
+              eventId: event.id,
+              participant: s.participant,
+              comments: s.comments,
+              color: s.color,
+            });
+            setField('formState', FormStates.Confirmation);
+          } catch (error) {
+            setField('errorMessage', error.message);
+            setField('formState', FormStates.Error);
+          }
+        }}
+      >
+        Confirm Registration
+      </button>
+
+      <ErrorMessage message={s.errorMessage}></ErrorMessage>
+    </>
+  );
+}
+
+function Loading({}) {
+  return <p>Loading...</p>;
+}
+
+function Confirmation({ event }: { event: Event }) {
+  return (
+    <>
+      <Card Icon={CheckCircleIcon}>
+        <p>Your registration to {event.name} is successful !</p>
+      </Card>
+      <Markdown>{event.confirmation_text}</Markdown>
+    </>
+  );
+}
