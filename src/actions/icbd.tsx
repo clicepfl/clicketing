@@ -216,7 +216,7 @@ export async function updateICBDInterviewTimeslot(
 
   await directus().request(
     updateItem('icbd_activities_registrations', reg.id, {
-      start: timeslot?.start_time,
+      start: timeslot ? timeslot.start_time : null,
     })
   );
 }
