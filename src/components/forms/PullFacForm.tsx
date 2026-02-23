@@ -1,22 +1,19 @@
 'use client';
 import {
-  SPRING_YEARS,
   FormStates,
   ParticipantState,
   SECTIONS,
+  SPRING_YEARS,
   Season,
   emptyParticipantState,
   makeInfoItems,
   validateParticipant,
 } from '@/actions/common-client';
 import { sendRegistration } from '@/actions/common-server';
-import { directus } from '@/directus';
-import { readItems } from '@directus/sdk';
 import { Event, Pulls } from '@/types/aliases';
 import { ElementType, ReactNode, useState } from 'react';
 import Markdown from 'react-markdown';
 import Card from '../Card';
-import CheckboxCard from '../CheckboxCard';
 import DropdownCard from '../DropdownCard';
 import ErrorMessage from '../ErrorMessage';
 import InfoLine from '../InfoLine';
@@ -52,7 +49,7 @@ async function validateValues(s: State, eventId: number) {
 export default function PullFacForm({
   event,
   location,
-  pulls
+  pulls,
 }: {
   event: Event;
   location: string;
@@ -128,7 +125,7 @@ function Form({
   setField,
   setParticipantField,
   event,
-  pulls
+  pulls,
 }: {
   s: State;
   setField: <K extends keyof State>(field: K, value: State[K]) => void;

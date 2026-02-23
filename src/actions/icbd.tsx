@@ -2,7 +2,7 @@
 
 import { directus } from '@/directus';
 import { ICBDActivityRegistration, Registration } from '@/types/aliases';
-import { createItems, readItems, readItem, updateItem } from '@directus/sdk';
+import { createItems, readItem, readItems, updateItem } from '@directus/sdk';
 
 export async function sendICBDActivitiesRegistrations({
   activitiesIDs,

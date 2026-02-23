@@ -118,7 +118,7 @@ export async function sendRegistration(
     can_retreive_deposit: false,
     registration_complete: false,
     // Pulls de fac
-    color
+    color,
   };
 
   const createdRegistration = await directus().request(
