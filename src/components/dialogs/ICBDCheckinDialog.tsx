@@ -118,7 +118,7 @@ export function ICBDCheckinDialog({
   return (
     <>
       <Split>
-        <b>{`${participant.first_name} ${participant.family_name}`}</b>
+        <b>{`${participant.first_name} ${participant.family_name} (${participant.year})`}</b>
       </Split>
 
       <CheckinBlock
