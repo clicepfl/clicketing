@@ -20,7 +20,7 @@ export default async function Page({ params }) {
     throw new Error('Attendance page is only available for ICBD events');
   }
 
-  const activities = (await getICBDActivities(eventSlug)).filter(
+  const activities = (await getICBDActivities(event.id)).filter(
     (a) => a.type == 'interview'
   );
 

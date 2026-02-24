@@ -4,7 +4,7 @@ import { getTranslation } from '@/locales';
 import { Event } from '@/types/aliases';
 
 export default async function ICBD({ event }: { event: Event }) {
-  let dbActivities = await getICBDActivities(event.slug);
+  let dbActivities = await getICBDActivities(event.id);
 
   let activities = dbActivities
     .sort((a, b) => {
