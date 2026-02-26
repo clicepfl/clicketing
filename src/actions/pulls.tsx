@@ -2,7 +2,7 @@
 
 import { directus } from '@/directus';
 
-import { createItems } from '@directus/sdk';
+import { createItems, updateItem } from '@directus/sdk';
 
 export async function sendPullsOrders({ orderID, pulls }) {
   await directus().request(
@@ -16,5 +16,11 @@ export async function sendPullsOrders({ orderID, pulls }) {
         };
       })
     )
+  );
+}
+
+export async function completeOrder({ orderID }) {
+  await directus().request(
+    updateItem('registrations', id, { order_complete: true })
   );
 }

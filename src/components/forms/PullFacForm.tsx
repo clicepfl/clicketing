@@ -10,7 +10,7 @@ import {
   validateParticipant,
 } from '@/actions/common-client';
 import { sendRegistration } from '@/actions/common-server';
-import { sendPullsOrders } from '@/actions/pulls';
+import { completeOrder, sendPullsOrders } from '@/actions/pulls';
 import { Event, Pulls } from '@/types/aliases';
 import { ElementType, ReactNode, useState } from 'react';
 import Markdown from 'react-markdown';
@@ -51,6 +51,8 @@ async function register({ eventId, participant, comments, pulls }) {
   });
 
   await sendPullsOrders({ orderID, pulls });
+
+  await completeOrder({ orderID });
 }
 
 async function validateValues(s: State, eventId: number) {
