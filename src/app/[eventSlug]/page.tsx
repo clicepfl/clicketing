@@ -58,7 +58,7 @@ export default async function Home({ params }) {
       );
     case 'hello_world':
       return <HelloWorldForm event={event} location="BC Building" />;
-    case 'pull_fac':
+    case 'pulls_fac':
       return <Pulls event={event}></Pulls>;
     default:
       return <BasicForm event={event} location="BC Building" />;

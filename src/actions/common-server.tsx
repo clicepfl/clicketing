@@ -73,10 +73,6 @@ export type HelloWorldInfo = {
   team;
 };
 
-export type PullsFacInfo = {
-  color;
-};
-
 export type RegistrationInfo = BasicRegistrationInfo &
   (FacultyDinnerInfo | HelloWorldInfo | {});
 
@@ -88,8 +84,7 @@ export async function sendRegistration(
     plus_ones: null,
     guest: null,
   },
-  { team }: HelloWorldInfo = { team: null },
-  { color }: PullsFacInfo = { color: null }
+  { team }: HelloWorldInfo = { team: null }
 ) {
   const event = await directus().request(readItem('events', eventId));
 
@@ -117,8 +112,6 @@ export async function sendRegistration(
     retreived_deposit: false,
     can_retreive_deposit: false,
     registration_complete: false,
-    // Pulls de fac
-    color,
   };
 
   const createdRegistration = await directus().request(

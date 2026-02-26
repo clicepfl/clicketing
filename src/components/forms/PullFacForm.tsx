@@ -10,6 +10,7 @@ import {
   validateParticipant,
 } from '@/actions/common-client';
 import { sendRegistration } from '@/actions/common-server';
+import { sendPullsOrders } from '@/actions/pulls';
 import { Event, Pulls } from '@/types/aliases';
 import { ElementType, ReactNode, useState } from 'react';
 import Markdown from 'react-markdown';
@@ -20,18 +21,37 @@ import InfoLine from '../InfoLine';
 import LargeTextInputCard from '../LargeTextInputCard';
 import TextInputCard from '../TextInputCard';
 import CheckCircleIcon from '../icons/CheckCircleIcon';
+import ColorPickerIcon from '../icons/ColorPickerIcon';
 import EmailIcon from '../icons/EmailIcon';
 import PencilIcon from '../icons/PencilIcon';
+import PlusIcon from '../icons/PlusIcon';
+import SizeIcon from '../icons/SizeIcon';
 import TeamIcon from '../icons/TeamIcon';
+import TrashIcon from '../icons/TrashIcon';
 import UserIcon from '../icons/UserIcon';
+
+type OrderedPull = {
+  color?: number;
+  size: string;
+};
 
 type State = {
   formState: FormStates;
   participant: ParticipantState;
   errorMessage: string;
   comments: string;
-  color: number;
+  pulls: OrderedPull[];
 };
+
+async function register({ eventId, participant, comments, pulls }) {
+  let orderID = await sendRegistration({
+    eventId,
+    participant,
+    comments,
+  });
+
+  await sendPullsOrders({ orderID, pulls });
+}
 
 async function validateValues(s: State, eventId: number) {
   const error = await validateParticipant(
@@ -41,6 +61,19 @@ async function validateValues(s: State, eventId: number) {
   );
   if (error) {
     return error;
+  }
+
+  if (s.pulls.length === 0) {
+    return 'At least one pull must be selected.';
+  }
+
+  for (const [index, pull] of s.pulls.entries()) {
+    if (pull.color === undefined) {
+      return `Pull #${index + 1}: Color is required.`;
+    }
+    if (pull.size === undefined) {
+      return `Pull #${index + 1}: Size is required.`;
+    }
   }
 
   return null;
@@ -62,9 +95,9 @@ export default function PullFacForm({
   const initialState: State = {
     formState: FormStates.Form,
     participant: emptyParticipantState,
-    consent: false,
     errorMessage: '',
     comments: '',
+    pulls: [],
   };
 
   const [state, setState] = useState(initialState);
@@ -89,6 +122,34 @@ export default function PullFacForm({
     }));
   };
 
+  // Order list management tools
+  const addPull = () => {
+    setState((prevState) => ({
+      ...prevState,
+      pulls: [...prevState.pulls, {}],
+    }));
+  };
+
+  const removePull = (index: number) => {
+    setState((prevState) => ({
+      ...prevState,
+      pulls: prevState.pulls.filter((_, i) => i !== index),
+    }));
+  };
+
+  const updatePull = (
+    index: number,
+    field: keyof Pull,
+    value: string | number
+  ) => {
+    setState((prevState) => ({
+      ...prevState,
+      pulls: prevState.pulls.map((pull, i) =>
+        i === index ? { ...pull, [field]: value } : pull
+      ),
+    }));
+  };
+
   return (
     <div className="form">
       <h1>{event.name}</h1>
@@ -103,7 +164,10 @@ export default function PullFacForm({
                 setField={setField}
                 setParticipantField={setParticipantField}
                 event={event}
-                pulls={pulls}
+                availablePulls={pulls}
+                addPull={addPull}
+                removePull={removePull}
+                updatePull={updatePull}
               />
             );
           case FormStates.Loading:
@@ -125,7 +189,10 @@ function Form({
   setField,
   setParticipantField,
   event,
-  pulls,
+  availablePulls,
+  addPull,
+  removePull,
+  updatePull,
 }: {
   s: State;
   setField: <K extends keyof State>(field: K, value: State[K]) => void;
@@ -134,7 +201,14 @@ function Form({
     value: ParticipantState[K]
   ) => void;
   event: Event;
-  pulls: Pulls[];
+  availablePulls: Pulls[];
+  addPull: () => void;
+  removePull: (index: number) => void;
+  updatePull: (
+    index: number,
+    field: keyof Pull,
+    value: string | number
+  ) => void;
 }) {
   return (
     <>
@@ -190,19 +264,44 @@ function Form({
             setValue: (value) => setParticipantField('year', value),
           }}
         />
-
-        <DropdownCard
-          Icon={PencilIcon}
-          placeholder="Color"
-          options={pulls.map((v) => ({
-            display: v.name,
-            value: v.id,
-          }))}
-          dropdownState={{
-            value: s.color,
-            setValue: (value) => setField('color', value),
-          }}
-        />
+      </section>
+      <section>
+        <h2>Order</h2>
+        {s.pulls.map((pull, index) => (
+          <div key={index} className="pass-through">
+            <DropdownCard
+              Icon={ColorPickerIcon}
+              placeholder="Color"
+              options={availablePulls.map((v) => ({
+                display: v.name,
+                value: v.id,
+              }))}
+              dropdownState={{
+                value: pull.color,
+                setValue: (value) => updatePull(index, 'color', value),
+              }}
+            />
+            <DropdownCard
+              Icon={SizeIcon}
+              placeholder="Size"
+              options={['S', 'M', 'L'].map((size) => ({
+                display: size,
+                value: size,
+              }))}
+              dropdownState={{
+                value: pull.size,
+                setValue: (value) => updatePull(index, 'size', value),
+              }}
+            />
+            <button onClick={() => removePull(index)}>
+              <TrashIcon class="icon" /> Delete
+            </button>
+            <div className="spacer"></div>
+          </div>
+        ))}
+        <button onClick={addPull}>
+          <PlusIcon class="icon" /> Add Another
+        </button>
 
         <LargeTextInputCard
           Icon={PencilIcon}
@@ -227,11 +326,11 @@ function Form({
           setField('formState', FormStates.Loading);
 
           try {
-            await sendRegistration({
+            await register({
               eventId: event.id,
               participant: s.participant,
               comments: s.comments,
-              color: s.color,
+              pulls: s.pulls,
             });
             setField('formState', FormStates.Confirmation);
           } catch (error) {
@@ -240,7 +339,7 @@ function Form({
           }
         }}
       >
-        Confirm Registration
+        Confirm Order
       </button>
 
       <ErrorMessage message={s.errorMessage}></ErrorMessage>
@@ -256,7 +355,7 @@ function Confirmation({ event }: { event: Event }) {
   return (
     <>
       <Card Icon={CheckCircleIcon}>
-        <p>Your registration to {event.name} is successful !</p>
+        <p>Your order has been placed!</p>
       </Card>
       <Markdown>{event.confirmation_text}</Markdown>
     </>
