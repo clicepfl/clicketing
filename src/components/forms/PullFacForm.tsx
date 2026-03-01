@@ -52,7 +52,7 @@ async function register({ eventId, participant, comments, pulls }) {
 
   await sendPullsOrders({ orderID, pulls });
 
-  await completeOrder({ orderID });
+  await completeOrder({ orderID, orderCount: pulls.length });
 }
 
 async function validateValues(s: State, eventId: number) {
@@ -72,10 +72,10 @@ async function validateValues(s: State, eventId: number) {
   for (let i = 0; i < s.pulls.length; i++) {
     let pull = s.pulls[i];
     if (pull.color === undefined) {
-      return `Pull #${i + 1}: Color is required.`;
+      return `Sweater #${i + 1}: Color is required.`;
     }
     if (pull.size === undefined) {
-      return `Pull #${i + 1}: Size is required.`;
+      return `Sweater #${i + 1}: Size is required.`;
     }
   }
 
