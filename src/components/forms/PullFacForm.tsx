@@ -291,7 +291,7 @@ function Form({
             <DropdownCard
               Icon={SizeIcon}
               placeholder="Size"
-              options={['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'].map(
+              options={['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'].map(
                 (size) => ({
                   display: size,
                   value: size,
