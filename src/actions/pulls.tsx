@@ -21,6 +21,6 @@ export async function sendPullsOrders({ orderID, pulls }) {
 
 export async function completeOrder({ orderID }) {
   await directus().request(
-    updateItem('registrations', id, { order_complete: true })
+    updateItem('registrations', orderID, { order_complete: true })
   );
 }

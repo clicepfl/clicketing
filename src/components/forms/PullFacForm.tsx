@@ -99,7 +99,7 @@ export default function PullFacForm({
     participant: emptyParticipantState,
     errorMessage: '',
     comments: '',
-    pulls: [],
+    pulls: [{}],
   };
 
   const [state, setState] = useState(initialState);
@@ -286,10 +286,12 @@ function Form({
             <DropdownCard
               Icon={SizeIcon}
               placeholder="Size"
-              options={['S', 'M', 'L'].map((size) => ({
-                display: size,
-                value: size,
-              }))}
+              options={['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'].map(
+                (size) => ({
+                  display: size,
+                  value: size,
+                })
+              )}
               dropdownState={{
                 value: pull.size,
                 setValue: (value) => updatePull(index, 'size', value),
