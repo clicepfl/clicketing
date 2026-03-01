@@ -112,6 +112,8 @@ export async function sendRegistration(
     retreived_deposit: false,
     can_retreive_deposit: false,
     registration_complete: false,
+    // Pulls
+    order_complete: false,
   };
 
   const createdRegistration = await directus().request(
