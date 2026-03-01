@@ -69,12 +69,13 @@ async function validateValues(s: State, eventId: number) {
     return 'At least one pull must be selected.';
   }
 
-  for (const [index, pull] of s.pulls.entries()) {
+  for (let i = 0; i < s.pulls.length; i++) {
+    let pull = s.pulls[i];
     if (pull.color === undefined) {
-      return `Pull #${index + 1}: Color is required.`;
+      return `Pull #${i + 1}: Color is required.`;
     }
     if (pull.size === undefined) {
-      return `Pull #${index + 1}: Size is required.`;
+      return `Pull #${i + 1}: Size is required.`;
     }
   }
 
@@ -91,7 +92,11 @@ export default function PullFacForm({
   pulls: Pulls[];
 }) {
   // Info items
-  const infoItems: [ElementType, ReactNode][] = makeInfoItems(event, location);
+  // Skip the date, since this is just an order
+  const infoItems: [ElementType, ReactNode][] = makeInfoItems(
+    event,
+    location
+  ).slice(1);
 
   // Define initial state
   const initialState: State = {
@@ -99,7 +104,7 @@ export default function PullFacForm({
     participant: emptyParticipantState,
     errorMessage: '',
     comments: '',
-    pulls: [{}],
+    pulls: [{ size: '' }],
   };
 
   const [state, setState] = useState(initialState);
@@ -128,7 +133,7 @@ export default function PullFacForm({
   const addPull = () => {
     setState((prevState) => ({
       ...prevState,
-      pulls: [...prevState.pulls, {}],
+      pulls: [...prevState.pulls, { size: '' }],
     }));
   };
 
@@ -141,7 +146,7 @@ export default function PullFacForm({
 
   const updatePull = (
     index: number,
-    field: keyof Pull,
+    field: keyof OrderedPull,
     value: string | number
   ) => {
     setState((prevState) => ({
@@ -208,7 +213,7 @@ function Form({
   removePull: (index: number) => void;
   updatePull: (
     index: number,
-    field: keyof Pull,
+    field: keyof OrderedPull,
     value: string | number
   ) => void;
 }) {
@@ -298,13 +303,13 @@ function Form({
               }}
             />
             <button onClick={() => removePull(index)}>
-              <TrashIcon class="icon" /> Delete
+              <TrashIcon className="icon" /> Delete
             </button>
             <div className="spacer"></div>
           </div>
         ))}
         <button onClick={addPull}>
-          <PlusIcon class="icon" /> Add Another
+          <PlusIcon className="icon" /> Add Another
         </button>
 
         <LargeTextInputCard

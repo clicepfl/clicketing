@@ -7,7 +7,7 @@ export default async function Pulls({ event }: { event: Event }) {
   let pulls = await directus().request(
     readItems('pulls', {
       filter: { sale_event: { _eq: event.id } },
-      fields: '*',
+      fields: ['id', 'front_image', 'back_image', 'name'],
     })
   );
 
