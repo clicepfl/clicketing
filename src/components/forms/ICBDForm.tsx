@@ -46,6 +46,11 @@ async function register({
   participant,
   activitiesIDs,
   noSlotActivitiesIDs,
+}: {
+  eventId: number;
+  participant: ParticipantState;
+  activitiesIDs: number[];
+  noSlotActivitiesIDs: number[];
 }) {
   let registrationId = await sendRegistration({
     eventId,
@@ -59,7 +64,8 @@ async function register({
     registrationID: registrationId,
   });
 
-  await completeRegistration(registrationId);
+  // noSlotActivities are interviews (payment required)
+  await completeRegistration(registrationId, noSlotActivitiesIDs.length != 0);
 }
 
 async function validateValues(s: State, eventId: number) {

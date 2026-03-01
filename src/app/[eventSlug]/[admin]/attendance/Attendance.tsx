@@ -1,5 +1,6 @@
 'use client';
 
+import { formatTime } from '@/actions/common-client';
 import { markAttendance } from '@/actions/icbd';
 import Card from '@/components/Card';
 import DropdownCard from '@/components/DropdownCard';
@@ -77,10 +78,12 @@ export default function Attendance({
               activities.find((a) => a.id.toString() == activity).timeslots as {
                 start_time: string;
               }[]
-            ).map((a) => ({
-              value: a.start_time,
-              display: a.start_time,
-            }))}
+            ).map((a) => {
+              return {
+                value: a.start_time,
+                display: formatTime(a.start_time),
+              };
+            })}
             dropdownState={{
               value: timeslot,
               setValue: setSelectedTimeslot,
