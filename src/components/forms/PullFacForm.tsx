@@ -15,6 +15,8 @@ import { Event, Pulls } from '@/types/aliases';
 import { ElementType, ReactNode, useState } from 'react';
 import Markdown from 'react-markdown';
 import Card from '../Card';
+import Carousel from '../Carousel';
+import { directusImageSrc } from '../DirectusImage';
 import DropdownCard from '../DropdownCard';
 import ErrorMessage from '../ErrorMessage';
 import InfoLine from '../InfoLine';
@@ -161,6 +163,21 @@ export default function PullFacForm({
     <div className="form">
       <h1>{event.name}</h1>
       <InfoLine infoItems={infoItems}></InfoLine>
+
+      <Carousel
+        images={pulls
+          .map((pull) => [
+            {
+              src: pull.front_image ? directusImageSrc(pull.front_image) : '',
+              caption: `${pull.name} - Front`,
+            },
+            {
+              src: pull.back_image ? directusImageSrc(pull.back_image) : '',
+              caption: `${pull.name} - Back`,
+            },
+          ])
+          .flat()}
+      />
 
       {(() => {
         switch (state.formState) {
