@@ -10,6 +10,10 @@
   margin-top: 8rem;
   margin-bottom: 3rem;
 
+  img {
+    max-width: 60ch;
+  }
+
   @media (max-width: 40rem) {
     margin-top: 4rem;
   }
