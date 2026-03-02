@@ -7,8 +7,8 @@ import { Event } from '@/types/aliases';
 import { readItems } from '@directus/sdk';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import ICBD from './icbd';
 import Clothes from './clothes';
+import ICBD from './icbd';
 
 export default async function Home({ params }) {
   let eventSlug = params.eventSlug;

@@ -11,5 +11,7 @@ export default async function Clothes({ event }: { event: Event }) {
     })
   );
 
-  return <FacultyClothesForm event={event} clothes={clothes} location="INM177" />;
+  return (
+    <FacultyClothesForm event={event} clothes={clothes} location="INM177" />
+  );
 }
