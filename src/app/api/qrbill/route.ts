@@ -32,7 +32,10 @@ export async function GET(request: NextRequest) {
     method: 'POST',
     body: JSON.stringify({
       account: 'CH7704835177498341000',
-      amount: event.price * (1 + (registration.plusOnes ?? 0)),
+      amount:
+        event.price *
+        (1 + (registration.plusOnes ?? 0)) *
+        (registration.number_purchased ?? 1),
       currency: 'CHF',
       message: `${event.name} - ${registration.first_name} ${registration.family_name}`,
       creditor: {

@@ -47,8 +47,11 @@ export async function getOrderItems({ eventID, orderID }) {
   });
 }
 
-export async function completeOrder({ orderID }) {
+export async function completeOrder({ orderID, orderCount }) {
   await directus().request(
-    updateItem('registrations', orderID, { order_complete: true })
+    updateItem('registrations', orderID, {
+      order_complete: true,
+      number_purchased: orderCount,
+    })
   );
 }

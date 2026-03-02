@@ -54,7 +54,7 @@ async function register({ eventId, participant, comments, pulls }) {
 
   await sendPullsOrders({ orderID, pulls });
 
-  await completeOrder({ orderID });
+  await completeOrder({ orderID, orderCount: pulls.length });
 }
 
 async function validateValues(s: State, eventId: number) {
@@ -68,16 +68,16 @@ async function validateValues(s: State, eventId: number) {
   }
 
   if (s.pulls.length === 0) {
-    return 'At least one pull must be selected.';
+    return 'At least one sweater must be selected.';
   }
 
   for (let i = 0; i < s.pulls.length; i++) {
     let pull = s.pulls[i];
     if (pull.color === undefined) {
-      return `Pull #${i + 1}: Color is required.`;
+      return `Sweater #${i + 1}: Color is required.`;
     }
     if (pull.size === undefined) {
-      return `Pull #${i + 1}: Size is required.`;
+      return `Sweater #${i + 1}: Size is required.`;
     }
   }
 
@@ -328,6 +328,8 @@ function Form({
         <button onClick={addPull}>
           <PlusIcon className="icon" /> Add Another
         </button>
+        
+        <p><b>Total:</b> {s.pulls.length * event.price} CHF</p>
 
         <LargeTextInputCard
           Icon={PencilIcon}
