@@ -134,7 +134,7 @@ export function FSOCheckinDialog({
       </ul>
 
       <div className="total-price">
-        <b>Price: {orderItems.length * event.price}</b>
+        <b>Price: {orderItems.length * event.price} CHF</b>
       </div>
 
       <CheckinBlock
