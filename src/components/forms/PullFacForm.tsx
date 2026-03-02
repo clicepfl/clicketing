@@ -1,4 +1,5 @@
 'use client';
+import { completeOrder, sendClothesOrders } from '@/actions/clothes';
 import {
   FormStates,
   ParticipantState,
@@ -10,8 +11,7 @@ import {
   validateParticipant,
 } from '@/actions/common-client';
 import { sendRegistration } from '@/actions/common-server';
-import { completeOrder, sendClothesOrders } from '@/actions/clothes';
-import { Event, Clothes } from '@/types/aliases';
+import { Clothes, Event } from '@/types/aliases';
 import { ElementType, ReactNode, useState } from 'react';
 import Markdown from 'react-markdown';
 import Card from '../Card';
@@ -164,21 +164,6 @@ export default function FacultyClothesForm({
       <h1>{event.name}</h1>
       <InfoLine infoItems={infoItems}></InfoLine>
 
-      <Carousel
-        images={clothes
-          .map((clothing) => [
-            {
-              src: clothing.front_image ? directusImageSrc(clothing.front_image) : '',
-              caption: `${clothing.name} - Front`,
-            },
-            {
-              src: clothing.back_image ? directusImageSrc(clothing.back_image) : '',
-              caption: `${clothing.name} - Back`,
-            },
-          ])
-          .flat()}
-      />
-
       {(() => {
         switch (state.formState) {
           case FormStates.Form:
@@ -289,6 +274,24 @@ function Form({
           }}
         />
       </section>
+      <Carousel
+        images={availableClothes
+          .map((clothing) => [
+            {
+              src: clothing.front_image
+                ? directusImageSrc(clothing.front_image)
+                : '',
+              caption: `${clothing.name} - Front`,
+            },
+            {
+              src: clothing.back_image
+                ? directusImageSrc(clothing.back_image)
+                : '',
+              caption: `${clothing.name} - Back`,
+            },
+          ])
+          .flat()}
+      />
       <section>
         <h2>Order</h2>
         {s.clothes.map((clothing, index) => (
@@ -328,20 +331,20 @@ function Form({
         <button onClick={addClothing}>
           <PlusIcon className="icon" /> Add Another
         </button>
-        
-        <p><b>Total:</b> {s.clothes.length * event.price} CHF</p>
-
-        <LargeTextInputCard
-          Icon={PencilIcon}
-          placeholder="Additional Comments"
-          inputState={{
-            value: s.comments,
-            setValue: (value) => setField('comments', value),
-          }}
-          rows={2}
-        />
       </section>
 
+      <LargeTextInputCard
+        Icon={PencilIcon}
+        placeholder="Additional Comments"
+        inputState={{
+          value: s.comments,
+          setValue: (value) => setField('comments', value),
+        }}
+        rows={2}
+      />
+      <p>
+        <b>Total:</b> {s.clothes.length * event.price} CHF
+      </p>
       <button
         onClick={async () => {
           const error = await validateValues(s, event.id);
