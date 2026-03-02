@@ -112,7 +112,7 @@ export async function sendRegistration(
     retreived_deposit: false,
     can_retreive_deposit: false,
     registration_complete: false,
-    // Pulls
+    // Clothes
     order_complete: false,
   };
 

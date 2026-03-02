@@ -1,4 +1,5 @@
 'use client';
+import { completeOrder, sendClothesOrders } from '@/actions/clothes';
 import {
   FormStates,
   ParticipantState,
@@ -10,8 +11,7 @@ import {
   validateParticipant,
 } from '@/actions/common-client';
 import { sendRegistration } from '@/actions/common-server';
-import { completeOrder, sendPullsOrders } from '@/actions/pulls';
-import { Event, Pulls } from '@/types/aliases';
+import { Clothes, Event } from '@/types/aliases';
 import { ElementType, ReactNode, useState } from 'react';
 import Markdown from 'react-markdown';
 import Card from '../Card';
@@ -32,7 +32,7 @@ import TeamIcon from '../icons/TeamIcon';
 import TrashIcon from '../icons/TrashIcon';
 import UserIcon from '../icons/UserIcon';
 
-type OrderedPull = {
+type OrderedCloth = {
   color?: number;
   size: string;
 };
@@ -42,17 +42,17 @@ type State = {
   participant: ParticipantState;
   errorMessage: string;
   comments: string;
-  pulls: OrderedPull[];
+  clothes: OrderedCloth[];
 };
 
-async function register({ eventId, participant, comments, pulls }) {
+async function register({ eventId, participant, comments, clothes }) {
   let orderID = await sendRegistration({
     eventId,
     participant,
     comments,
   });
 
-  await sendPullsOrders({ orderID, pulls });
+  await sendClothesOrders({ orderID, clothes });
 
   await completeOrder({ orderID });
 }
@@ -67,16 +67,16 @@ async function validateValues(s: State, eventId: number) {
     return error;
   }
 
-  if (s.pulls.length === 0) {
+  if (s.clothes.length === 0) {
     return 'At least one pull must be selected.';
   }
 
-  for (let i = 0; i < s.pulls.length; i++) {
-    let pull = s.pulls[i];
-    if (pull.color === undefined) {
+  for (let i = 0; i < s.clothes.length; i++) {
+    let cloth = s.clothes[i];
+    if (cloth.color === undefined) {
       return `Pull #${i + 1}: Color is required.`;
     }
-    if (pull.size === undefined) {
+    if (cloth.size === undefined) {
       return `Pull #${i + 1}: Size is required.`;
     }
   }
@@ -87,11 +87,11 @@ async function validateValues(s: State, eventId: number) {
 export default function PullFacForm({
   event,
   location,
-  pulls,
+  clothes,
 }: {
   event: Event;
   location: string;
-  pulls: Pulls[];
+  clothes: Clothes[];
 }) {
   // Info items
   // Skip the date, since this is just an order
@@ -106,7 +106,7 @@ export default function PullFacForm({
     participant: emptyParticipantState,
     errorMessage: '',
     comments: '',
-    pulls: [{ size: '' }],
+    clothes: [{ size: '' }],
   };
 
   const [state, setState] = useState(initialState);
@@ -135,25 +135,25 @@ export default function PullFacForm({
   const addPull = () => {
     setState((prevState) => ({
       ...prevState,
-      pulls: [...prevState.pulls, { size: '' }],
+      clothes: [...prevState.clothes, { size: '' }],
     }));
   };
 
   const removePull = (index: number) => {
     setState((prevState) => ({
       ...prevState,
-      pulls: prevState.pulls.filter((_, i) => i !== index),
+      clothes: prevState.clothes.filter((_, i) => i !== index),
     }));
   };
 
   const updatePull = (
     index: number,
-    field: keyof OrderedPull,
+    field: keyof OrderedCloth,
     value: string | number
   ) => {
     setState((prevState) => ({
       ...prevState,
-      pulls: prevState.pulls.map((pull, i) =>
+      clothes: prevState.clothes.map((pull, i) =>
         i === index ? { ...pull, [field]: value } : pull
       ),
     }));
@@ -165,7 +165,7 @@ export default function PullFacForm({
       <InfoLine infoItems={infoItems}></InfoLine>
 
       <Carousel
-        images={pulls
+        images={clothes
           .map((pull) => [
             {
               src: pull.front_image ? directusImageSrc(pull.front_image) : '',
@@ -188,7 +188,7 @@ export default function PullFacForm({
                 setField={setField}
                 setParticipantField={setParticipantField}
                 event={event}
-                availablePulls={pulls}
+                availableClothes={clothes}
                 addPull={addPull}
                 removePull={removePull}
                 updatePull={updatePull}
@@ -213,7 +213,7 @@ function Form({
   setField,
   setParticipantField,
   event,
-  availablePulls,
+  availableClothes,
   addPull,
   removePull,
   updatePull,
@@ -225,12 +225,12 @@ function Form({
     value: ParticipantState[K]
   ) => void;
   event: Event;
-  availablePulls: Pulls[];
+  availableClothes: Clothes[];
   addPull: () => void;
   removePull: (index: number) => void;
   updatePull: (
     index: number,
-    field: keyof OrderedPull,
+    field: keyof OrderedCloth,
     value: string | number
   ) => void;
 }) {
@@ -291,12 +291,12 @@ function Form({
       </section>
       <section>
         <h2>Order</h2>
-        {s.pulls.map((pull, index) => (
+        {s.clothes.map((pull, index) => (
           <div key={index} className="pass-through">
             <DropdownCard
               Icon={ColorPickerIcon}
               placeholder="Color"
-              options={availablePulls.map((v) => ({
+              options={availableClothes.map((v) => ({
                 display: v.name,
                 value: v.id,
               }))}
@@ -356,7 +356,7 @@ function Form({
               eventId: event.id,
               participant: s.participant,
               comments: s.comments,
-              pulls: s.pulls,
+              clothes: s.clothes,
             });
             setField('formState', FormStates.Confirmation);
           } catch (error) {
