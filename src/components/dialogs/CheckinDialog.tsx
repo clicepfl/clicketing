@@ -1,5 +1,6 @@
 import { checkInRegistration } from '@/actions/common-server';
 import { getTeamMembers } from '@/actions/hello-world';
+import { getOrderItems } from '@/actions/pulls';
 import Card from '@/components/Card';
 import { CheckinBlock } from '@/components/CheckinBlock';
 import Split from '@/components/Split';
@@ -13,6 +14,7 @@ export const DialogComponentMap = {
   icbd: ICBDCheckinDialog,
   faculty_dinner: FDCheckinDialog,
   hello_world: HWCheckinDialog,
+  pulls_fac: FSOCheckinDialog,
   default: BasicCheckinDialog,
 };
 
@@ -85,6 +87,55 @@ export function BasicCheckinDialog({
       <Split>
         <b>{`${participant.first_name} ${participant.family_name}`}</b>
       </Split>
+
+      <CheckinBlock
+        participant={participant}
+        onUpdateSuccess={updateParticipant}
+        requiresPayment={event.price > 0}
+        paymentOnlyDialog={paymentOnlyDialog}
+      />
+
+      <button onClick={close}>Close</button>
+    </>
+  );
+}
+
+export function FSOCheckinDialog({
+  event,
+  close,
+  participant,
+  updateParticipant,
+  paymentOnlyDialog = false,
+}: DialogProps) {
+  const [orderItems, setOrderItems] = useState<
+    { color: string; size: string }[]
+  >([]);
+
+  useEffect(() => {
+    getOrderItems({ eventID: event.id, orderID: participant.id }).then(
+      (items) => setOrderItems(items)
+    );
+  }, [orderItems]);
+
+  return orderItems.length === 0 ? (
+    <>Loading order...</>
+  ) : (
+    <>
+      <Split>
+        <b>{`${participant.first_name} ${participant.family_name}`}</b>
+      </Split>
+
+      <ul>
+        {orderItems.map((order, index) => (
+          <li key={index}>
+            {order.color ?? 'Unknown color'} ({order.size ?? 'Unknown size'})
+          </li>
+        ))}
+      </ul>
+
+      <div className="total-price">
+        <b>Price: {orderItems.length * event.price} CHF</b>
+      </div>
 
       <CheckinBlock
         participant={participant}

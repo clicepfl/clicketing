@@ -21,6 +21,14 @@ function eventSpecificAdminLinks(event: Event, adminBasePath: string) {
           </Link>
         </>
       );
+    case 'pulls_fac':
+      return (
+        <>
+          <Link href={`${adminBasePath}/payment`}>
+            <Card Icon={PriceIcon}>Sweater payment</Card>
+          </Link>
+        </>
+      );
     default:
       return (
         event.price > 0 && (
