@@ -66,7 +66,7 @@ async function validateValues(s: State, eventId: number) {
   }
 
   if (s.pulls.length === 0) {
-    return 'At least one pull must be selected.';
+    return 'At least one sweater must be selected.';
   }
 
   for (let i = 0; i < s.pulls.length; i++) {
@@ -311,6 +311,8 @@ function Form({
         <button onClick={addPull}>
           <PlusIcon className="icon" /> Add Another
         </button>
+        
+        <p><b>Total:</b> {s.pulls.length * event.price} CHF</p>
 
         <LargeTextInputCard
           Icon={PencilIcon}
