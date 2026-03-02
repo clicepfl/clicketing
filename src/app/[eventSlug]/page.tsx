@@ -8,7 +8,7 @@ import { readItems } from '@directus/sdk';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import ICBD from './icbd';
-import Pulls from './pulls';
+import Clothes from './clothes';
 
 export default async function Home({ params }) {
   let eventSlug = params.eventSlug;
@@ -58,8 +58,8 @@ export default async function Home({ params }) {
       );
     case 'hello_world':
       return <HelloWorldForm event={event} location="BC Building" />;
-    case 'pulls_fac':
-      return <Pulls event={event}></Pulls>;
+    case 'faculty_clothes_sale':
+      return <Clothes event={event}></Clothes>;
     default:
       return <BasicForm event={event} location="BC Building" />;
   }

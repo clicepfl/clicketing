@@ -4,11 +4,11 @@ import { directus } from '@/directus';
 
 import { createItems, readItems, updateItem } from '@directus/sdk';
 
-export async function sendPullsOrders({ orderID, pulls }) {
+export async function sendClothesOrders({ orderID, clothes }) {
   await directus().request(
     createItems(
-      'pulls_orders',
-      pulls.map((a) => {
+      'clothes_orders',
+      clothes.map((a) => {
         return {
           size: a.size,
           color: a.color,
@@ -21,12 +21,12 @@ export async function sendPullsOrders({ orderID, pulls }) {
 
 export async function getOrderItems({ eventID, orderID }) {
   let orders = await directus().request(
-    readItems('pulls_orders', {
+    readItems('clothes_orders', {
       filter: { order: { _eq: orderID } },
     })
   );
   let sweaters = await directus().request(
-    readItems('pulls', {
+    readItems('clothes', {
       filter: { sale_event: { _eq: eventID } },
     })
   );

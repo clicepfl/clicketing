@@ -1,6 +1,6 @@
 import { checkInRegistration } from '@/actions/common-server';
 import { getTeamMembers } from '@/actions/hello-world';
-import { getOrderItems } from '@/actions/pulls';
+import { getOrderItems } from '@/actions/clothes';
 import Card from '@/components/Card';
 import { CheckinBlock } from '@/components/CheckinBlock';
 import Split from '@/components/Split';
@@ -14,7 +14,7 @@ export const DialogComponentMap = {
   icbd: ICBDCheckinDialog,
   faculty_dinner: FDCheckinDialog,
   hello_world: HWCheckinDialog,
-  pulls_fac: FSOCheckinDialog,
+  faculty_clothes_sale: FSOCheckinDialog,
   default: BasicCheckinDialog,
 };
 

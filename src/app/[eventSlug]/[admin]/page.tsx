@@ -21,7 +21,7 @@ function eventSpecificAdminLinks(event: Event, adminBasePath: string) {
           </Link>
         </>
       );
-    case 'pulls_fac':
+    case 'faculty_clothes_sale':
       return (
         <>
           <Link href={`${adminBasePath}/payment`}>

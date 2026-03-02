@@ -10,8 +10,8 @@ import {
   validateParticipant,
 } from '@/actions/common-client';
 import { sendRegistration } from '@/actions/common-server';
-import { completeOrder, sendPullsOrders } from '@/actions/pulls';
-import { Event, Pulls } from '@/types/aliases';
+import { completeOrder, sendClothesOrders } from '@/actions/clothes';
+import { Event, Clothes } from '@/types/aliases';
 import { ElementType, ReactNode, useState } from 'react';
 import Markdown from 'react-markdown';
 import Card from '../Card';
@@ -32,7 +32,7 @@ import TeamIcon from '../icons/TeamIcon';
 import TrashIcon from '../icons/TrashIcon';
 import UserIcon from '../icons/UserIcon';
 
-type OrderedPull = {
+type OrderedClothing = {
   color?: number;
   size: string;
 };
@@ -42,19 +42,19 @@ type State = {
   participant: ParticipantState;
   errorMessage: string;
   comments: string;
-  pulls: OrderedPull[];
+  clothes: OrderedClothing[];
 };
 
-async function register({ eventId, participant, comments, pulls }) {
+async function register({ eventId, participant, comments, clothes }) {
   let orderID = await sendRegistration({
     eventId,
     participant,
     comments,
   });
 
-  await sendPullsOrders({ orderID, pulls });
+  await sendClothesOrders({ orderID, clothes });
 
-  await completeOrder({ orderID, orderCount: pulls.length });
+  await completeOrder({ orderID, orderCount: clothes.length });
 }
 
 async function validateValues(s: State, eventId: number) {
@@ -67,16 +67,16 @@ async function validateValues(s: State, eventId: number) {
     return error;
   }
 
-  if (s.pulls.length === 0) {
+  if (s.clothes.length === 0) {
     return 'At least one sweater must be selected.';
   }
 
-  for (let i = 0; i < s.pulls.length; i++) {
-    let pull = s.pulls[i];
-    if (pull.color === undefined) {
+  for (let i = 0; i < s.clothes.length; i++) {
+    let clothing = s.clothes[i];
+    if (clothing.color === undefined) {
       return `Sweater #${i + 1}: Color is required.`;
     }
-    if (pull.size === undefined) {
+    if (clothing.size === undefined) {
       return `Sweater #${i + 1}: Size is required.`;
     }
   }
@@ -84,14 +84,14 @@ async function validateValues(s: State, eventId: number) {
   return null;
 }
 
-export default function PullFacForm({
+export default function FacultyClothesForm({
   event,
   location,
-  pulls,
+  clothes,
 }: {
   event: Event;
   location: string;
-  pulls: Pulls[];
+  clothes: Clothes[];
 }) {
   // Info items
   // Skip the date, since this is just an order
@@ -106,7 +106,7 @@ export default function PullFacForm({
     participant: emptyParticipantState,
     errorMessage: '',
     comments: '',
-    pulls: [{ size: '' }],
+    clothes: [{ size: '' }],
   };
 
   const [state, setState] = useState(initialState);
@@ -132,29 +132,29 @@ export default function PullFacForm({
   };
 
   // Order list management tools
-  const addPull = () => {
+  const addClothing = () => {
     setState((prevState) => ({
       ...prevState,
-      pulls: [...prevState.pulls, { size: '' }],
+      clothes: [...prevState.clothes, { size: '' }],
     }));
   };
 
-  const removePull = (index: number) => {
+  const removeClothing = (index: number) => {
     setState((prevState) => ({
       ...prevState,
-      pulls: prevState.pulls.filter((_, i) => i !== index),
+      clothes: prevState.clothes.filter((_, i) => i !== index),
     }));
   };
 
-  const updatePull = (
+  const updateClothing = (
     index: number,
-    field: keyof OrderedPull,
+    field: keyof OrderedClothing,
     value: string | number
   ) => {
     setState((prevState) => ({
       ...prevState,
-      pulls: prevState.pulls.map((pull, i) =>
-        i === index ? { ...pull, [field]: value } : pull
+      clothes: prevState.clothes.map((clothing, i) =>
+        i === index ? { ...clothing, [field]: value } : clothing
       ),
     }));
   };
@@ -165,15 +165,15 @@ export default function PullFacForm({
       <InfoLine infoItems={infoItems}></InfoLine>
 
       <Carousel
-        images={pulls
-          .map((pull) => [
+        images={clothes
+          .map((clothing) => [
             {
-              src: pull.front_image ? directusImageSrc(pull.front_image) : '',
-              caption: `${pull.name} - Front`,
+              src: clothing.front_image ? directusImageSrc(clothing.front_image) : '',
+              caption: `${clothing.name} - Front`,
             },
             {
-              src: pull.back_image ? directusImageSrc(pull.back_image) : '',
-              caption: `${pull.name} - Back`,
+              src: clothing.back_image ? directusImageSrc(clothing.back_image) : '',
+              caption: `${clothing.name} - Back`,
             },
           ])
           .flat()}
@@ -188,10 +188,10 @@ export default function PullFacForm({
                 setField={setField}
                 setParticipantField={setParticipantField}
                 event={event}
-                availablePulls={pulls}
-                addPull={addPull}
-                removePull={removePull}
-                updatePull={updatePull}
+                availableClothes={clothes}
+                addClothing={addClothing}
+                removeClothing={removeClothing}
+                updateClothing={updateClothing}
               />
             );
           case FormStates.Loading:
@@ -213,10 +213,10 @@ function Form({
   setField,
   setParticipantField,
   event,
-  availablePulls,
-  addPull,
-  removePull,
-  updatePull,
+  availableClothes,
+  addClothing,
+  removeClothing,
+  updateClothing,
 }: {
   s: State;
   setField: <K extends keyof State>(field: K, value: State[K]) => void;
@@ -225,12 +225,12 @@ function Form({
     value: ParticipantState[K]
   ) => void;
   event: Event;
-  availablePulls: Pulls[];
-  addPull: () => void;
-  removePull: (index: number) => void;
-  updatePull: (
+  availableClothes: Clothes[];
+  addClothing: () => void;
+  removeClothing: (index: number) => void;
+  updateClothing: (
     index: number,
-    field: keyof OrderedPull,
+    field: keyof OrderedClothing,
     value: string | number
   ) => void;
 }) {
@@ -291,18 +291,18 @@ function Form({
       </section>
       <section>
         <h2>Order</h2>
-        {s.pulls.map((pull, index) => (
+        {s.clothes.map((clothing, index) => (
           <div key={index} className="pass-through">
             <DropdownCard
               Icon={ColorPickerIcon}
               placeholder="Color"
-              options={availablePulls.map((v) => ({
+              options={availableClothes.map((v) => ({
                 display: v.name,
                 value: v.id,
               }))}
               dropdownState={{
-                value: pull.color,
-                setValue: (value) => updatePull(index, 'color', value),
+                value: clothing.color,
+                setValue: (value) => updateClothing(index, 'color', value),
               }}
             />
             <DropdownCard
@@ -315,21 +315,21 @@ function Form({
                 })
               )}
               dropdownState={{
-                value: pull.size,
-                setValue: (value) => updatePull(index, 'size', value),
+                value: clothing.size,
+                setValue: (value) => updateClothing(index, 'size', value),
               }}
             />
-            <button onClick={() => removePull(index)}>
+            <button onClick={() => removeClothing(index)}>
               <TrashIcon className="icon" /> Delete
             </button>
             <div className="spacer"></div>
           </div>
         ))}
-        <button onClick={addPull}>
+        <button onClick={addClothing}>
           <PlusIcon className="icon" /> Add Another
         </button>
         
-        <p><b>Total:</b> {s.pulls.length * event.price} CHF</p>
+        <p><b>Total:</b> {s.clothes.length * event.price} CHF</p>
 
         <LargeTextInputCard
           Icon={PencilIcon}
@@ -358,7 +358,7 @@ function Form({
               eventId: event.id,
               participant: s.participant,
               comments: s.comments,
-              pulls: s.pulls,
+              clothes: s.clothes,
             });
             setField('formState', FormStates.Confirmation);
           } catch (error) {
