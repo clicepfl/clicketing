@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import DirectusImage from './DirectusImage';
 import ChevronLeftIcon from './icons/ChevronLeftIcon';
 import ChevronRightIcon from './icons/ChevronRightIcon';
@@ -15,14 +15,28 @@ export default function Carousel({
 }: {
   images: { src: string; caption: string }[];
 }) {
-  const scrollRef = useRef(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const [, setCurrentIndex] = useState(0);
 
-  const handleScroll = (direction) => {
-    if (scrollRef.current) {
-      const width = scrollRef.current.offsetWidth;
-      const scrollAmount = direction === 'left' ? -width : width;
-      scrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
+  const handleScroll = (direction: 'left' | 'right') => {
+    if (images.length === 0) return;
+
+    setCurrentIndex((prevIndex) => {
+      const newIndex =
+        direction === 'right'
+          ? (prevIndex + 1) % images.length
+          : (prevIndex - 1 + images.length) % images.length;
+
+      if (scrollRef.current) {
+        const width = scrollRef.current.clientWidth;
+        scrollRef.current.scrollTo({
+          left: newIndex * width,
+          behavior: 'smooth',
+        });
+      }
+
+      return newIndex;
+    });
   };
 
   return (
