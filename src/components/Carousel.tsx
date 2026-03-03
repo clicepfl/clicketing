@@ -49,7 +49,7 @@ export default function Carousel({
                 img={img.src}
                 name={img.caption}
                 className="carousel-image"
-                cover
+                loading="lazy"
               />
             </div>
             <p className="carousel-caption">{img.caption}</p>

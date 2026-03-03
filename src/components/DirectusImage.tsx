@@ -1,6 +1,6 @@
 import { PUBLIC_DIRECTUS_URL } from '@/directus';
 import { components } from '@/types/schema';
-import Image, { ImageLoader } from 'next/image';
+import Image, { ImageLoader, ImageProps } from 'next/image';
 import QuestionMarkIcon from './icons/QuestionMarkIcon';
 
 const imageLoader: ImageLoader = ({ src, width, quality }) => {
@@ -34,12 +34,14 @@ export default function DirectusImage({
   className,
   cover,
   sizes,
+  loading = 'eager',
 }: {
   img?: string | components['schemas']['Files'] | null;
   name?: string | null;
   className?: string;
   cover?: boolean;
   sizes?: string;
+  loading?: ImageProps['loading'];
 }) {
   if (img) {
     return (
@@ -51,7 +53,7 @@ export default function DirectusImage({
           style={{ objectFit: cover ? 'cover' : 'contain' }}
           alt={name || 'image'}
           sizes={sizes}
-          loading="eager"
+          loading={loading}
         />
       </div>
     );
