@@ -17,4 +17,5 @@ export interface ICBDInterviewStatus {
   activity: ICBDActivityInfo;
   timeslot?: ICBDTimeslot | null; // currently assigned timeslot
   availableTimeslots?: ICBDTimeslot[];
+  waitlist: boolean;
 }

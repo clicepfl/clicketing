@@ -178,6 +178,7 @@ export async function getICBDInterviewsForParticipant(
         },
         timeslot,
         availableTimeslots,
+        waitlist: reg.waitlist,
       };
     })
     .filter((r) => r !== null);
@@ -194,7 +195,8 @@ export async function getICBDInterviewsForParticipant(
 export async function updateICBDInterviewTimeslot(
   registrationId: string,
   activityId: number,
-  timeslot: ICBDTimeslot | null
+  timeslot: ICBDTimeslot | null,
+  waitlist: boolean
 ) {
   const registrations = await directus().request(
     readItems('icbd_activities_registrations', {
@@ -217,6 +219,7 @@ export async function updateICBDInterviewTimeslot(
   await directus().request(
     updateItem('icbd_activities_registrations', reg.id, {
       start: timeslot ? timeslot.start_time : null,
+      waitlist,
     })
   );
 }

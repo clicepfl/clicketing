@@ -11,6 +11,7 @@ import {
 } from '@/actions/icbd-types';
 import { useEffect, useState } from 'react';
 import Card from '../Card';
+import CheckboxCard from '../CheckboxCard';
 import { CheckinBlock } from '../CheckinBlock';
 import DropdownCard from '../DropdownCard';
 import Split from '../Split';
@@ -39,6 +40,9 @@ export function ICBDCheckinDialog({
   const [selectedSlots, setSelectedSlots] = useState<
     Record<number, ICBDTimeslot | null>
   >({});
+  const [waitlistStatuses, setWaitlistStatuses] = useState<
+    Record<number, boolean>
+  >({});
 
   const buildSelectedSlots = (acts: ICBDInterviewStatus[]) =>
     Object.fromEntries(
@@ -63,6 +67,11 @@ export function ICBDCheckinDialog({
         if (cancelled) return;
         setInterviews(acts);
         setSelectedSlots(buildSelectedSlots(acts));
+        setWaitlistStatuses(
+          Object.fromEntries(
+            acts.map((act) => [act.activity.id, act.waitlist ?? false])
+          )
+        );
       } catch (err) {
         console.error('Failed to load ICBD interviews', err);
       }
@@ -75,19 +84,25 @@ export function ICBDCheckinDialog({
   const handleSlotChange = (activityId: number, slot: ICBDTimeslot | null) =>
     setSelectedSlots((s) => ({ ...s, [activityId]: slot }));
 
-  const handleSaveTimeslots = async () => {
+  const handleWaitlistChange = (activityId: number, waitlist: boolean) =>
+    setWaitlistStatuses((s) => ({ ...s, [activityId]: waitlist }));
+
+  const handleSave = async () => {
     try {
       const updates = interviews
         .filter(
           (act) =>
             (selectedSlots[act.activity.id]?.start_time ?? null) !==
-            (act.timeslot?.start_time ?? null)
+              (act.timeslot?.start_time ?? null) ||
+            (waitlistStatuses[act.activity.id] ?? false) !==
+              (act.waitlist ?? false)
         )
         .map((act) =>
           updateICBDInterviewTimeslot(
             participant.id,
             act.activity.id,
-            selectedSlots[act.activity.id] ?? null
+            selectedSlots[act.activity.id] ?? null,
+            waitlistStatuses[act.activity.id]
           )
         );
 
@@ -98,6 +113,11 @@ export function ICBDCheckinDialog({
 
       setInterviews(updatedActs);
       setSelectedSlots(buildSelectedSlots(updatedActs));
+      setWaitlistStatuses(
+        Object.fromEntries(
+          updatedActs.map((act) => [act.activity.id, act.waitlist ?? false])
+        )
+      );
     } catch (err) {
       console.error('Failed to save timeslots', err);
     }
@@ -107,13 +127,15 @@ export function ICBDCheckinDialog({
     (acc, act) => {
       acc[act.activity.id] =
         (selectedSlots[act.activity.id]?.start_time ?? null) !==
-        (act.timeslot?.start_time ?? null);
+          (act.timeslot?.start_time ?? null) ||
+        (waitlistStatuses[act.activity.id] ?? false) !==
+          (act.waitlist ?? false);
       return acc;
     },
     {} as Record<number, boolean>
   );
 
-  const hasActiveTimeslotChanges = Object.values(changesMap).some(Boolean);
+  const hasActiveChanges = Object.values(changesMap).some(Boolean);
 
   return (
     <>
@@ -168,12 +190,23 @@ export function ICBDCheckinDialog({
                       }}
                     />
                   )}
+                  <div className="shrink">
+                    <CheckboxCard
+                      checkboxState={{
+                        value: waitlistStatuses[activity.id],
+                        setValue: (val) =>
+                          handleWaitlistChange(activity.id, val),
+                      }}
+                    >
+                      Waitlist
+                    </CheckboxCard>
+                  </div>
                 </Split>
               );
             })}
             {participant.payment ? (
-              <button onClick={handleSaveTimeslots}>
-                {hasActiveTimeslotChanges ? (
+              <button onClick={handleSave}>
+                {hasActiveChanges ? (
                   <ErrorIcon className="icon" />
                 ) : (
                   <CheckCircleIcon className="icon" />
