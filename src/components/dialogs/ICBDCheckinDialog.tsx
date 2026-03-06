@@ -221,10 +221,17 @@ export function ICBDCheckinDialog({
       ) : null}
 
       {paymentOnlyDialog ? null : participant.retreived_deposit ? (
-        <Card>
-          <CheckCircleIcon className="icon" />
-          Deposit already returned
-        </Card>
+        participant.payment == 'not-needed' ? (
+          <Card>
+            <CheckCircleIcon className="icon" />
+            No deposit to return
+          </Card>
+        ) : (
+          <Card>
+            <CheckCircleIcon className="icon" />
+            Deposit already returned
+          </Card>
+        )
       ) : participant.can_retreive_deposit ? (
         <button onClick={handleReturnDeposit}>Return deposit</button>
       ) : (

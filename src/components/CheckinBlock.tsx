@@ -77,8 +77,12 @@ export function CheckinBlock({
         <CheckCircleIcon className="icon" />
         {requiresPayment && participant.payment !== null
           ? participant.checked_in
-            ? 'Already paid & checked in'
-            : `Already paid by ${formatPaymentMethod(participant.payment)}`
+            ? participant.payment == 'not-needed'
+              ? 'Checked in & No Payment Needed'
+              : `Checked in & Paid by ${formatPaymentMethod(participant.payment)}`
+            : participant.payment == 'not-needed'
+              ? 'Payment not needed'
+              : `Already paid by ${formatPaymentMethod(participant.payment)}`
           : participant.checked_in
             ? 'Already checked in'
             : 'Ready to check in'}
