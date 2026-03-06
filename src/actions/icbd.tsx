@@ -40,7 +40,7 @@ export async function sendICBDActivitiesRegistrations({
         icbd_activity: a,
         registration,
         start: a.timeslots[0].start_time,
-        attended: false,
+        attended: true,
       };
     });
 
