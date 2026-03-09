@@ -14,6 +14,7 @@ import Card from '../Card';
 import CheckboxCard from '../CheckboxCard';
 import { CheckinBlock } from '../CheckinBlock';
 import DropdownCard from '../DropdownCard';
+import ErrorMessage from '../ErrorMessage';
 import Split from '../Split';
 import CheckCircleIcon from '../icons/CheckCircleIcon';
 import ClockIcon from '../icons/ClockIcon';
@@ -43,6 +44,7 @@ export function ICBDCheckinDialog({
   const [waitlistStatuses, setWaitlistStatuses] = useState<
     Record<number, boolean>
   >({});
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const buildSelectedSlots = (acts: ICBDInterviewStatus[]) =>
     Object.fromEntries(
@@ -89,6 +91,20 @@ export function ICBDCheckinDialog({
 
   const handleSave = async () => {
     try {
+      const invalidActivity = interviews.find(
+        (act) =>
+          selectedSlots[act.activity.id] !== null &&
+          waitlistStatuses[act.activity.id] === true
+      );
+
+      if (invalidActivity) {
+        setErrorMessage(
+          `Cannot have both a timeslot selected and waitlist checked`
+        );
+        return;
+      }
+      setErrorMessage(null);
+
       const updates = interviews
         .filter(
           (act) =>
@@ -205,14 +221,17 @@ export function ICBDCheckinDialog({
               );
             })}
             {participant.payment ? (
-              <button onClick={handleSave}>
-                {hasActiveChanges ? (
-                  <ErrorIcon className="icon" />
-                ) : (
-                  <CheckCircleIcon className="icon" />
-                )}
-                Save timeslots
-              </button>
+              <>
+                <ErrorMessage message={errorMessage}></ErrorMessage>
+                <button onClick={handleSave}>
+                  {hasActiveChanges ? (
+                    <ErrorIcon className="icon" />
+                  ) : (
+                    <CheckCircleIcon className="icon" />
+                  )}
+                  Save timeslots
+                </button>
+              </>
             ) : (
               <Card Icon={ErrorIcon}>Pay deposit to select timeslots</Card>
             )}
