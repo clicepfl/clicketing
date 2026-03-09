@@ -30,7 +30,9 @@ export default function SearchSelector({
     }
 
     setFilteredEntries(
-      items.filter((i) => i.searchValue.includes(filter)).slice(0, 5)
+      items
+        .filter((i) => i.searchValue.includes(filter.toLocaleLowerCase()))
+        .slice(0, 5)
     );
   }, [filter, items]);
 

@@ -1,5 +1,6 @@
 'use client';
 
+import { registrationSearchKey } from '@/actions/common-client';
 import { renderCheckinDialog } from '@/components/dialogs/CheckinDialog';
 import ParticipantDisplay from '@/components/ParticipantDisplay';
 import QRScannerSelector from '@/components/QRScannerSelector';
@@ -30,7 +31,7 @@ export function CheckIn({
       <QRScannerSelector
         items={participants.map((p) => ({
           component: <ParticipantDisplay event={event} participant={p} />,
-          searchValue: `${p.first_name} ${p.family_name} ${p.email}`,
+          searchValue: registrationSearchKey(p),
           value: p.id,
         }))}
         onSelect={() => {}}

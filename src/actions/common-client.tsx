@@ -3,7 +3,7 @@
 import CalendarIcon from '@/components/icons/CalendarIcon';
 import MapPinIcon from '@/components/icons/MapPinIcon';
 import PriceIcon from '@/components/icons/PriceIcon';
-import { Event } from '@/types/aliases';
+import { Event, Registration } from '@/types/aliases';
 import { ElementType, ReactNode } from 'react';
 import { emailAlreadyUsed } from './common-server';
 
@@ -199,4 +199,8 @@ export function makeInfoItems(
     [MapPinIcon, location],
     [PriceIcon, isDeposit ? formatDeposit(event) : formatPrice(event)],
   ];
+}
+
+export function registrationSearchKey(participant: Registration) {
+  return `${participant.first_name} ${participant.family_name} ${participant.email}`.toLowerCase();
 }

@@ -11,8 +11,10 @@ import {
 } from '@/actions/icbd-types';
 import { useEffect, useState } from 'react';
 import Card from '../Card';
+import CheckboxCard from '../CheckboxCard';
 import { CheckinBlock } from '../CheckinBlock';
 import DropdownCard from '../DropdownCard';
+import ErrorMessage from '../ErrorMessage';
 import Split from '../Split';
 import CheckCircleIcon from '../icons/CheckCircleIcon';
 import ClockIcon from '../icons/ClockIcon';
@@ -39,6 +41,10 @@ export function ICBDCheckinDialog({
   const [selectedSlots, setSelectedSlots] = useState<
     Record<number, ICBDTimeslot | null>
   >({});
+  const [waitlistStatuses, setWaitlistStatuses] = useState<
+    Record<number, boolean>
+  >({});
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const buildSelectedSlots = (acts: ICBDInterviewStatus[]) =>
     Object.fromEntries(
@@ -63,6 +69,11 @@ export function ICBDCheckinDialog({
         if (cancelled) return;
         setInterviews(acts);
         setSelectedSlots(buildSelectedSlots(acts));
+        setWaitlistStatuses(
+          Object.fromEntries(
+            acts.map((act) => [act.activity.id, act.waitlist ?? false])
+          )
+        );
       } catch (err) {
         console.error('Failed to load ICBD interviews', err);
       }
@@ -75,19 +86,39 @@ export function ICBDCheckinDialog({
   const handleSlotChange = (activityId: number, slot: ICBDTimeslot | null) =>
     setSelectedSlots((s) => ({ ...s, [activityId]: slot }));
 
-  const handleSaveTimeslots = async () => {
+  const handleWaitlistChange = (activityId: number, waitlist: boolean) =>
+    setWaitlistStatuses((s) => ({ ...s, [activityId]: waitlist }));
+
+  const handleSave = async () => {
     try {
+      const invalidActivity = interviews.find(
+        (act) =>
+          selectedSlots[act.activity.id] !== null &&
+          waitlistStatuses[act.activity.id] === true
+      );
+
+      if (invalidActivity) {
+        setErrorMessage(
+          `Cannot have both a timeslot selected and waitlist checked`
+        );
+        return;
+      }
+      setErrorMessage(null);
+
       const updates = interviews
         .filter(
           (act) =>
             (selectedSlots[act.activity.id]?.start_time ?? null) !==
-            (act.timeslot?.start_time ?? null)
+              (act.timeslot?.start_time ?? null) ||
+            (waitlistStatuses[act.activity.id] ?? false) !==
+              (act.waitlist ?? false)
         )
         .map((act) =>
           updateICBDInterviewTimeslot(
             participant.id,
             act.activity.id,
-            selectedSlots[act.activity.id] ?? null
+            selectedSlots[act.activity.id] ?? null,
+            waitlistStatuses[act.activity.id]
           )
         );
 
@@ -98,6 +129,11 @@ export function ICBDCheckinDialog({
 
       setInterviews(updatedActs);
       setSelectedSlots(buildSelectedSlots(updatedActs));
+      setWaitlistStatuses(
+        Object.fromEntries(
+          updatedActs.map((act) => [act.activity.id, act.waitlist ?? false])
+        )
+      );
     } catch (err) {
       console.error('Failed to save timeslots', err);
     }
@@ -107,13 +143,15 @@ export function ICBDCheckinDialog({
     (acc, act) => {
       acc[act.activity.id] =
         (selectedSlots[act.activity.id]?.start_time ?? null) !==
-        (act.timeslot?.start_time ?? null);
+          (act.timeslot?.start_time ?? null) ||
+        (waitlistStatuses[act.activity.id] ?? false) !==
+          (act.waitlist ?? false);
       return acc;
     },
     {} as Record<number, boolean>
   );
 
-  const hasActiveTimeslotChanges = Object.values(changesMap).some(Boolean);
+  const hasActiveChanges = Object.values(changesMap).some(Boolean);
 
   return (
     <>
@@ -168,18 +206,32 @@ export function ICBDCheckinDialog({
                       }}
                     />
                   )}
+                  <div className="shrink">
+                    <CheckboxCard
+                      checkboxState={{
+                        value: waitlistStatuses[activity.id],
+                        setValue: (val) =>
+                          handleWaitlistChange(activity.id, val),
+                      }}
+                    >
+                      Waitlist
+                    </CheckboxCard>
+                  </div>
                 </Split>
               );
             })}
             {participant.payment ? (
-              <button onClick={handleSaveTimeslots}>
-                {hasActiveTimeslotChanges ? (
-                  <ErrorIcon className="icon" />
-                ) : (
-                  <CheckCircleIcon className="icon" />
-                )}
-                Save timeslots
-              </button>
+              <>
+                <ErrorMessage message={errorMessage}></ErrorMessage>
+                <button onClick={handleSave}>
+                  {hasActiveChanges ? (
+                    <ErrorIcon className="icon" />
+                  ) : (
+                    <CheckCircleIcon className="icon" />
+                  )}
+                  Save timeslots
+                </button>
+              </>
             ) : (
               <Card Icon={ErrorIcon}>Pay deposit to select timeslots</Card>
             )}
@@ -188,10 +240,17 @@ export function ICBDCheckinDialog({
       ) : null}
 
       {paymentOnlyDialog ? null : participant.retreived_deposit ? (
-        <Card>
-          <CheckCircleIcon className="icon" />
-          Deposit already returned
-        </Card>
+        participant.payment == 'not-needed' ? (
+          <Card>
+            <CheckCircleIcon className="icon" />
+            No deposit to return
+          </Card>
+        ) : (
+          <Card>
+            <CheckCircleIcon className="icon" />
+            Deposit already returned
+          </Card>
+        )
       ) : participant.can_retreive_deposit ? (
         <button onClick={handleReturnDeposit}>Return deposit</button>
       ) : (

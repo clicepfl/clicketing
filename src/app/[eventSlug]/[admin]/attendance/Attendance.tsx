@@ -1,6 +1,6 @@
 'use client';
 
-import { formatTime } from '@/actions/common-client';
+import { formatTime, registrationSearchKey } from '@/actions/common-client';
 import { markAttendance } from '@/actions/icbd';
 import Card from '@/components/Card';
 import DropdownCard from '@/components/DropdownCard';
@@ -97,7 +97,9 @@ export default function Attendance({
                 )
                 .map((r) => ({
                   value: (r.registration as Registration).id,
-                  searchValue: (r.registration as Registration).email,
+                  searchValue: registrationSearchKey(
+                    r.registration as Registration
+                  ),
                   component: (
                     <AttendanceDisplay
                       email={(r.registration as Registration).email}
