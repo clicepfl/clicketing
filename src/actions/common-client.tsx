@@ -19,6 +19,7 @@ export const IC_SECTIONS = [
   'Communication Systems',
   'Data Science',
   'Cyber Security',
+  'Digital Humanities',
 ] as const;
 export type ICSections = (typeof IC_SECTIONS)[number];
 
@@ -27,6 +28,7 @@ export const SECTIONS = [
   'Communication Systems',
   'Data Science',
   'Cyber Security',
+  'Digital Humanities',
   'Other',
 ] as const;
 export type Sections = (typeof SECTIONS)[number];
