@@ -51,15 +51,9 @@ async function validateValues(s: State, eventId: number) {
   return null;
 }
 
-export default function BasicForm({
-  event,
-  location,
-}: {
-  event: Event;
-  location: string;
-}) {
+export default function BasicForm({ event }: { event: Event }) {
   // Info items
-  const infoItems: [ElementType, ReactNode][] = makeInfoItems(event, location);
+  const infoItems: [ElementType, ReactNode][] = makeInfoItems(event);
 
   // Define initial state
   const initialState: State = {

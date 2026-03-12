@@ -82,15 +82,13 @@ async function validateValues(s: State, eventId: number, guest: boolean) {
 
 export default function FacultyDinnerForm({
   event,
-  location,
   guest = false,
 }: {
   event: Event;
-  location: string;
   guest: boolean;
 }) {
   // Info items
-  const infoItems: [ElementType, ReactNode][] = makeInfoItems(event, location);
+  const infoItems: [ElementType, ReactNode][] = makeInfoItems(event);
 
   const meals: Meal[] = event.meals as Meal[];
 
