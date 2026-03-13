@@ -110,7 +110,6 @@ export default function ICBDForm({
   // Info items
   const infoItems: [ElementType, ReactNode][] = makeInfoItems(
     event,
-    location,
     true
   );
 

@@ -97,7 +97,6 @@ export default function FacultyClothesForm({
   // Skip the date, since this is just an order
   const infoItems: [ElementType, ReactNode][] = makeInfoItems(
     event,
-    location
   ).slice(1);
 
   // Define initial state
