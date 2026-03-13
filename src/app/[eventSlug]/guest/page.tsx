@@ -23,6 +23,7 @@ export default async function GuestForm({ params }) {
           'meals',
           'price',
           'opened',
+          'location',
           //@ts-expect-error
           { translations: ['*'] },
         ],
@@ -44,7 +45,7 @@ export default async function GuestForm({ params }) {
   switch (event.type) {
     case 'faculty_dinner':
       return (
-        <FacultyDinnerForm event={event} location="BC Building" guest={true} />
+        <FacultyDinnerForm event={event}  guest={true} />
       );
     default:
       return notFound();
