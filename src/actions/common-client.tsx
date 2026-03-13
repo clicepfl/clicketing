@@ -193,12 +193,11 @@ export function formatTime(time: string) {
 
 export function makeInfoItems(
   event: Event,
-  location: string,
   isDeposit: boolean = false
 ): [ElementType, ReactNode][] {
   return [
     [CalendarIcon, formatDate(event)],
-    [MapPinIcon, location],
+    [MapPinIcon, event.location],
     [PriceIcon, isDeposit ? formatDeposit(event) : formatPrice(event)],
   ];
 }
