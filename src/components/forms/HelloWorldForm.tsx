@@ -263,8 +263,10 @@ function Form({
               await sendRegistration({
                 eventId,
                 participant: member,
-                team: s.team,
                 comments: s.comments,
+                additionalInfos: {
+                  team: s.team,
+                },
               });
             }
             setField('formState', FormStates.Confirmation);

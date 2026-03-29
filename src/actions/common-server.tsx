@@ -56,68 +56,51 @@ export async function markPayment(
   );
 }
 
-export type BasicRegistrationInfo = {
+export type RegistrationInfo = {
   eventId: number;
   participant: ParticipantState;
   comments: string | null;
+  additionalInfos?: FacultyDinnerInfo | HelloWorldInfo;
 };
 
 export type FacultyDinnerInfo = {
-  meal;
-  allergies;
-  plus_ones;
-  guest;
+  meal: number;
+  allergies: string;
+  plusOnes: number;
+  guest: boolean;
 };
 
 export type HelloWorldInfo = {
-  team;
+  team: string;
 };
 
-export type RegistrationInfo = BasicRegistrationInfo &
-  (FacultyDinnerInfo | HelloWorldInfo | {});
-
-export async function sendRegistration(
-  { eventId, participant, comments }: RegistrationInfo,
-  { meal, allergies, plus_ones, guest }: FacultyDinnerInfo = {
-    meal: null,
-    allergies: null,
-    plus_ones: null,
-    guest: null,
-  },
-  { team }: HelloWorldInfo = { team: null }
-) {
-  const event = await directus().request(readItem('events', eventId));
+export async function sendRegistration(info: RegistrationInfo) {
+  const event = await directus().request(readItem('events', info.eventId));
 
   if (!event.opened) {
     throw new Error('Not opened');
   }
 
-  const eventRegistration = {
-    event: eventId,
-    email: participant.email.toLowerCase(),
-    first_name: participant.firstName,
-    family_name: participant.lastName,
-    year: participant.year,
-    section: participant.section,
-    comments,
-    // Faculty Dinner
-    meal,
-    allergies,
-    plusOnes: plus_ones,
-    guest,
-    // Hello World
-    team,
-    // ICBD
-    checked_in: false,
-    retreived_deposit: false,
-    can_retreive_deposit: false,
-    registration_complete: false,
-    // Clothes
-    order_complete: false,
-  };
-
   const createdRegistration = await directus().request(
-    createItems('registrations', [eventRegistration])
+    createItems('registrations', [
+      {
+        event: info.eventId,
+        email: info.participant.email.toLowerCase(),
+        first_name: info.participant.firstName,
+        family_name: info.participant.lastName,
+        year: info.participant.year,
+        section: info.participant.section,
+        comments: info.comments,
+        // ICBD
+        checked_in: false,
+        retreived_deposit: false,
+        can_retreive_deposit: false,
+        registration_complete: false,
+        // Clothes
+        order_complete: false,
+        ...(info.additionalInfos || {}),
+      },
+    ])
   );
 
   return createdRegistration[0].id;

@@ -32,7 +32,7 @@ export default async function Home({ params }) {
           'background_color',
           'icbd_event',
           'location',
-           //@ts-expect-error
+          //@ts-expect-error
           { translations: ['*'] },
         ],
         filter: {
@@ -54,9 +54,7 @@ export default async function Home({ params }) {
     case 'icbd':
       return <ICBD event={event}></ICBD>;
     case 'faculty_dinner':
-      return (
-        <FacultyDinnerForm event={event} guest={false} />
-      );
+      return <FacultyDinnerForm event={event} guest={false} />;
     case 'hello_world':
       return <HelloWorldForm event={event} />;
     case 'faculty_clothes_sale':
