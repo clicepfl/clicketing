@@ -108,10 +108,7 @@ export default function ICBDForm({
   interviews: { title: string; time: string; id: number }[];
 }) {
   // Info items
-  const infoItems: [ElementType, ReactNode][] = makeInfoItems(
-    event,
-    true
-  );
+  const infoItems: [ElementType, ReactNode][] = makeInfoItems(event, true);
 
   // Define initial state
   const initialState: State = {

@@ -346,10 +346,13 @@ function Form({
                 section: guest ? 'Guest' : s.participant.section,
                 year: guest ? 'Guest' : s.participant.year,
               },
-              meal: s.mealId,
               comments: s.comments,
-              plus_ones: guest ? s.plus_ones : 0,
-              guest,
+              additionalInfos: {
+                meal: s.mealId,
+                allergies: s.comments,
+                plusOnes: guest ? s.plus_ones : 0,
+                guest,
+              },
             });
             setField('formState', FormStates.Confirmation);
           } catch (error) {
