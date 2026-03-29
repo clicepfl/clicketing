@@ -78,7 +78,7 @@ export async function sendRegistration(info: RegistrationInfo) {
   const event = await directus().request(readItem('events', info.eventId));
 
   if (!event.opened) {
-    throw new Error('Not opened')
+    throw new Error('Not opened');
   }
 
   console.log(info);

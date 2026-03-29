@@ -44,9 +44,7 @@ export default async function GuestForm({ params }) {
 
   switch (event.type) {
     case 'faculty_dinner':
-      return (
-        <FacultyDinnerForm event={event}  guest={true} />
-      );
+      return <FacultyDinnerForm event={event} guest />;
     default:
       return notFound();
   }
