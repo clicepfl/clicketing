@@ -81,8 +81,6 @@ export async function sendRegistration(info: RegistrationInfo) {
     throw new Error('Not opened');
   }
 
-  console.log(info);
-
   const createdRegistration = await directus().request(
     createItems('registrations', [
       {
