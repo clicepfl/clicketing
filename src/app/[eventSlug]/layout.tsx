@@ -3,7 +3,8 @@ import { directus } from '@/directus';
 import { Event } from '@/types/aliases';
 import { readItems } from '@directus/sdk';
 
-export default async function EventLayout({ children, params: { eventSlug } }: { children: React.ReactNode, params: { eventSlug: string } }) {
+export default async function EventLayout({ children, params }: { children: React.ReactNode, params: any}) {
+  let eventSlug = params.eventSlug;
   let event: Event = (
     await directus().request(
       readItems('events', {
@@ -12,7 +13,6 @@ export default async function EventLayout({ children, params: { eventSlug } }: {
           'background_color'
         ],
         filter: {
-          // @ts-expect-error
           slug: eventSlug,
         },
       })
