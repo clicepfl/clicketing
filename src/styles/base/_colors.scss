@@ -1,10 +1,11 @@
 @use 'sass:color';
 
 :root {
-  $base: #d65d00;
+  --bg-color: #d65d00;
 
+  $base: #d65d00;
+  // TODO: change this to base css functions
   --text-color: #{color.scale($base, $lightness: 80%)};
-  --bg-color: #{$base};
 
   --button-text-color: #{color.scale($base, $lightness: -50%)};
   --button-bg-color: #{color.scale($base, $lightness: 70%)};
