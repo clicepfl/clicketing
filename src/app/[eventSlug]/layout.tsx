@@ -12,6 +12,7 @@ export default async function EventLayout({ children, params: { eventSlug } }: {
           'background_color'
         ],
         filter: {
+          // @ts-expect-error
           slug: eventSlug,
         },
       })
