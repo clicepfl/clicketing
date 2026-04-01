@@ -1,7 +1,7 @@
 @use 'sass:color';
 
 :root {
-  $base: #f5a3eb;
+  $base: #e775d9;
 
   --text-color: #{color.scale($base, $lightness: 80%)};
   --bg-color: #{$base};
