@@ -5,25 +5,14 @@
   --white: #ffffff;
   --black: #000000;
   --transparent-black: rgba(0, 0, 0, 0.7);
-
-  $base: #d65d00;
-  // TODO: change this to base css functions
-
-  --text-color: color-mix(in hsl, var(--bg-color) 20%, var(--white) 100%);
-  //--text-color: #{color.scale($base, $lightness: 80%)};
-
-  --button-text-color: color-mix(in hsl, var(--bg-color) 20%, var(--black) 60%);
-  //--button-text-color: #{color.scale($base, $lightness: -50%)};
-
-  --button-bg-color: color-mix(in hsl, var(--bg-color) 20%, var(--white) 70%);
-  //--button-bg-color: #{color.scale($base, $lightness: 70%)};
-  
-  --button-bg-color-hover: color-mix(in hsl, var(--bg-color) 20%, var(--white) 60%);
-  //--button-bg-color-hover: #{color.scale($base, $lightness: 60%)};
-
   --transparent-white: rgba(255, 255, 255, 0.1);
   --transparent-white-2: rgba(255, 255, 255, 0.2);
 
+  --text-color: color-mix(in hsl, var(--bg-color) 20%, var(--white) 100%);
+
+  --button-text-color: color-mix(in hsl, var(--bg-color) 20%, var(--black) 60%);
+  --button-bg-color: color-mix(in hsl, var(--bg-color) 20%, var(--white) 70%);
+  --button-bg-color-hover: color-mix(in hsl, var(--bg-color) 20%, var(--white) 60%);
+  
   --transparent-dark: color-mix(in hsl, var(--bg-color) 20%, var(--transparent-black) 60%);
-  //--transparent-dark: #{color.scale($base, $lightness: -15%, $alpha: -30%)};
 }
