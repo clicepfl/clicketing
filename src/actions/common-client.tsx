@@ -173,11 +173,15 @@ export function formatDate(event: Event) {
 }
 
 export function formatPrice(event: Event) {
-  return `${event.price ?? 0}CHF`;
+  return event.price_model == 'one_price'
+    ? `${event.first_price ?? 0}CHF`
+    : `${event.first_price ?? 0} - ${event.second_price ?? 0}CHF`;
 }
 
 export function formatDeposit(event: Event) {
-  return `${event.price ?? 0}CHF deposit`;
+  return event.price_model == 'one_price'
+    ? `${event.first_price ?? 0}CHF`
+    : `${event.first_price ?? 0} - ${event.second_price ?? 0}CHF deposit`;
 }
 
 // Works for 00:00 strings and 00:00:00 strings
@@ -195,11 +199,18 @@ export function makeInfoItems(
   event: Event,
   isDeposit: boolean = false
 ): [ElementType, ReactNode][] {
-  return [
-    [CalendarIcon, formatDate(event)],
-    [MapPinIcon, event.location],
-    [PriceIcon, isDeposit ? formatDeposit(event) : formatPrice(event)],
-  ];
+  if (event.price_model != 'free') {
+    return [
+      [CalendarIcon, formatDate(event)],
+      [MapPinIcon, event.location],
+      [PriceIcon, isDeposit ? formatDeposit(event) : formatPrice(event)],
+    ];
+  } else {
+    return [
+      [CalendarIcon, formatDate(event)],
+      [MapPinIcon, event.location],
+    ];
+  }
 }
 
 export function registrationSearchKey(participant: Registration) {

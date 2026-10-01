@@ -2,6 +2,7 @@ import BasicForm from '@/components/forms/BasicForm';
 import ClosedForm from '@/components/forms/ClosedForm';
 import FacultyDinnerForm from '@/components/forms/FacultyDinnerForm';
 import HelloWorldForm from '@/components/forms/HelloWorldForm';
+import IcelanForm from '@/components/forms/IcelanForm';
 import { directus } from '@/directus';
 import { Event } from '@/types/aliases';
 import { readItems } from '@directus/sdk';
@@ -19,21 +20,20 @@ export default async function Home({ params }) {
         fields: [
           // Explicit list to avoid leaking the admin secret
           'id',
-          'from',
-          'to',
           'name',
           'slug',
+          'from',
+          'to',
           'type',
-          'meals',
-          'price',
+          'price_model',
+          'first_price',
+          'second_price',
           'opened',
           'intro_text',
           'confirmation_text',
-          'background_color',
-          'icbd_event',
           'location',
-          //@ts-expect-error
-          { translations: ['*'] },
+          'meals',
+          'icbd_event',
         ],
         filter: {
           slug: eventSlug,
@@ -52,13 +52,15 @@ export default async function Home({ params }) {
 
   switch (event.type) {
     case 'icbd':
-      return <ICBD event={event}></ICBD>;
+      return <ICBD event={event} />;
     case 'faculty_dinner':
       return <FacultyDinnerForm event={event} guest={false} />;
     case 'hello_world':
       return <HelloWorldForm event={event} />;
     case 'faculty_clothes_sale':
-      return <Clothes event={event}></Clothes>;
+      return <Clothes event={event} />;
+    case 'icelan':
+      return <IcelanForm event={event} />;
     default:
       return <BasicForm event={event} />;
   }
@@ -68,8 +70,6 @@ export async function generateMetadata({ params }): Promise<Metadata> {
   const event = (
     await directus().request(
       readItems('events', {
-        //@ts-expect-error
-        fields: ['*', { translations: ['*'] }],
         filter: { slug: params.eventSlug },
       })
     )

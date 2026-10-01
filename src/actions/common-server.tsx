@@ -60,7 +60,7 @@ export type RegistrationInfo = {
   eventId: number;
   participant: ParticipantState;
   comments: string | null;
-  additionalInfos?: FacultyDinnerInfo | HelloWorldInfo;
+  additionalInfos?: FacultyDinnerInfo | HelloWorldInfo | IcelanInfo;
 };
 
 export type FacultyDinnerInfo = {
@@ -72,6 +72,10 @@ export type FacultyDinnerInfo = {
 
 export type HelloWorldInfo = {
   team: string;
+};
+export type IcelanInfo = {
+  pseudonym: string;
+  discord_username: string;
 };
 
 export async function sendRegistration(info: RegistrationInfo) {

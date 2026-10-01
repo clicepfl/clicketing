@@ -1,0 +1,275 @@
+'use client';
+import {
+  FormStates,
+  ParticipantState,
+  Season,
+  emptyParticipantState,
+  makeInfoItems,
+  validateParticipant,
+} from '@/actions/common-client';
+import { sendRegistration } from '@/actions/common-server';
+import { validateIcelanInfo } from '@/actions/icelan';
+import { Event } from '@/types/aliases';
+import { ElementType, ReactNode, useState } from 'react';
+import Markdown from 'react-markdown';
+import Card from '../Card';
+import CheckboxCard from '../CheckboxCard';
+import ErrorMessage from '../ErrorMessage';
+import InfoLine from '../InfoLine';
+import LargeTextInputCard from '../LargeTextInputCard';
+import TextInputCard from '../TextInputCard';
+import CheckCircleIcon from '../icons/CheckCircleIcon';
+import EmailIcon from '../icons/EmailIcon';
+import PencilIcon from '../icons/PencilIcon';
+import UserIcon from '../icons/UserIcon';
+
+type State = {
+  formState: FormStates;
+  participant: ParticipantState;
+  consent: boolean;
+  comments: string;
+  pseudonym: string;
+  discord_username: string;
+  errorMessage: string;
+};
+
+async function validateValues(s: State, eventId: number) {
+  let error = await validateParticipant(
+    s.participant,
+    eventId,
+    Season.Autumn,
+    false,
+    true,
+    true,
+    true
+  );
+
+  if (error) {
+    return error;
+  } else {
+    error = await validateIcelanInfo(s.pseudonym, s.discord_username, eventId);
+  }
+
+  if (error) {
+    return error;
+  }
+
+  if (!s.consent) {
+    return 'Consent is required';
+  }
+
+  return null;
+}
+
+export default function IcelanForm({ event }: { event: Event }) {
+  // Info items
+  const infoItems: [ElementType, ReactNode][] = makeInfoItems(event);
+
+  // Define initial state
+  const initialState: State = {
+    formState: FormStates.Form,
+    participant: emptyParticipantState,
+    consent: false,
+    comments: '',
+    pseudonym: '',
+    discord_username: '',
+    errorMessage: '',
+  };
+
+  const [state, setState] = useState(initialState);
+
+  const setField = <K extends keyof State>(field: K, value: State[K]) => {
+    setState((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
+  };
+
+  const setParticipantField = <K extends keyof ParticipantState>(
+    field: K,
+    value: ParticipantState[K]
+  ) => {
+    setState((prevState) => ({
+      ...prevState,
+      participant: {
+        ...prevState.participant,
+        [field]: value,
+      },
+    }));
+  };
+
+  return (
+    <div className="form">
+      <h1>{event.name}</h1>
+      <InfoLine infoItems={infoItems}></InfoLine>
+
+      {(() => {
+        switch (state.formState) {
+          case FormStates.Form:
+            return (
+              <Form
+                s={state}
+                setField={setField}
+                setParticipantField={setParticipantField}
+                event={event}
+              />
+            );
+          case FormStates.Loading:
+            return <Loading></Loading>;
+          case FormStates.Confirmation:
+            return <Confirmation event={event} />;
+          case FormStates.Error:
+            return <ErrorDisplay message={state.errorMessage} />;
+          default:
+            return null;
+        }
+      })()}
+    </div>
+  );
+}
+
+function Form({
+  s,
+  setField,
+  setParticipantField,
+  event,
+}: {
+  s: State;
+  setField: <K extends keyof State>(field: K, value: State[K]) => void;
+  setParticipantField: <K extends keyof ParticipantState>(
+    field: K,
+    value: ParticipantState[K]
+  ) => void;
+  event: Event;
+}) {
+  return (
+    <>
+      <section>
+        <Markdown>{event.intro_text}</Markdown>
+        <TextInputCard
+          Icon={UserIcon}
+          placeholder="Prénom"
+          inputState={{
+            value: s.participant.firstName,
+            setValue: (value) => setParticipantField('firstName', value),
+          }}
+        />
+        <TextInputCard
+          Icon={UserIcon}
+          placeholder="Nom"
+          inputState={{
+            value: s.participant.lastName,
+            setValue: (value) => setParticipantField('lastName', value),
+          }}
+        />
+        <TextInputCard
+          Icon={EmailIcon}
+          placeholder="Email"
+          inputState={{
+            value: s.participant.email,
+            setValue: (value) => setParticipantField('email', value),
+          }}
+        />
+        <TextInputCard
+          Icon={UserIcon}
+          placeholder="Pseudonyme"
+          inputState={{
+            value: s.pseudonym,
+            setValue: (value) => setField('pseudonym', value),
+          }}
+        />
+        <TextInputCard
+          Icon={UserIcon}
+          placeholder="Pseudo Discord"
+          inputState={{
+            value: s.discord_username,
+            setValue: (value) => setField('discord_username', value),
+          }}
+        />
+
+        {/*
+        <DropdownCard
+          Icon={TeamIcon}
+          placeholder="Section"
+          options={SECTIONS.map((v) => ({
+            display: v,
+            value: v,
+          }))}
+          dropdownState={{
+            value: s.participant.section,
+            setValue: (value) => setParticipantField('section', value),
+          }}
+        />
+        */}
+
+        <CheckboxCard
+          checkboxState={{
+            value: s.consent,
+            setValue: (value) => setField('consent', value),
+          }}
+        >
+          Je consens que Game* prenne des photos de moi à {event.name} et les
+          utilise à des fins promotionnelles.
+        </CheckboxCard>
+
+        <LargeTextInputCard
+          Icon={PencilIcon}
+          placeholder="Commentaire additionnel"
+          inputState={{
+            value: s.comments,
+            setValue: (value) => setField('comments', value),
+          }}
+          rows={2}
+        />
+      </section>
+
+      <button
+        onClick={async () => {
+          const error = await validateValues(s, event.id);
+
+          if (error) {
+            setField('errorMessage', error);
+            return;
+          }
+
+          setField('formState', FormStates.Loading);
+
+          try {
+            await sendRegistration({
+              eventId: event.id,
+              participant: s.participant,
+              comments: s.comments,
+              additionalInfos: {
+                pseudonym: s.pseudonym,
+                discord_username: s.discord_username,
+              },
+            });
+            setField('formState', FormStates.Confirmation);
+          } catch (error) {
+            setField('errorMessage', error.message);
+            setField('formState', FormStates.Error);
+          }
+        }}
+      >
+        Confirm Registration
+      </button>
+
+      <ErrorMessage message={s.errorMessage}></ErrorMessage>
+    </>
+  );
+}
+
+function Loading({}) {
+  return <p>Loading...</p>;
+}
+
+function Confirmation({ event }: { event: Event }) {
+  return (
+    <>
+      <Card Icon={CheckCircleIcon}>
+        <p>Your registration to {event.name} is successful !</p>
+      </Card>
+      <Markdown>{event.confirmation_text}</Markdown>
+    </>
+  );
+}
