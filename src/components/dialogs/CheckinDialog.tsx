@@ -91,7 +91,7 @@ export function BasicCheckinDialog({
       <CheckinBlock
         participant={participant}
         onUpdateSuccess={updateParticipant}
-        requiresPayment={event.price > 0}
+        requiresPayment={event.price_model != 'free'}
         paymentOnlyDialog={paymentOnlyDialog}
       />
 
@@ -134,13 +134,22 @@ export function FSOCheckinDialog({
       </ul>
 
       <div className="total-price">
-        <b>Price: {orderItems.length * event.price} CHF</b>
+        <b>
+          Price:{' '}
+          {orderItems.length *
+            (participant.price_to_pay == 'first_price'
+              ? event.first_price
+              : participant.price_to_pay == 'second_price'
+                ? event.second_price
+                : 0)}{' '}
+          CHF
+        </b>
       </div>
 
       <CheckinBlock
         participant={participant}
         onUpdateSuccess={updateParticipant}
-        requiresPayment={event.price > 0}
+        requiresPayment={event.price_model != 'free'}
         paymentOnlyDialog={paymentOnlyDialog}
       />
 
@@ -166,7 +175,7 @@ export function FDCheckinDialog({
       <CheckinBlock
         participant={participant}
         onUpdateSuccess={updateParticipant}
-        requiresPayment={event.price > 0}
+        requiresPayment={event.price_model != 'free'}
         paymentOnlyDialog={paymentOnlyDialog}
       />
 
@@ -215,7 +224,7 @@ export function HWCheckinDialog({
             <CheckinBlock
               participant={member}
               onUpdateSuccess={updateParticipant}
-              requiresPayment={event.price > 0}
+              requiresPayment={event.price_model != 'free'}
               checkinButtonText={`Check-in ${member.first_name} ${member.family_name}`}
               paymentOnlyDialog={paymentOnlyDialog}
             />

@@ -1,7 +1,7 @@
 'use server';
 
 import { directus } from '@/directus';
-import { readItems } from '@directus/sdk';
+import { createItems, readItem, readItems } from '@directus/sdk';
 
 export async function pseudonymAlreadyUsed(
   pseudonym: string,
@@ -34,6 +34,30 @@ export async function discordUsernameAlreadyUsed(
   );
 
   return registrations.length !== 0;
+}
+
+export async function sendIcelanTournamentInterests({
+  registrationID,
+  tournamentIDs,
+}: {
+  registrationID: string;
+  tournamentIDs: number[];
+}) {
+  let tournaments = await directus().request(readItems('icelan_tournois'));
+
+  let registration = await directus().request(
+    readItem('registrations', registrationID)
+  );
+
+  await directus().request(
+    createItems(
+      'icelan_tournois_registrations',
+      tournamentIDs.map((tournamentID) => ({
+        icelan_tournois_id: tournamentID,
+        registrations_id: registrationID,
+      }))
+    )
+  );
 }
 
 export async function validateIcelanInfo(

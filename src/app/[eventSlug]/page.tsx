@@ -34,6 +34,7 @@ export default async function Home({ params }) {
           'location',
           'meals',
           'icbd_event',
+          'background_color',
         ],
         filter: {
           slug: eventSlug,
@@ -60,7 +61,12 @@ export default async function Home({ params }) {
     case 'faculty_clothes_sale':
       return <Clothes event={event} />;
     case 'icelan':
-      return <IcelanForm event={event} />;
+      return (
+        <IcelanForm
+          event={event}
+          tournaments={await directus().request(readItems('icelan_tournois'))}
+        />
+      );
     default:
       return <BasicForm event={event} />;
   }

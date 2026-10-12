@@ -8,8 +8,11 @@ import {
   validateParticipant,
 } from '@/actions/common-client';
 import { sendRegistration } from '@/actions/common-server';
-import { validateIcelanInfo } from '@/actions/icelan';
-import { Event } from '@/types/aliases';
+import {
+  sendIcelanTournamentInterests,
+  validateIcelanInfo,
+} from '@/actions/icelan';
+import { Event, IcelanTournoi } from '@/types/aliases';
 import { ElementType, ReactNode, useState } from 'react';
 import Markdown from 'react-markdown';
 import Card from '../Card';
@@ -17,19 +20,28 @@ import CheckboxCard from '../CheckboxCard';
 import ErrorMessage from '../ErrorMessage';
 import InfoLine from '../InfoLine';
 import LargeTextInputCard from '../LargeTextInputCard';
+import NumberInputCard from '../NumberInputCard copy';
+import SplitText from '../SplitText';
 import TextInputCard from '../TextInputCard';
+import AllergyIcon from '../icons/AllergyIcon';
 import CheckCircleIcon from '../icons/CheckCircleIcon';
 import EmailIcon from '../icons/EmailIcon';
 import PencilIcon from '../icons/PencilIcon';
+import PriceIcon from '../icons/PriceIcon';
 import UserIcon from '../icons/UserIcon';
 
 type State = {
   formState: FormStates;
   participant: ParticipantState;
   consent: boolean;
+  read_rules: boolean;
   comments: string;
+  allergies: string;
   pseudonym: string;
   discord_username: string;
+  student: boolean;
+  donation: number;
+  selectedTournaments: boolean[];
   errorMessage: string;
 };
 
@@ -54,6 +66,10 @@ async function validateValues(s: State, eventId: number) {
     return error;
   }
 
+  if (!s.read_rules) {
+    return 'You need to read and approve the rules';
+  }
+
   if (!s.consent) {
     return 'Consent is required';
   }
@@ -61,7 +77,13 @@ async function validateValues(s: State, eventId: number) {
   return null;
 }
 
-export default function IcelanForm({ event }: { event: Event }) {
+export default function IcelanForm({
+  event,
+  tournaments,
+}: {
+  event: Event;
+  tournaments: IcelanTournoi[];
+}) {
   // Info items
   const infoItems: [ElementType, ReactNode][] = makeInfoItems(event);
 
@@ -70,9 +92,14 @@ export default function IcelanForm({ event }: { event: Event }) {
     formState: FormStates.Form,
     participant: emptyParticipantState,
     consent: false,
+    read_rules: false,
     comments: '',
+    allergies: '',
     pseudonym: '',
     discord_username: '',
+    student: false,
+    donation: null,
+    selectedTournaments: tournaments.map(() => false),
     errorMessage: '',
   };
 
@@ -112,6 +139,7 @@ export default function IcelanForm({ event }: { event: Event }) {
                 setField={setField}
                 setParticipantField={setParticipantField}
                 event={event}
+                tournaments={tournaments}
               />
             );
           case FormStates.Loading:
@@ -133,6 +161,7 @@ function Form({
   setField,
   setParticipantField,
   event,
+  tournaments,
 }: {
   s: State;
   setField: <K extends keyof State>(field: K, value: State[K]) => void;
@@ -141,11 +170,23 @@ function Form({
     value: ParticipantState[K]
   ) => void;
   event: Event;
+  tournaments: IcelanTournoi[];
 }) {
+  function changeSelection(
+    index: number,
+    newValue: boolean,
+    oldValues: boolean[]
+  ) {
+    const newValues = [...oldValues];
+    newValues[index] = newValue;
+    return newValues;
+  }
+
   return (
     <>
       <section>
         <Markdown>{event.intro_text}</Markdown>
+        <h2>Informations générales</h2>
         <TextInputCard
           Icon={UserIcon}
           placeholder="Prénom"
@@ -164,7 +205,7 @@ function Form({
         />
         <TextInputCard
           Icon={EmailIcon}
-          placeholder="Email"
+          placeholder="Email (mail étudiant pour le rabais)"
           inputState={{
             value: s.participant.email,
             setValue: (value) => setParticipantField('email', value),
@@ -186,21 +227,105 @@ function Form({
             setValue: (value) => setField('discord_username', value),
           }}
         />
-
-        {/*
-        <DropdownCard
-          Icon={TeamIcon}
-          placeholder="Section"
-          options={SECTIONS.map((v) => ({
-            display: v,
-            value: v,
-          }))}
-          dropdownState={{
-            value: s.participant.section,
-            setValue: (value) => setParticipantField('section', value),
+        <CheckboxCard
+          checkboxState={{
+            value: s.student,
+            setValue: (value) => setField('student', value),
           }}
+        >
+          Je suis étudiant·e
+        </CheckboxCard>
+        <LargeTextInputCard
+          Icon={AllergyIcon}
+          placeholder="Allergies et Restrictions alimentaires (laisser vide si aucune)"
+          inputState={{
+            value: s.allergies,
+            setValue: (value) => setField('allergies', value),
+          }}
+          rows={2}
         />
-        */}
+      </section>
+
+      <section>
+        <h2>Tournois</h2>
+        <p>
+          La question suivante est seulement à titre indicatif, elle nous permet
+          d'estimer le nombre de participant·e·s à chaque tournoi afin
+          d'optimiser le planning. La liste est susceptible d'évoluer d'ici à
+          l'événement.
+        </p>
+        <p>
+          <br />À quels tournois souhaites-tu participer ?
+        </p>
+        {tournaments.map((tournament, i) => (
+          <CheckboxCard
+            key={i}
+            checkboxState={{
+              value: s.selectedTournaments[i],
+              setValue: (value) => {
+                setField(
+                  'selectedTournaments',
+                  changeSelection(i, value, s.selectedTournaments)
+                );
+              },
+            }}
+          >
+            <SplitText snippets={[tournament.name]} />
+          </CheckboxCard>
+        ))}
+      </section>
+
+      <section>
+        <h2>Nous soutenir</h2>
+        <p>
+          Si tu penses que l'événement vaut plus, tu as la possibilité de faire
+          un don à Game*, la commission organisatrice ! Tu peux indiquer le
+          montant de ton don ci-dessous :
+        </p>
+        <NumberInputCard
+          Icon={PriceIcon}
+          placeholder="Don"
+          inputState={{
+            value: s.donation,
+            setValue: (value) => setField('donation', value),
+          }}
+          max={10000}
+        />
+        <p>Le don sera automatiquement ajouté au montant de la facture.</p>
+      </section>
+
+      <section>
+        <h2>Règlement</h2>
+        <p>
+          Disponible ici:{' '}
+          <a href="https://icelan.ch/reglement" target="_blank">
+            https://icelan.ch/reglement
+          </a>
+          <br />
+          <br />
+          On sait qu'en général les gens acceptent sans lire, donc le résumé
+          c'est :
+        </p>
+        <ul>
+          <li>Sois respectueux·euse des gens, du matériel et des lieux.</li>
+          <li>
+            S'il y a un problème, on se réserve le droit de t'exclure de
+            l'événement si nécessaire, sans remboursement.
+          </li>
+        </ul>
+        <p>
+          <br />
+          Merci d'avance !
+        </p>
+
+        <CheckboxCard
+          checkboxState={{
+            value: s.read_rules,
+            setValue: (value) => setField('read_rules', value),
+          }}
+        >
+          J'atteste avoir lu et accepté le règlement de l'événement.
+        </CheckboxCard>
 
         <CheckboxCard
           checkboxState={{
@@ -208,8 +333,9 @@ function Form({
             setValue: (value) => setField('consent', value),
           }}
         >
-          Je consens que Game* prenne des photos de moi à {event.name} et les
-          utilise à des fins promotionnelles.
+          J'autorise Game*, les services de l'EPFL, et toute autre entité
+          concernée par l'événement à utiliser, reproduire et diffuser à titre
+          gratuit mon image et ma prestation enregistrées lors de l'événement.
         </CheckboxCard>
 
         <LargeTextInputCard
@@ -235,14 +361,24 @@ function Form({
           setField('formState', FormStates.Loading);
 
           try {
-            await sendRegistration({
+            let registrationId = await sendRegistration({
               eventId: event.id,
               participant: s.participant,
               comments: s.comments,
+              price_to_pay: s.student ? 'first_price' : 'second_price',
               additionalInfos: {
+                donation: s.donation,
+                student: s.student,
+                allergies: s.allergies,
                 pseudonym: s.pseudonym,
                 discord_username: s.discord_username,
               },
+            });
+            await sendIcelanTournamentInterests({
+              registrationID: registrationId,
+              tournamentIDs: tournaments
+                .filter((tournament, i) => s.selectedTournaments[i])
+                .map((tournament) => tournament.id),
             });
             setField('formState', FormStates.Confirmation);
           } catch (error) {

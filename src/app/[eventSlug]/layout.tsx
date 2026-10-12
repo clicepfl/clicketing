@@ -1,15 +1,21 @@
-import '@styles/style.scss';
 import { directus } from '@/directus';
 import { Event } from '@/types/aliases';
 import { readItems } from '@directus/sdk';
+import '@styles/style.scss';
 
-export default async function EventLayout({ children, params: { eventSlug } }: { children: React.ReactNode, params: { eventSlug: string } }) {
+export default async function EventLayout({
+  children,
+  params: { eventSlug },
+}: {
+  children: React.ReactNode;
+  params: { eventSlug: string };
+}) {
   let event: Event = (
     await directus().request(
       readItems('events', {
         fields: [
           // Explicit list to avoid leaking the admin secret
-          'background_color'
+          'background_color',
         ],
         filter: {
           slug: { _eq: eventSlug },
@@ -22,9 +28,7 @@ export default async function EventLayout({ children, params: { eventSlug } }: {
 
   return (
     <>
-      <style>
-        {`:root { --bg-color: ${col}; };`}
-      </style>
+      <style>{`:root { --bg-color: ${col}; };`}</style>
       <div>{children}</div>
     </>
   );

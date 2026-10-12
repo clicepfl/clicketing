@@ -14,7 +14,7 @@ export default function ParticipantDisplay({
   participant: Registration;
 }) {
   const deposit = event.type === 'icbd';
-  const requiresPayment = event.price > 0 || deposit;
+  const requiresPayment = event.price_model != 'free' || deposit;
   return (
     <div className="participant-display">
       <Split>

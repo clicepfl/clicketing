@@ -45,11 +45,18 @@ type State = {
   clothes: OrderedClothing[];
 };
 
-async function register({ eventId, participant, comments, clothes }) {
+async function register({
+  eventId,
+  participant,
+  comments,
+  price_to_pay,
+  clothes,
+}) {
   let orderID = await sendRegistration({
     eventId,
     participant,
     comments,
+    price_to_pay,
   });
 
   await sendClothesOrders({ orderID, clothes });
@@ -340,7 +347,7 @@ function Form({
         rows={2}
       />
       <p>
-        <b>Total:</b> {s.clothes.length * event.price} CHF
+        <b>Total:</b> {s.clothes.length * event.first_price} CHF
       </p>
       <button
         onClick={async () => {
@@ -359,6 +366,7 @@ function Form({
               participant: s.participant,
               comments: s.comments,
               clothes: s.clothes,
+              price_to_pay: 'first_price',
             });
             setField('formState', FormStates.Confirmation);
           } catch (error) {
