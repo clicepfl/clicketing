@@ -2,6 +2,7 @@ import BasicForm from '@/components/forms/BasicForm';
 import ClosedForm from '@/components/forms/ClosedForm';
 import FacultyDinnerForm from '@/components/forms/FacultyDinnerForm';
 import HelloWorldForm from '@/components/forms/HelloWorldForm';
+import IcelanClosedForm from '@/components/forms/IcelanClosedForm';
 import IcelanForm from '@/components/forms/IcelanForm';
 import { directus } from '@/directus';
 import { Event } from '@/types/aliases';
@@ -48,7 +49,12 @@ export default async function Home({ params }) {
   }
 
   if (!event.opened) {
-    return <ClosedForm />;
+    switch (event.type) {
+      case 'icelan':
+        return <IcelanClosedForm />;
+      default:
+        return <ClosedForm />;
+    }
   }
 
   switch (event.type) {

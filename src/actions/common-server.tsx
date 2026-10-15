@@ -81,6 +81,7 @@ export type IcelanInfo = {
   pseudonym: string;
   discord_username: string;
   student: boolean;
+  handicaped: boolean;
   donation: number;
 };
 

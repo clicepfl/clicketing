@@ -40,6 +40,7 @@ type State = {
   pseudonym: string;
   discord_username: string;
   student: boolean;
+  handicaped: boolean;
   donation: number;
   selectedTournaments: boolean[];
   errorMessage: string;
@@ -98,6 +99,7 @@ export default function IcelanForm({
     pseudonym: '',
     discord_username: '',
     student: false,
+    handicaped: false,
     donation: null,
     selectedTournaments: tournaments.map(() => false),
     errorMessage: '',
@@ -235,6 +237,14 @@ function Form({
         >
           Je suis étudiant·e
         </CheckboxCard>
+        <CheckboxCard
+          checkboxState={{
+            value: s.handicaped,
+            setValue: (value) => setField('handicaped', value),
+          }}
+        >
+          J'ai besoin d'accès handicapé
+        </CheckboxCard>
         <LargeTextInputCard
           Icon={AllergyIcon}
           placeholder="Allergies et Restrictions alimentaires (laisser vide si aucune)"
@@ -369,6 +379,7 @@ function Form({
               additionalInfos: {
                 donation: s.donation,
                 student: s.student,
+                handicaped: s.handicaped,
                 allergies: s.allergies,
                 pseudonym: s.pseudonym,
                 discord_username: s.discord_username,
