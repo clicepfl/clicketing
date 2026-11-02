@@ -1,4 +1,4 @@
-FROM node:18-alpine3.18
+FROM node:26-alpine
 
 # the root folder will be mounted at /app in the container
 WORKDIR /app

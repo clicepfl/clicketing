@@ -1,4 +1,4 @@
-FROM node:18-alpine3.18
+FROM node:26-alpine
 
 RUN apk update
 ARG NODE_ENV=production
