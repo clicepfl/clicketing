@@ -56,6 +56,7 @@ async function register({
     eventId,
     participant,
     comments: null,
+    price_to_pay: 'first_price',
   });
 
   await sendICBDActivitiesRegistrations({

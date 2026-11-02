@@ -186,6 +186,17 @@ function Form({
 
   return (
     <>
+      {event.registration_count > event.max_registrations ? (
+        <section>
+          <h2>
+            <strong>Vous serez dans la file d'attente</strong>
+          </h2>
+          <p>
+            Longueur de la file d'attente :{' '}
+            {`${event.registration_count - event.max_registrations}`}
+          </p>
+        </section>
+      ) : null}
       <section>
         <Markdown>{event.intro_text}</Markdown>
         <h2>Informations générales</h2>
@@ -301,7 +312,6 @@ function Form({
           }}
           max={10000}
         />
-        <p>Le don sera automatiquement ajouté au montant de la facture.</p>
       </section>
 
       <section>

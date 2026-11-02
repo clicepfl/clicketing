@@ -347,6 +347,7 @@ function Form({
                 year: guest ? 'Guest' : s.participant.year,
               },
               comments: s.comments,
+              price_to_pay: 'first_price',
               additionalInfos: {
                 meal: s.mealId,
                 allergies: s.comments,

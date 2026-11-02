@@ -222,6 +222,7 @@ function Form({
               eventId: event.id,
               participant: s.participant,
               comments: s.comments,
+              price_to_pay: 'first_price',
             });
             setField('formState', FormStates.Confirmation);
           } catch (error) {
