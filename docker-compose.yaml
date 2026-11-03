@@ -6,6 +6,8 @@ include:
 
 services:
   app:
+    environment:
+        DIRECTUS_TOKEN: 00000000-0000-0000-0000-000000000000
     build:
       context: .
       dockerfile: ./Dockerfile.dev
