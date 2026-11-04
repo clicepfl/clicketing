@@ -1,7 +1,7 @@
 'use server';
 
 import { directus } from '@/directus';
-import { createItem, createItems, readItem, readItems } from '@directus/sdk';
+import { createItems, readItem, readItems } from '@directus/sdk';
 
 export async function pseudonymAlreadyUsed(
   pseudonym: string,
@@ -57,14 +57,6 @@ export async function sendIcelanTournamentInterests({
         registrations_id: registrationID,
       }))
     )
-  );
-}
-
-export async function sendWaitingList({ email }: { email: string }) {
-  await directus().request(
-    createItem('icelan_waiting_list', {
-      email: email.toLowerCase(),
-    })
   );
 }
 
