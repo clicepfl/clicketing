@@ -19,8 +19,6 @@ export default async function Home({ params }) {
         'slug',
         'type',
         'opened',
-        //@ts-expect-error
-        { translations: ['*'] },
       ],
     })
   );

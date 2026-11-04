@@ -264,6 +264,7 @@ function Form({
                 eventId,
                 participant: member,
                 comments: s.comments,
+                price_to_pay: 'first_price',
                 additionalInfos: {
                   team: s.team,
                 },

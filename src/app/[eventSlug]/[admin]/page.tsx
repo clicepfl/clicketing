@@ -31,7 +31,7 @@ function eventSpecificAdminLinks(event: Event, adminBasePath: string) {
       );
     default:
       return (
-        event.price > 0 && (
+        event.price_model != 'free' && (
           <Link href={`${adminBasePath}/payment`}>
             <Card Icon={PriceIcon}>Payment</Card>
           </Link>

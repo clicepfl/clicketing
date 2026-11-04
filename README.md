@@ -14,8 +14,7 @@ Two tools are required:
 Install the git hooks to enforce code formatting and commit names:
 
 ```sh
-npm i -D
-npx husky
+npm i
 ```
 
 Install git submodules:
@@ -24,18 +23,29 @@ Install git submodules:
 git submodule update --init --recursive
 ```
 
-Add execution permissions on directus scripts:
+Go to the ICeLAN branch
 
 ```sh
-chmod +x ./directus/load.sh
-chmod +x ./directus/populate.sh
+# On clicketing
+git switch icelan
+
+# And on Directus
+cd directus-config/
+git switch icelan-clicketing
+cd ..
+```
+
+Boot everything up
+
+```sh
+docker compose up
 ```
 
 Apply directus schema and populate the database:
 
 ```sh
-./directus/load.sh
-./directus/populate.sh
+directus-config/load.sh
+directus-config/populate.sh
 ```
 
 ### Run the stack locally

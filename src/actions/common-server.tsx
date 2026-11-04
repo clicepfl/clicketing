@@ -60,18 +60,29 @@ export type RegistrationInfo = {
   eventId: number;
   participant: ParticipantState;
   comments: string | null;
-  additionalInfos?: FacultyDinnerInfo | HelloWorldInfo;
+  price_to_pay: string;
+  additionalInfos?: FoodInfo | FacultyDinnerInfo | HelloWorldInfo | IcelanInfo;
+};
+
+export type FoodInfo = {
+  meal: number;
+  allergies: string;
 };
 
 export type FacultyDinnerInfo = {
-  meal: number;
-  allergies: string;
   plusOnes: number;
   guest: boolean;
 };
 
 export type HelloWorldInfo = {
   team: string;
+};
+export type IcelanInfo = {
+  pseudonym: string;
+  discord_username: string;
+  student: boolean;
+  handicaped: boolean;
+  donation: number;
 };
 
 export async function sendRegistration(info: RegistrationInfo) {
@@ -91,6 +102,7 @@ export async function sendRegistration(info: RegistrationInfo) {
         year: info.participant.year,
         section: info.participant.section,
         comments: info.comments,
+        price_to_pay: info.price_to_pay,
         // ICBD
         checked_in: false,
         retreived_deposit: false,

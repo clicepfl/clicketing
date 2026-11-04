@@ -21,11 +21,11 @@ export default async function GuestForm({ params }) {
           'slug',
           'type',
           'meals',
-          'price',
+          'price_model',
+          'first_price',
+          'second_price',
           'opened',
           'location',
-          //@ts-expect-error
-          { translations: ['*'] },
         ],
         filter: {
           slug: eventSlug,
@@ -54,8 +54,6 @@ export async function generateMetadata({ params }): Promise<Metadata> {
   const event = (
     await directus().request(
       readItems('events', {
-        //@ts-expect-error
-        fields: ['*', { translations: ['*'] }],
         filter: { slug: params.eventSlug },
       })
     )

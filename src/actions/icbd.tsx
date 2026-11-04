@@ -21,10 +21,7 @@ export async function sendICBDActivitiesRegistrations({
   );
 
   let registration = await directus().request(
-    readItem('registrations', registrationID, {
-      //@ts-expect-error
-      fields: ['*', { translations: ['*'] }],
-    })
+    readItem('registrations', registrationID)
   );
 
   const noSlotActivitiesRegistrations = activities
