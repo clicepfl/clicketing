@@ -1,11 +1,7 @@
 'use server';
 
 import { directus } from '@/directus';
-<<<<<<< HEAD
 import { createItems, readItem, readItems } from '@directus/sdk';
-=======
-import { createItem, createItems, readItem, readItems } from '@directus/sdk';
->>>>>>> main
 
 export async function pseudonymAlreadyUsed(
   pseudonym: string,
