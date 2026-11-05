@@ -186,7 +186,7 @@ function Form({
 
   return (
     <>
-      {event.registration_count > event.max_registrations ? (
+      {event.registration_count >= event.max_registrations ? (
         <section>
           <h2>
             <strong>Vous serez dans la file d'attente</strong>
