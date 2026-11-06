@@ -186,7 +186,7 @@ function Form({
 
   return (
     <>
-      {event.registration_count > event.max_registrations ? (
+      {event.registration_count >= event.max_registrations ? (
         <section>
           <h2>
             <strong>Vous serez dans la file d'attente</strong>
@@ -234,7 +234,7 @@ function Form({
         />
         <TextInputCard
           Icon={UserIcon}
-          placeholder="Pseudo Discord"
+          placeholder="Pseudo Discord (sans le @)"
           inputState={{
             value: s.discord_username,
             setValue: (value) => setField('discord_username', value),
