@@ -234,7 +234,7 @@ function Form({
         />
         <TextInputCard
           Icon={UserIcon}
-          placeholder="Pseudo Discord"
+          placeholder="Pseudo Discord (sans le @)"
           inputState={{
             value: s.discord_username,
             setValue: (value) => setField('discord_username', value),
