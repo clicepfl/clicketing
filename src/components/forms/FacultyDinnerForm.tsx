@@ -29,6 +29,7 @@ import InfoIcon from '../icons/InfoIcon';
 import MenuIcon from '../icons/MenuIcon';
 import TeamIcon from '../icons/TeamIcon';
 import UserIcon from '../icons/UserIcon';
+import { ErrorDisplay } from '../ErrorDisplay';
 
 type State = {
   formState: FormStates;

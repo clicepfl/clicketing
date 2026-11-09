@@ -29,6 +29,7 @@ import EmailIcon from '../icons/EmailIcon';
 import PencilIcon from '../icons/PencilIcon';
 import PriceIcon from '../icons/PriceIcon';
 import UserIcon from '../icons/UserIcon';
+import { ErrorDisplay } from '../ErrorDisplay';
 
 type State = {
   formState: FormStates;
@@ -100,7 +101,7 @@ export default function IcelanForm({
     discord_username: '',
     student: false,
     handicaped: false,
-    donation: null,
+    donation: undefined,
     selectedTournaments: tournaments.map(() => false),
     errorMessage: '',
   };
