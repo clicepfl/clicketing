@@ -40,7 +40,9 @@ function eventSpecificAdminLinks(event: Event, adminBasePath: string) {
   }
 }
 
-export default async function AdminPanel({ params }) {
+export default async function AdminPanel({
+  params,
+}: PageProps<'/[eventSlug]/[admin]'>) {
   let event: Event = (
     await directus().request(
       readItems('events', {
@@ -50,7 +52,9 @@ export default async function AdminPanel({ params }) {
           'type',
         ],
         filter: {
-          slug: params.eventSlug,
+          slug: {
+            _eq: (await params).eventSlug,
+          },
         },
       })
     )
@@ -59,8 +63,8 @@ export default async function AdminPanel({ params }) {
   return (
     <div className="form">
       <h1>Admin panel</h1>
-      {eventSpecificAdminLinks(event, params.admin)}
-      <Link href={`${params.admin}/checkin`}>
+      {eventSpecificAdminLinks(event, (await params).admin)}
+      <Link href={`${(await params).admin}/checkin`}>
         <Card Icon={TicketIcon}>Check-in</Card>
       </Link>
     </div>

@@ -25,6 +25,7 @@ import EmailIcon from '../icons/EmailIcon';
 import PencilIcon from '../icons/PencilIcon';
 import TeamIcon from '../icons/TeamIcon';
 import UserIcon from '../icons/UserIcon';
+import { ErrorDisplay } from '../ErrorDisplay';
 
 type State = {
   formState: FormStates;

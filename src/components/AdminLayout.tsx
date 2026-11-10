@@ -6,10 +6,7 @@ import { notFound } from 'next/navigation';
 export default async function AdminLayout({
   children,
   params,
-}: {
-  children: React.ReactNode;
-  params: any;
-}) {
+}: LayoutProps<'/[eventSlug]/[admin]'>) {
   let event: Event = (
     await directus().request(
       readItems('events', {
@@ -18,7 +15,9 @@ export default async function AdminLayout({
           'admin_secret',
         ],
         filter: {
-          slug: params.eventSlug,
+          slug: {
+            _eq: (await params).eventSlug,
+          },
         },
       })
     )
@@ -28,7 +27,7 @@ export default async function AdminLayout({
     notFound();
   }
 
-  if (params.admin !== event.admin_secret) {
+  if ((await params).admin !== event.admin_secret) {
     return <p>Forbidden</p>;
   } else {
     return <>{children}</>;

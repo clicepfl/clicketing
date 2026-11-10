@@ -5,11 +5,10 @@ import '@styles/style.scss';
 
 export default async function EventLayout({
   children,
-  params: { eventSlug },
-}: {
-  children: React.ReactNode;
-  params: { eventSlug: string };
-}) {
+  params,
+}: LayoutProps<'/[eventSlug]'>) {
+  let eventSlug = (await params).eventSlug;
+
   let event: Event = (
     await directus().request(
       readItems('events', {
