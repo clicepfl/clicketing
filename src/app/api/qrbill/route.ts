@@ -100,7 +100,7 @@ export async function GET(request: NextRequest) {
         account: organiser.bank_account,
         amount: total_price,
         currency: 'CHF',
-        message: `${event.name} - ${registration.first_name} ${registration.family_name} ${registration.donation !== null && registration.donation > 0 ? ' - Le don de CHF' + registration.donation + ' sera facturé séparément' : ''}`,
+        message: `${event.name} - ${registration.first_name} ${registration.family_name}`,
         creditor: {
           name: organiser.name,
           street: organiser.street,
@@ -118,7 +118,7 @@ export async function GET(request: NextRequest) {
         account: 'CH7704835177498341000',
         amount: total_price,
         currency: 'CHF',
-        message: `${event.name} - ${registration.first_name} ${registration.family_name} ${registration.donation !== null && registration.donation > 0 ? ' - Le don de CHF' + registration.donation + ' sera facturé séparément' : ''}`,
+        message: `${event.name} - ${registration.first_name} ${registration.family_name}`,
         creditor: {
           name: 'CLIC',
           street: 'Station 14, EPFL',
