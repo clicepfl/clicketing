@@ -1,4 +1,4 @@
-function ErrorDisplay({ message }: { message: string }) {
+export function ErrorDisplay({ message }: { message: string }) {
   return (
     <>
       <p>Registration failed: {message}</p>

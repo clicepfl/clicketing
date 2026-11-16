@@ -29,10 +29,8 @@ export default async function Home({ params }) {
       {events
         .filter((event) => event.opened)
         .map((event) => (
-          <Link href={`/${event.slug}`}>
-            <Card key={event.id} Icon={TicketIcon}>
-              {event.name}
-            </Card>
+          <Link key={event.id} href={`/${event.slug}`}>
+            <Card Icon={TicketIcon}>{event.name}</Card>
           </Link>
         ))}
     </div>

@@ -11,8 +11,8 @@ import { notFound } from 'next/navigation';
 import Clothes from './clothes';
 import ICBD from './icbd';
 
-export default async function Home({ params }) {
-  let eventSlug = params.eventSlug;
+export default async function Home({ params }: PageProps<'/[eventSlug]'>) {
+  let eventSlug = (await params).eventSlug;
 
   let event: Event = (
     await directus().request(
@@ -39,7 +39,9 @@ export default async function Home({ params }) {
           'max_registrations',
         ],
         filter: {
-          slug: eventSlug,
+          slug: {
+            _eq: eventSlug,
+          },
         },
       })
     )
@@ -74,11 +76,17 @@ export default async function Home({ params }) {
   }
 }
 
-export async function generateMetadata({ params }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps<'/[eventSlug]'>): Promise<Metadata> {
   const event = (
     await directus().request(
       readItems('events', {
-        filter: { slug: params.eventSlug },
+        filter: {
+          slug: {
+            _eq: (await params).eventSlug,
+          },
+        },
       })
     )
   )[0];

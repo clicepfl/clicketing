@@ -1,5 +1,3 @@
-import { exit } from 'process';
-
 export const DIRECTUS_TOKEN = process.env.DIRECTUS_TOKEN;
 
 function checkVariable(name: string) {
@@ -18,6 +16,6 @@ export function validateEnvs() {
   const envs = ['DIRECTUS_TOKEN'];
 
   if (!envs.map(checkVariable).every((e) => e)) {
-    exit(1);
+    throw new Error('missing envs');
   }
 }

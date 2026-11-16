@@ -31,6 +31,7 @@ import SizeIcon from '../icons/SizeIcon';
 import TeamIcon from '../icons/TeamIcon';
 import TrashIcon from '../icons/TrashIcon';
 import UserIcon from '../icons/UserIcon';
+import { ErrorDisplay } from '../ErrorDisplay';
 
 type OrderedClothing = {
   color?: number;

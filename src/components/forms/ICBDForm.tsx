@@ -30,6 +30,7 @@ import EmailIcon from '../icons/EmailIcon';
 import ErrorIcon from '../icons/ErrorIcon';
 import TeamIcon from '../icons/TeamIcon';
 import UserIcon from '../icons/UserIcon';
+import { ErrorDisplay } from '../ErrorDisplay';
 
 type State = {
   formState: FormStates;
@@ -176,7 +177,7 @@ export default function ICBDForm({
               />
             );
           case FormStates.Error:
-            return <ErrorDisplay message={state.errorMessage}></ErrorDisplay>;
+            return <ErrorDisplay message={state.errorMessage} />;
           default:
             return null;
         }
